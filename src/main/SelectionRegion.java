@@ -215,6 +215,20 @@ public abstract class SelectionRegion extends GuiComponent {
 		return elements;
 	}
 	
+	public ArrayList<DisplayableElement> getElementList () {
+		ArrayList<DisplayableElement> elementList = new ArrayList<DisplayableElement> ();
+		for (int wy = 0; wy < elements.length; wy ++) {
+			for (int wx = 0; wx < elements [0].length; wx ++) {
+				if (elements [wy][wx] == null) {
+					return elementList;
+				} else {
+					elementList.add (elements [wy][wx]);
+				}
+			}
+		}
+		return elementList;
+	}
+	
 	public int getElementIndex (int x, int y) {
 		if (x >= elements [0].length || y >= elements.length || x < 0 || y < 0) {
 			return -1;

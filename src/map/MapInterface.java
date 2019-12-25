@@ -6,8 +6,17 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Stack;
+
+import javax.swing.JFileChooser;
 
 import main.DisplayableElement;
 import main.GuiComponent;
@@ -54,6 +63,10 @@ public class MapInterface extends MovableSelectionRegion {
 	public static final int SELECTION_PLACE_TILES = 1;
 	public static final int SELECTION_ENCASE_TILES = 2;
 	
+	//For use only by the load method and internal methods it calls
+	private int readPos;
+	private byte[] inData;
+	
 	public MapInterface (Rectangle bounds, TileSelectMenu tileMenu, ObjectSelectMenu objectMenu, Toolbar toolbar, GuiComponent parent) {
 		super (bounds, parent);
 		this.setElements (new DisplayableElement[30][30]);
@@ -88,6 +101,282 @@ public class MapInterface extends MovableSelectionRegion {
 		MapEdit redone = undos.pop ();
 		edits.push (redone);
 		return redone.doEdit (map);
+	}
+	
+	public void save () {
+		//START OF HEADER
+		//Bytes 0-3: RMF# (# is version number)
+		//Bytes 4-7: Map width, in tiles
+		//Bytes 8-11: Map height, in tiles
+		//Bytes 12-15: Number of layers
+		//Bytes 16-19: Number of objects (placed)
+		//END OF HEADER
+		//Tileset list
+		//Object import list
+		//Tiles
+		//Object list (x, y, id, variant)
+		JFileChooser chooser = new JFileChooser ("resources/maps");
+		if (chooser.showSaveDialog (getWindow ()) != JFileChooser.CANCEL_OPTION) {
+			save (chooser.getSelectedFile ());
+		}
+	}
+	
+	public void save (File file) {
+		
+		//Get map editor components
+		MainPanel mainPanel = getMainPanel ();
+		TileSelectMenu tileMenu = mainPanel.getTileMenu ();
+		MapInterface mapInterface = mainPanel.getMapInterface ();
+		
+		//Get tilesets
+		ArrayList<DisplayableElement> tilesetList = tileMenu.getTilesetSelect ().getElementList ();
+		
+		//Make data buffer
+		ArrayList<Byte> fileBuffer = new ArrayList<Byte> ();
+		
+		//Add the file identifier
+		addString (fileBuffer, "RMF1");
+		
+		//Write the map dimensions/etc
+		writeInt (fileBuffer, map.getWidth ());
+		writeInt (fileBuffer, map.getHeight ());
+		writeInt (fileBuffer, map.getNumLayers ());
+		
+		//Write object count info
+		writeInt (fileBuffer, 0);
+		
+		//Write the list of tilesets
+		for (int i = 0; i < tilesetList.size () - 1; i ++) {
+			addString (fileBuffer, ((Tileset)(tilesetList.get (i))).getPath ());
+			if (i == tilesetList.size () - 2) {
+				addString (fileBuffer, ";");
+			} else {
+				addString (fileBuffer, ",");
+			}
+		}
+		
+		//Write the list of objects
+		addString (fileBuffer, ";");
+		
+		//Write the tiles
+		ArrayList<BufferedImage> allTiles = tileMenu.getAllTiles ();
+		HashMap<BufferedImage, Integer> tileMap = new HashMap<BufferedImage, Integer> ();
+		for (int i = 0; i < allTiles.size (); i ++) {
+			tileMap.put (allTiles.get (i), i);
+		}
+		int tileCount = allTiles.size ();
+		int tileSize = getByteCount (tileCount);
+		for (int layer = 0; layer < map.getNumLayers (); layer ++) {
+			for (int wy = 0; wy < map.getHeight (); wy ++) {
+				for (int wx = 0; wx < map.getWidth (); wx ++) {
+					Tile current = map.getTile (layer, wx, wy);
+					int tileId;
+					if (current == null) {
+						tileId = 0;
+					} else {
+						tileId = tileMap.get (current.getIcon ());
+					}
+					writeBytes (fileBuffer, tileId, tileSize);
+				}
+			}
+		}
+		
+		//Write the objects
+		
+		//Write changes to the file
+		byte[] writeData = new byte[fileBuffer.size ()];
+		for (int i = 0; i < fileBuffer.size (); i ++) {
+			writeData [i] = fileBuffer.get (i);
+		}
+		file.delete ();
+		try {
+			file.createNewFile ();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		FileOutputStream stream = null;
+		try {
+			stream = new FileOutputStream (file);
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			stream.write (writeData);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			stream.close ();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void addString (ArrayList<Byte> buffer, String toAdd) {
+		for (int i = 0; i < toAdd.length (); i ++) {
+			buffer.add ((byte)(toAdd.charAt (i)));
+		}
+	}
+	
+	private void writeInt (ArrayList<Byte> buffer, int value) {
+		buffer.add ((byte)((value & 0xFF000000) >>> 24));
+		buffer.add ((byte)((value & 0x00FF0000) >>> 16));
+		buffer.add ((byte)((value & 0x0000FF00) >>> 8));
+		buffer.add ((byte)(value & 0xFF));
+	}
+	
+	private void writeBytes (ArrayList<Byte> buffer, int value, int numBytes) {
+		if (numBytes >= 4) {buffer.add ((byte)((value & 0xFF000000) >>> 24));}
+		if (numBytes >= 3) {buffer.add ((byte)((value & 0x00FF0000) >>> 16));}
+		if (numBytes >= 2) {buffer.add ((byte)((value & 0x0000FF00) >>> 8));}
+		if (numBytes >= 1) {buffer.add ((byte)(value & 0xFF));}
+	}
+	
+	private int getByteCount (int value) {
+		int i = 0;
+		while (value != 0) {
+			value /= 256;
+			i ++;
+		}
+		return i;
+	}
+	
+	public void load () {
+		//START OF HEADER
+		//Bytes 0-3: RMF# (# is version number)
+		//Bytes 4-7: Map width, in tiles
+		//Bytes 8-11: Map height, in tiles
+		//Bytes 12-15: Number of layers
+		//Bytes 16-19: Number of objects (placed)
+		//END OF HEADER
+		//Tileset list
+		//Object import list
+		//Tiles
+		//Object list (x, y, id, variant)
+		JFileChooser chooser = new JFileChooser ("resources/maps");
+		if (chooser.showSaveDialog (getWindow ()) != JFileChooser.CANCEL_OPTION) {
+			load (chooser.getSelectedFile ());
+		}
+	}
+	
+	public void load (File file) {
+		
+		//Get relevant GUI components
+		MainPanel mainPanel = getMainPanel ();
+		TileSelectMenu tileMenu = mainPanel.getTileMenu ();
+		
+		//Read the file
+		inData = new byte[(int) file.length ()];
+		FileInputStream stream = null;
+		try {
+			stream = new FileInputStream (file);
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			stream.read (inData);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			stream.close ();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		readPos = 0;
+		
+		//Loading code can now go here
+		
+		char MAX_VERSION = '1';
+		
+		//Check header
+		String fmtString = getString (3);
+		if (!fmtString.equals ("RMF")) {
+			//Error: not an RMF file
+		}
+		System.out.println (fmtString);
+		String verString = getString (1);
+		if (verString.charAt (0) < '1' || verString.charAt (0) > MAX_VERSION) {
+			//Error: unsupported version
+		}
+		System.out.println (verString);
+		//Read attributes
+		int mapWidth = getInteger (4);
+		int mapHeight = getInteger (4);
+		int numLayers = getInteger (4);
+		int numObjects = getInteger (4);
+		//Reset map and tilesets
+		map.resetMap (mapWidth, mapHeight);
+		tileMenu.resetTilesets ();
+		//Read and load new tilesets
+		String tilesets = getString (';');
+		String[] tilesetList = tilesets.split (",");
+		for (int i = 0; i < tilesetList.length; i ++) {
+			tileMenu.addTileset (tilesetList [i]);
+		}
+		//Read and import new objects
+		getString (';');
+		//Read and import tile data
+		ArrayList<BufferedImage> tileImgs = tileMenu.getAllTiles ();
+		ArrayList<Tile> tileObjs = new ArrayList<Tile> ();
+		for (int i = 0; i < tileImgs.size (); i ++) {
+			tileObjs.add (new Tile (tileImgs.get (i), this));
+		}
+		int tileSize = getByteCount (tileObjs.size ());
+		for (int l = 0; l < numLayers; l ++) {
+			Map.TileLayer newLayer = map.addLayer (mapWidth, mapHeight);
+			for (int wy = 0; wy < mapHeight; wy ++) {
+				for (int wx = 0; wx < mapWidth; wx ++) {
+					newLayer.set (wx, wy, tileObjs.get (getInteger (tileSize)));
+				}
+			}
+		}
+		//Read and import object data
+		//...
+	}
+	
+	private String getString (int length) {
+		byte[] usedData = new byte[length];
+		int endPos = readPos + length;
+		int i = 0;
+		while (readPos < endPos) {
+			usedData [i] = inData [readPos];
+			readPos ++;
+			i ++;
+		}
+		return new String (usedData);
+	}
+	
+	private String getString (char endChar) {
+		int len = 0;
+		int i = readPos;
+		while (inData [i] != endChar) {
+			len ++;
+			i ++;
+		}
+		String str = getString (len);
+		readPos ++;
+		return str;
+	}
+	
+	private int getInteger (int bytes) {
+		int total = 0;
+		for (int i = 0; i < bytes; i ++) {
+			int toRead = inData [readPos + i];
+			if (toRead < 0) {
+				toRead += 256;
+			}
+			total += (toRead << ((bytes - 1 - i) * 8));
+		}
+		readPos += bytes;
+		return total;
 	}
 	
 	@Override
@@ -239,5 +528,16 @@ public class MapInterface extends MovableSelectionRegion {
 	
 	public Tile[][] getCopyTiles () {
 		return copyTiles;
+	}
+	
+	private MainPanel getMainPanel () {
+		GuiComponent working = this;
+		while (!(working instanceof MainPanel) && (working instanceof GuiComponent)) {
+			working = working.getParent ();
+		}
+		if (working instanceof MainPanel) {
+			return (MainPanel)working;
+		}
+		return null;
 	}
 }

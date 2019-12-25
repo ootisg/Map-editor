@@ -3,7 +3,9 @@ package main;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import resources.Sprite;
 
@@ -28,6 +30,25 @@ public class TileSelectMenu extends SelectionMenu {
 	
 	public TileSelectRegion getTileSelect () {
 		return tileSelect;
+	}
+	
+	public ArrayList<BufferedImage> getAllTiles () {
+		ArrayList<DisplayableElement> tilesets = tilesetSelect.getElementList ();
+		ArrayList<BufferedImage> allTiles = new ArrayList<BufferedImage> ();
+		for (int i = 0; i < tilesets.size () - 1; i ++) {
+			Tileset currentSet = (Tileset)tilesets.get (i);
+			ArrayList<BufferedImage> currentImages = currentSet.getTileList ();
+			allTiles.addAll (currentImages);
+		}
+		return allTiles;
+	}
+	
+	public void addTileset (String filepath) {
+		tilesetSelect.addTileset (filepath);
+	}
+	
+	public void resetTilesets () {
+		tilesetSelect.resetTilesets ();
 	}
 	
 	@Override

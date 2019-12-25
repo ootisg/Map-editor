@@ -2,6 +2,7 @@ package main;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import resources.Sprite;
 
@@ -44,6 +45,24 @@ public class Tileset extends DisplayableImageElement {
 			}
 		}
 		return result;
+	}
+	
+	public ArrayList<BufferedImage> getTileList () {
+		ArrayList<BufferedImage> tileList = new ArrayList<BufferedImage> ();
+		for (int i = 0; i < images.length; i ++) {
+			for (int j = 0; j < images[0].length; j ++) {
+				if (images [i][j] == null) {
+					return tileList;
+				} else {
+					tileList.add (images [i][j]);
+				}
+			}
+		}
+		return tileList;
+	}
+	
+	public String getPath () {
+		return path;
 	}
 	
 	@Override

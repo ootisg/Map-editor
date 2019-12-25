@@ -16,11 +16,16 @@ public class TilesetSelectRegion extends ScrollableSelectionRegion {
 	
 	public TilesetSelectRegion (Rectangle bounds, GuiComponent parent) {
 		super (bounds, parent);
+		resetTilesets ();
+		addTileset ("resources/tilesets/transparent.png");
+	}
+	
+	public void resetTilesets () {
+		System.out.println (getGridHeight ());
 		Tileset[][] toUse = new Tileset[getGridHeight ()][getGridWidth ()];
 		toUse[0][0] = new TilesetAddButton (this);
 		setCount = 1;
 		setElements (toUse);
-		addTileset ("resources/tilesets/transparent.png");
 	}
 	
 	@Override

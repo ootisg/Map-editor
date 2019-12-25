@@ -21,6 +21,6 @@ public class SaveButton extends ToolbarItem {
 
 	@Override
 	public void use (int x, int y) {
-		
+		getMainPanel ().getMapInterface ().save ();
 	}
 }

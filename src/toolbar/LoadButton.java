@@ -21,14 +21,6 @@ public class LoadButton extends ToolbarItem {
 
 	@Override
 	public void use (int x, int y) {
-		MainPanel mainPanel = getMainPanel ();
-		if (mainPanel.getMap ().getActiveLayer ().get (x, y) != null) {
-			getMainPanel ().getMapInterface ().edit (new TileEdit (x, y, 1, 1, new Tile[][] {{null}}));
-		}
-	}
-	
-	@Override
-	public void useDrag (int x, int y) {
-		use (x, y);
+		getMainPanel ().getMapInterface ().load ();
 	}
 }

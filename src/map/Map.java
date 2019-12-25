@@ -26,11 +26,8 @@ public class Map {
 	public static final int STARTING_HEIGHT = 30;
 	
 	public Map () {
-		edits = new Stack<MapEdit> ();
-		undoStack = new Stack<MapEdit> ();
-		renderedTiles = new DisplayableElement[STARTING_WIDTH][STARTING_HEIGHT];
-		mapData = new ArrayList<TileLayer> ();
-		mapData.add (new TileLayer ());
+		resetMap (STARTING_WIDTH, STARTING_HEIGHT);
+		mapData.add (new TileLayer (STARTING_WIDTH, STARTING_HEIGHT));
 		activeLayer = mapData.get (0);
 	}
 	
@@ -87,12 +84,50 @@ public class Map {
 		this.mapInterface = mapInterface;
 	}
 	
+	public int getNumLayers () {
+		return mapData.size ();
+	}
+	
+	public int getWidth () {
+		return mapData.get (0).getWidth ();
+	}
+	
+	public int getHeight () {
+		return mapData.get (0).getHeight ();
+	}
+	
+	public Tile getTile (int layer, int x, int y) {
+		return mapData.get (layer).get (x, y);
+	}
+	
+	public void resetMap (int width, int height) {
+		edits = new Stack<MapEdit> ();
+		undoStack = new Stack<MapEdit> ();
+		System.out.println (width + ", " + height);
+		System.out.println (height + ", " + width);
+		renderedTiles = new DisplayableElement[height][width];
+		mapData = new ArrayList<TileLayer> ();
+	}
+	
+	public ArrayList<TileLayer> getTileData () {
+		return mapData;
+	}
+	
+	public TileLayer addLayer (int width, int height) {
+		TileLayer layer = new TileLayer (width, height);
+		mapData.add (layer);
+		if (mapData.size () == 1) {
+			activeLayer = layer;
+		}
+		return layer;
+	}
+	
 	public class TileLayer {
 		
 		private Tile[][] data;
 		
-		public TileLayer () {
-			data = new Tile[30][30];
+		public TileLayer (int width, int height) {
+			data = new Tile[height][width];
 		}
 		
 		public int getWidth () {
