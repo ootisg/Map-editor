@@ -7,6 +7,8 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JFileChooser;
 
+import toolbar.PlaceButton;
+
 public class ObjectSelectRegion extends ScrollableSelectionRegion {
 	
 	private int objCount;
@@ -21,9 +23,8 @@ public class ObjectSelectRegion extends ScrollableSelectionRegion {
 	}
 	
 	public void resetObjs () {
-		System.out.println (getGridHeight ());
-		Tileset[][] toUse = new Tileset[getGridHeight ()][getGridWidth ()];
-		toUse[0][0] = new TilesetAddButton (this);
+		GameObject[][] toUse = new GameObject[getGridHeight ()][getGridWidth ()];
+		toUse[0][0] = new ObjectAddButton (this);
 		objCount = 1;
 		setElements (toUse);
 	}
@@ -41,35 +42,25 @@ public class ObjectSelectRegion extends ScrollableSelectionRegion {
 			getWindow ().chooser = new JFileChooser ("resources/objects/");
 			getWindow ().chooser.showOpenDialog (getWindow ());
 			if (getWindow ().chooser.getSelectedFile () != null) {
-				addTileset (getWindow ().chooser.getSelectedFile ().getPath ());
+				addGameObject (getWindow ().chooser.getSelectedFile ().getPath ());
 			}
 			if (selectedX == -1) {
 				selectedX = horizontalIndex;
 				selectedY = verticalIndex;
+				PlaceButton.tilesOrObjects = true;
 			}
 		} else {
+			PlaceButton.tilesOrObjects = true;
 			selectedX = horizontalIndex;
 			selectedY = verticalIndex;
-			if (getSelectedRegion () != null) {
-				if (getSelectedRegion ().getStartX () == selectedX && getSelectedRegion ().getStartY () == selectedY) {
-					//CLICKCEPTION!
-					BufferedImage[][] parsedImages = ((Tileset)(getElements ()[selectedY][selectedX])).getParsedImages ();
-					if (!(parsedImages.length == 1 && parsedImages [0].length == 1)) {
-						TileSelectMenu frame = (TileSelectMenu)getParent ();
-						frame.getTileSelect ().setTileset ((Tileset)getElements ()[selectedY][selectedX]);
-						frame.getTileSelect ().show ();
-						frame.getTilesetSelect ().hide ();
-					}
-				}
-			}
 			if (getElements ()[selectedY][selectedX] != null) {
 				select (new TileRegion (selectedX, selectedY, 1, 1));
 			}
 		}
 	}
 	
-	public Tileset getTileset (String path) {
-		return new Tileset (path, getElementWidth (), getElementHeight (), this);
+	public GameObject getObject (String path) {
+		return new GameObject (path, this);
 	}
 	
 	public void addRow () {
@@ -86,32 +77,19 @@ public class ObjectSelectRegion extends ScrollableSelectionRegion {
 		}
 	}
 	
-	public boolean hasTileset (Tileset tileset) {
-		for (int i = 0; i < getElements ().length; i ++) {
-			for (int j = 0; j < getElements ()[0].length; j ++) {
-				if (tileset.equals (getElements () [i][j])) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	public void addTileset (String path) {
-		Tileset workingSet = getTileset (path);
-		if (/*!hasTileset (workingSet)*/true) {
+	public void addGameObject (String path) {
+		GameObject workingSet = getObject (path);
 			if (objCount >= getElements ().length * getElements ()[0].length) {
 				addRow ();
 			}
 			getElements ()[(objCount) / getGridWidth ()][(objCount) % getGridWidth ()] = getElements ()[((objCount - 1) / getGridWidth ())][(objCount - 1) % getGridWidth ()];
 			getElements ()[(objCount - 1) / getGridWidth ()][(objCount - 1) % getGridWidth ()] = (DisplayableElement)workingSet;
 			objCount ++;
-		}
 	}
 	
-	public Tileset getSelectedTileset () {
+	public GameObject getSelectedObject () {
 		if (selectedX != -1) {
-			return (Tileset)getElements ()[selectedY][selectedX];
+			return (GameObject)getElements ()[selectedY][selectedX];
 		} else {
 			return null;
 		}

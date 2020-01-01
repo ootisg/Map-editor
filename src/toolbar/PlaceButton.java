@@ -4,16 +4,18 @@ import java.awt.Rectangle;
 import java.io.IOException;
 
 import main.MainPanel;
+import main.ObjectSelectMenu;
 import main.SelectionRegion.TileRegion;
 import main.Tile;
 import main.TileSelectMenu;
 import main.Tileset;
 import map.MapInterface;
+import map.ObjectEdit;
 import map.TileEdit;
 import resources.Sprite;
 
 public class PlaceButton extends ToolbarItem {
-	
+	public static boolean tilesOrObjects = false; 
 	public PlaceButton (Toolbar parent) {
 		super (parent);
 		setIcon (new Sprite ("resources/images/Place.png").getImageArray () [0]);
@@ -22,10 +24,12 @@ public class PlaceButton extends ToolbarItem {
 	@Override
 	public void use (int x, int y) {
 		// TODO Auto-generated method stub
+		
 		MainPanel mainPanel = getMainPanel ();
 		TileSelectMenu tileMenu = mainPanel.getTileMenu ();
 		MapInterface mapInterface = mainPanel.getMapInterface ();
 		Toolbar toolbar = (Toolbar)getParent ();
+		if (!tilesOrObjects) {
 		Tile[][] usedTiles = null;
 		
 		//Get currently selected tiles
@@ -40,6 +44,9 @@ public class PlaceButton extends ToolbarItem {
 		Rectangle[][] grid = mapInterface.makeGrid (new Rectangle ((int)-mapInterface.getViewX (), (int)-mapInterface.getViewY (), (int)(mapInterface.getElements () [0].length * mapInterface.getElementWidth () * mapInterface.getScale ()), (int)(mapInterface.getElements ().length * mapInterface.getElementHeight () * mapInterface.getScale ())), mapInterface.getElementWidth () * mapInterface.getScale (), mapInterface.getElementHeight () * mapInterface.getScale ());
 		int[] selectedCell = mainPanel.getMapInterface ().getCell (x, y);
 		mainPanel.getMapInterface ().edit (new TileEdit (selectedCell [0], selectedCell [1], usedTiles [0].length, usedTiles.length, mapInterface.getMap (), usedTiles));
+		} else {
+	mainPanel.getMapInterface().edit (new ObjectEdit (x, y, MapInterface.objectsInTheMap,ObjectSelectMenu.objectSelect.getSelectedObject()));	
+		}
 	}
 	
 	@Override

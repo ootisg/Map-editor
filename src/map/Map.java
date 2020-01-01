@@ -109,8 +109,6 @@ public class Map {
 	public void resetMap (int width, int height) {
 		edits = new Stack<MapEdit> ();
 		undoStack = new Stack<MapEdit> ();
-		System.out.println (width + ", " + height);
-		System.out.println (height + ", " + width);
 		renderedTiles = new DisplayableElement[height][width];
 		mapData = new ArrayList<TileLayer> ();
 		topDisplayLayer = 0;
@@ -141,7 +139,6 @@ public class Map {
 			topDisplayLayer = 0;
 		}
 		activeLayer = mapData.get (topDisplayLayer);
-		System.out.println (topDisplayLayer);
 	}
 	
 	public int getTopDisplayLayer () {

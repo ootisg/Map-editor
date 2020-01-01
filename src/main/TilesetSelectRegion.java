@@ -7,13 +7,12 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JFileChooser;
 
+import toolbar.PlaceButton;
+
 public class TilesetSelectRegion extends ScrollableSelectionRegion {
-	
 	private int setCount;
-	
 	private int selectedX = -1;
 	private int selectedY = -1;
-	
 	public TilesetSelectRegion (Rectangle bounds, GuiComponent parent) {
 		super (bounds, parent);
 		resetTilesets ();
@@ -21,7 +20,6 @@ public class TilesetSelectRegion extends ScrollableSelectionRegion {
 	}
 	
 	public void resetTilesets () {
-		System.out.println (getGridHeight ());
 		Tileset[][] toUse = new Tileset[getGridHeight ()][getGridWidth ()];
 		toUse[0][0] = new TilesetAddButton (this);
 		setCount = 1;
@@ -46,10 +44,12 @@ public class TilesetSelectRegion extends ScrollableSelectionRegion {
 			if (selectedX == -1) {
 				selectedX = horizontalIndex;
 				selectedY = verticalIndex;
+				PlaceButton.tilesOrObjects = false;
 			}
 		} else {
 			selectedX = horizontalIndex;
 			selectedY = verticalIndex;
+			PlaceButton.tilesOrObjects = false;
 			if (getSelectedRegion () != null) {
 				if (getSelectedRegion ().getStartX () == selectedX && getSelectedRegion ().getStartY () == selectedY) {
 					//CLICKCEPTION!

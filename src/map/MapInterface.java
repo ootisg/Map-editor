@@ -19,6 +19,7 @@ import java.util.Stack;
 import javax.swing.JFileChooser;
 
 import main.DisplayableElement;
+import main.GameObject;
 import main.GuiComponent;
 import main.MainPanel;
 import main.MovableSelectionRegion;
@@ -52,7 +53,7 @@ public class MapInterface extends MovableSelectionRegion {
 	private Tile[][] usedTiles = new Tile[0][0];
 	private Tile[][] copyTiles;
 	private Tile[][] copyTilesComplete;
-	
+	public static GameObject[][] objectsInTheMap;
 	private Map map;
 	
 	private Stack<MapEdit> edits;
@@ -73,6 +74,7 @@ public class MapInterface extends MovableSelectionRegion {
 		this.tileMenu = tileMenu;
 		this.objectMenu = objectMenu;
 		this.toolbar = toolbar;
+		objectsInTheMap = new GameObject [256] [256];
 		map = ((MainPanel)getParent ()).getMap ();
 		map.setMapInterface (this);
 		edits = new Stack<MapEdit> ();
@@ -301,12 +303,12 @@ public class MapInterface extends MovableSelectionRegion {
 		if (!fmtString.equals ("RMF")) {
 			//Error: not an RMF file
 		}
-		System.out.println (fmtString);
+		
 		String verString = getString (1);
 		if (verString.charAt (0) < '1' || verString.charAt (0) > MAX_VERSION) {
 			//Error: unsupported version
 		}
-		System.out.println (verString);
+		
 		//Read attributes
 		int mapWidth = getInteger (4);
 		int mapHeight = getInteger (4);
@@ -392,6 +394,13 @@ public class MapInterface extends MovableSelectionRegion {
 		g.fillRect (bounds.x, bounds.y, bounds.width, bounds.height);
 		setElements (map.getRenderedElements ());
 		super.render ();
+		for (int i = 0; i < 256; i = i + 16) {
+			for (int j = 0; j < 256; j = j + 16) {
+				if (objectsInTheMap[i][j] != null) {
+					objectsInTheMap[i][j].render(i + 160 , j);
+				}
+			}
+		}
 	}
 	
 	@Override
