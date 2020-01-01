@@ -1,0 +1,31 @@
+First line: VF #
+	# is the version number/id of the file format
+Subsequent lines: Each is one variant; whitespace separated assignments (x=y), {} for grouping
+	Special variables:
+		name - The variant name [OUTPUT]
+		query - Query is allowed if set to TRUE [OUTPUT]
+		attributes - A list of attributes for the variants (and associated values) [INTERNAL]
+		value - The value of the variant [INPUT]
+		file - A string representing the filepath to the used icon [OUTPUT]
+		tileWidth - The width of tiles in the icon file, 16 by default [OUTPUT]
+		tileHeight - The height of tiles in the icon file, 16 by default [OUTPUT]
+		tileIndex - The index of the tile to use in the icon sheet (0 by default) [OUTPUT, INTERNAL] - NOTE: changes accordingly with tileX, tileY
+		tileX - The x coordinate of the tile to use in the icon sheet (0 by default) [OUTPUT, INTERNAL] - NOTE: changes accordingly with tileIndex
+		tileY - The y coordinate of the tile to use in the icon sheet (0 by default) [OUTPUT, INTERNAL] - NOTE: changes accordingly with tileIndex
+		iconX - The x coordinate of the reigon to use in the icon sheet (0 by default) (overrides tileIndex, tileX, tileY if present) [OUTPUT]
+		iconY - The y coordinate of the reigon to use in the icon sheet (0 by default) (overrides tileIndex, tileX, tileY if present) [OUTPUT]
+	Grouping rules:
+		Items are space-separated
+		Expressions are allowed, but don't add to the final value
+		Variables are allowed
+		Special items: +, -, *, /, %
+			Are NOT added to the list, delete the previous item, replace the item before that with that operation on the two
+			Examples: 4 5 + becomes 9, 4 5 - becomes -1
+			+, * have special behavior on text
+				+ adds text together; a b + becomes ab
+				* clones text; a 5 * becomes aaaaa
+		You can "force" a string with quotes (or for variables, prefix with .)
+		E.g. {a=5 a 5 +} becomes 10, {5 "5" +} becomes 55, {a=5 .a 5 +} becomes 55
+				
+
+		

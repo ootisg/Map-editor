@@ -33,6 +33,7 @@ public class Toolbar extends GuiComponent {
 		new ResizeButton (this);
 		new NewLayerButton (this);
 		new SwitchLayerButton (this);
+		new LayerModeButton (this);
 		new SaveButton (this);
 		new LoadButton (this);
 	}

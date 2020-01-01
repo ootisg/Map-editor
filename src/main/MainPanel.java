@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.Rectangle;
+import java.util.LinkedList;
 
 import map.Map;
 import map.MapInterface;
@@ -12,6 +13,7 @@ public class MainPanel extends GuiComponent {
 	private ObjectSelectMenu objectMenu;
 	private MapInterface canvas;
 	private Toolbar toolbar;
+	private LinkedList<DisplayBox> boxes;
 	
 	private Map map;
 	
@@ -24,6 +26,7 @@ public class MainPanel extends GuiComponent {
 		objectMenu = new ObjectSelectMenu (new Rectangle (16, 240, 144, 240), this);
 		toolbar = new Toolbar (new Rectangle (0, 0, 16, 480), this);
 		canvas = new MapInterface (new Rectangle (160, 0, 480, 480), tileMenu, objectMenu, toolbar, this);
+		boxes = new LinkedList<DisplayBox> ();
 	}
 	
 	public MapInterface getMapInterface () {
@@ -44,6 +47,15 @@ public class MainPanel extends GuiComponent {
 
 	public Toolbar getToolbar () {
 		return toolbar;
+	}
+	
+	public DisplayBox addDisplayBox (Rectangle bounds, String message) {
+		DisplayBox b = new DisplayBox (bounds, message, this);
+		return b;
+	}
+	
+	public void destroyDisplayBox (DisplayBox b) {
+		boxes.remove (b);
 	}
 	
 	@Override

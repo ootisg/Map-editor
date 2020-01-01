@@ -15,7 +15,6 @@ public class NewLayerButton extends ToolbarItem {
 
 	@Override
 	public void use (int x, int y) {
-		// TODO Auto-generated method stub
-		System.out.println ("HIA");
+		getMainPanel ().getMap ().addLayer ();
 	}
 }

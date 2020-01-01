@@ -136,12 +136,10 @@ public class GameWindow extends JFrame {
 		return resolution;
 	}
 	public int getMouseX () {
-		int viewWidth = this.getWidth () - insets.left - insets.right;
-		return (int)(((float)(mouseListener.mouseX) / viewWidth) * 640);
+		return mouseListener.mouseX;
 	}
 	public int getMouseY () {
-		int viewHeight = this.getHeight () - insets.top - insets.bottom;
-		return (int)(((float)(mouseListener.mouseY) / viewHeight) * 480);
+		return mouseListener.mouseY;
 	}
 	public void setResolution (int width, int height) {
 		int[] usedResolution = {width, height};

@@ -20,7 +20,8 @@ public class Map {
 	private MapInterface mapInterface;
 	private DisplayableElement[][] renderedTiles;
 	
-	int topDisplayLayer;
+	private int topDisplayLayer;
+	private boolean onlyTopLayer;
 	
 	public static final int STARTING_WIDTH = 30;
 	public static final int STARTING_HEIGHT = 30;
@@ -52,8 +53,9 @@ public class Map {
 	public void renderCell (int x, int y) {
 		BufferedImage fullRender = new BufferedImage (mapInterface.getElementWidth (), mapInterface.getElementHeight (), BufferedImage.TYPE_INT_ARGB);
 		Graphics g = fullRender.getGraphics ();
-		for (int i = topDisplayLayer; i != topDisplayLayer - 1 && mapData.size () != 0; i = (i + 1) % mapData.size ()) {
-			Tile iconTile = mapData.get (i).get (x, y);
+		for (int i = 0; i < mapData.size (); i ++) {
+			int l = mapData.size () - 1 - (i + topDisplayLayer) % mapData.size ();
+			Tile iconTile = mapData.get (l).get (x, y);
 			BufferedImage icon;
 			if (iconTile == null) {
 				icon = null;
@@ -65,6 +67,10 @@ public class Map {
 			}
 			//Avoid an infinite loop for the 1 layer case
 			if (mapData.size () == 1) {
+				break;
+			}
+			//Only render top mode
+			if (onlyTopLayer) {
 				break;
 			}
 		}
@@ -107,6 +113,7 @@ public class Map {
 		System.out.println (height + ", " + width);
 		renderedTiles = new DisplayableElement[height][width];
 		mapData = new ArrayList<TileLayer> ();
+		topDisplayLayer = 0;
 	}
 	
 	public ArrayList<TileLayer> getTileData () {
@@ -116,10 +123,29 @@ public class Map {
 	public TileLayer addLayer (int width, int height) {
 		TileLayer layer = new TileLayer (width, height);
 		mapData.add (layer);
-		if (mapData.size () == 1) {
-			activeLayer = layer;
-		}
+		activeLayer = layer;
 		return layer;
+	}
+	
+	public TileLayer addLayer () {
+		return addLayer (mapData.get (0).getWidth (), mapData.get (0).getHeight ());
+	}
+	
+	public void toggleLayerMode () {
+		onlyTopLayer = !onlyTopLayer;
+	}
+	
+	public void changeLayer () {
+		topDisplayLayer ++;
+		if (topDisplayLayer >= mapData.size ()) {
+			topDisplayLayer = 0;
+		}
+		activeLayer = mapData.get (topDisplayLayer);
+		System.out.println (topDisplayLayer);
+	}
+	
+	public int getTopDisplayLayer () {
+		return topDisplayLayer;
 	}
 	
 	public class TileLayer {

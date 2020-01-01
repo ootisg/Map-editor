@@ -34,6 +34,7 @@ public class MainLoop {
 				}
 			} catch (Exception e) {
 				e.printStackTrace ();
+				System.exit (0);
 			}
 		}
 	}

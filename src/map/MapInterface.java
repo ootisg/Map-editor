@@ -82,7 +82,7 @@ public class MapInterface extends MovableSelectionRegion {
 	public boolean edit (MapEdit edit) {
 		edits.push (edit);
 		undos = new Stack<MapEdit> ();
-		return edit.doEdit (map);
+		return edit.doEdit ();
 	}
 	
 	public boolean undo () {
@@ -91,7 +91,7 @@ public class MapInterface extends MovableSelectionRegion {
 		}
 		MapEdit undone = edits.pop ();
 		undos.push (undone);
-		return undone.undo (map);
+		return undone.undo ();
 	}
 	
 	public boolean redo () {
@@ -100,7 +100,7 @@ public class MapInterface extends MovableSelectionRegion {
 		}
 		MapEdit redone = undos.pop ();
 		edits.push (redone);
-		return redone.doEdit (map);
+		return redone.doEdit ();
 	}
 	
 	public void save () {
@@ -528,6 +528,10 @@ public class MapInterface extends MovableSelectionRegion {
 	
 	public Tile[][] getCopyTiles () {
 		return copyTiles;
+	}
+	
+	public Map getMap () { 
+		return map;
 	}
 	
 	private MainPanel getMainPanel () {

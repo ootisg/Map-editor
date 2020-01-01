@@ -24,7 +24,7 @@ public class EraseButton extends ToolbarItem {
 	public void use (int x, int y) {
 		MainPanel mainPanel = getMainPanel ();
 		if (mainPanel.getMap ().getActiveLayer ().get (x, y) != null) {
-			getMainPanel ().getMapInterface ().edit (new TileEdit (x, y, 1, 1, new Tile[][] {{null}}));
+			getMainPanel ().getMapInterface ().edit (new TileEdit (x, y, 1, 1, getMainPanel ().getMap (), new Tile[][] {{null}}));
 		}
 	}
 	
