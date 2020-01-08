@@ -3,8 +3,10 @@ package main;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.awt.BufferedImage;
 
 public class VariantConfig {
 
@@ -29,27 +31,120 @@ public class VariantConfig {
 		}
 	}
 	
+	public BufferedImage getIcon (HashMap<String, String> variantAttributes) {
+		
+	}
+	
 	private String parse (String str, HashMap<String, String> varMap) {
-		/*LinkedList<String> elements = new LinkedList<String>;
-		String working = "";
-		if (str.contains ("=")) {
-			String[] parsevars = str.split ("=");
-			String value = parsevars [1];
-			varMap.put (parsevars [0], parse (value, varMap));
+		
+		//Set defaults
+		if (varMap.get ("value") == null) {
+			varMap.put ("value", "nv");
 		}
-		if (str.contains ("{")) {
-			int numBrackets = 0;
-			for (int i = 0; i < str.length (); i ++) {
-				if (str.charAt (i) == '{') {
-					numBrackets ++;
+		
+		LinkedList<String> elements = getTokens (str);
+		LinkedList<String> tokens = new LinkedList<String> ();
+		LinkedList<String> parsedTokens = new LinkedList<String> ();
+		Iterator<String> elementIter = elements.iterator ();
+		
+		//Loop through elements
+		while (elementIter.hasNext ()) {
+			tokens = new LinkedList<String> ();
+			String working = "";
+			str = elementIter.next ();
+			if (str.contains ("{")) {
+				if (str.split ("=")[0].equals ("attributes")) {
+					varMap.put ("attributes", "set");
+					String attributeValsRaw = str.substring (11);
+					String attributeVals = removeBrackets (attributeValsRaw);
+					String[] valsList = attributeVals.split (" ");
+					String variantValue = varMap.get ("value");
+					for (int i = 0; i < valsList.length; i ++) {
+						if (valsList [i].split ("=")[0].equals (variantValue)) {
+							varMap.put ("value", valsList [i].split ("=")[1]);
+						}
+					}
+				} else {
+					for (int i = 0; i < str.length (); i ++) {
+						
+						//Separate out tokens
+						if (str.charAt (i) == '{') {
+							//Yeet working into the list thing
+							if (!(working.equals (""))) {
+								tokens.add (working);
+								working = "";
+							}
+							//Parse out the bracketed section
+							int depth = 0;
+							do {
+								char c = str.charAt (i);
+								if (c == '{') {
+									depth ++;
+								} else if (c == '}') {
+									depth --;
+								} else if (depth != 0) {
+									working += c;
+									if (i == str.length () - 1) {
+										//Should throw an error here
+										return null;
+									}
+								} 
+								i ++;
+							} while (depth != 0);
+							tokens.add (parse (working, varMap));
+							working = "";
+						} else {
+							working += str.charAt (i);
+							if (i == str.length () - 1 && !(working.equals (""))) {
+								tokens.add (working);
+							}
+						}
+					}
+				}
+				//Reconstruct the string with bracketed sections
+				Iterator<String> iter = tokens.iterator ();
+				working = "";
+				while (iter.hasNext ()) {
+					working += iter.next ();
+				}
+			} else {
+				working = str;
+			}
+			
+			
+			String cur = working;
+			if (cur.contains ("=")) {
+				String[] exprSplit = cur.split ("=");
+				if (exprSplit.length == 2) {
+					varMap.put (exprSplit [0], exprSplit [1]);
+					//Do not add to evaluated tokens
+				}
+			} else {
+				if (isSpecialToken (cur)) {
+					//Special token logic
+					String b = getVariable (parsedTokens.removeLast (), varMap);
+					String a = getVariable (parsedTokens.removeLast (), varMap);
+					parsedTokens.add (getOperationResult (cur, a, b));
+				} else {
+					//Add string the list of arguments
+					parsedTokens.add (cur);
 				}
 			}
-		} else if (str.contains (" ")) {
-			String[] exprlist = str.split (" ");
-			for (int i = 0; i < exprlist.length; i ++) {
-				
+		}
+		
+		//Piece together tokens
+		String working = "";
+		Iterator<String> iter = parsedTokens.iterator ();
+		//System.out.println (parsedTokens);
+		while (iter.hasNext ()) {
+			String curr = iter.next ();
+			if (!curr.equals ("")) {
+				curr = getVariable (curr, varMap);
+				working += removeQuotes (curr);
 			}
-		}*/
+		}
+		System.out.println (working);
+		return working;
 	}
 	
 	private String getArgument (ReadState s) {
@@ -89,6 +184,153 @@ public class VariantConfig {
 				}
 			}
 		}
+	}
+	
+	private String getVariable (String str, HashMap<String, String> varMap) {
+		if (str.charAt (0) == '$') {
+			str = str.substring (1);
+			if (varMap.get (str) != null) {			
+				str = '\"' + varMap.get (str) + '\"';
+			}
+		} else {
+			if (varMap.get (str) != null) {
+				str = varMap.get (str);
+			}
+		}
+		return str;
+	}
+	
+	private LinkedList<String> getTokens (String str) {
+		LinkedList<String> tokens = new LinkedList<String> ();
+		String working = "";
+		boolean whitespaceMode = false;
+		int depth = 0;
+		for (int i = 0; i < str.length (); i ++) {
+			if (whitespaceMode) {
+				if (i == str.length () - 1) {
+					tokens.add (String.valueOf (str.charAt (i)));
+					break;
+				}
+				if (str.charAt (i) != ' ') {
+					whitespaceMode = false;
+				}
+			}
+			if (!whitespaceMode) {
+				if (i == str.length () - 1 && !working.equals ("") && str.charAt (i) != ' ') {
+					working += str.charAt (i);
+					tokens.add (working);
+					break;
+				}
+				if (depth == 0 && str.charAt (i) == ' ') {
+					whitespaceMode = true;
+					tokens.add (working);
+					working = "";
+				} else {
+					if (str.charAt (i) == '{') {
+						depth ++;
+					} else if (str.charAt (i) == '}') {
+						if (depth <= 0) {
+							//ERROR
+						} else {
+							depth --;
+						}
+					}
+				}
+			}
+			if (!whitespaceMode) {
+				working += str.charAt (i);
+			}
+		}
+		return tokens;
+	}
+	
+	private boolean isSpecialToken (String str) {
+		if (str.length () == 1) {
+			char c = str.charAt (0);
+			if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%') {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean isInt (String str) {
+		for (int i = 0; i < str.length (); i ++) {
+			char c = str.charAt (i);
+			if (c < '0' || c > '9') {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private String removeQuotes (String str) {
+		if (str.charAt (0) == '\"' && str.charAt (str.length () - 1) == '\"') {
+			return str.substring (1, str.length () - 2);
+		} else {
+			return str;
+		}
+	}
+	
+	private String removeBrackets (String str) {
+		if (str.charAt (0) == '{' && str.charAt (str.length () - 1) == '}') {
+			return str.substring (1, str.length () - 2);
+		} else {
+			return str;
+		}
+	}
+	
+	private String getOperationResult (String op, String a, String b) {
+		if (op.length () == 1) {
+			char opChar = op.charAt (0);
+			if (isInt (a) && isInt (b)) {
+				int aval = Integer.parseInt (a);
+				int bval = Integer.parseInt (b);
+				switch (opChar) {
+					case '+':
+						return String.valueOf (aval + bval);
+					case '-':
+						return String.valueOf (aval - bval);
+					case '*':
+						return String.valueOf (aval * bval);
+					case '/':
+						return String.valueOf (aval / bval);
+					case '%':
+						return String.valueOf (aval % bval);
+					default:
+						return null;
+				}
+			} else if (opChar == '+') {
+				String res = removeQuotes (a) + removeQuotes (b);
+				if (isInt (res)) {
+					return '\"' + res + '\"';
+				} else {
+					return res;
+				}
+			} else if (opChar == '*' && isInt (b)) {
+				String res = "";
+				int bval = Integer.parseInt (b);
+				for (int i = 0; i < bval; i ++) {
+					res += a;
+				}
+				if (isInt (res)) {
+					return '\"' + res + '\"';
+				}
+				return res;
+			}
+		}
+		return null;
+	}
+	
+	private String removeSpaces (String str) {
+		String res = "";
+		for (int i = 0; i < str.length (); i ++) {
+			char c = str.charAt (i);
+			if (i != ' ') {
+				res += str.charAt (i);
+			}
+		}
+		return new String (res);
 	}
 	
 	private class ReadState {
