@@ -29,9 +29,6 @@ public abstract class GuiComponent {
 		this.parent = parent;
 		this.gui = parent.gui;
 		parent.addChild (this);
-		System.out.println (bounds.width);
-		System.out.println (bounds.height);
-		System.out.println (getClass ().getSimpleName ());
 		componentRender = new BufferedImage (bounds.width, bounds.height, BufferedImage.TYPE_INT_ARGB);
 	}
 	

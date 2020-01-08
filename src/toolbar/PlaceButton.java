@@ -45,7 +45,7 @@ public class PlaceButton extends ToolbarItem {
 		int[] selectedCell = mainPanel.getMapInterface ().getCell (x, y);
 		mainPanel.getMapInterface ().edit (new TileEdit (selectedCell [0], selectedCell [1], usedTiles [0].length, usedTiles.length, mapInterface.getMap (), usedTiles));
 		} else {
-	mainPanel.getMapInterface().edit (new ObjectEdit (x, y, MapInterface.objectsInTheMap,ObjectSelectMenu.objectSelect.getSelectedObject()));	
+	mainPanel.getMapInterface().edit (new ObjectEdit ((int) ((x/(16 * mapInterface.getScale())) + (mapInterface.getViewX()/(16 * mapInterface.getScale()))), (int) ((y/(16 * mapInterface.getScale())) + (mapInterface.getViewY()/(16 * mapInterface.getScale()))), MapInterface.objectsInTheMap,ObjectSelectMenu.objectSelect.getSelectedObject()));	
 		}
 	}
 	

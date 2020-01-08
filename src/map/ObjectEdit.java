@@ -13,8 +13,8 @@ public class ObjectEdit implements  MapEdit {
 	GameObject objectToAdd;
 	public ObjectEdit (int x, int y, GameObject[][] objects, GameObject newObject) {
 		Objects = new GameObject [256] [256];
-		startX = x - (x%16);
-		startY = y - (y%16);
+		startX = x;
+		startY = y;
 		Objects = objects;
 		objectToAdd = newObject;
 	}
@@ -35,5 +35,6 @@ public class ObjectEdit implements  MapEdit {
 	public boolean affectsMap() {
 		return true;
 	}
+	
 
 }

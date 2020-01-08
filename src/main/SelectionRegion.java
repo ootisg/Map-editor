@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import map.MapInterface;
+
 public abstract class SelectionRegion extends GuiComponent {
 	
 	private int elementWidth = 16;
@@ -93,7 +95,7 @@ public abstract class SelectionRegion extends GuiComponent {
 		Iterator<TileRegion> iter = scheduledRegions.iterator ();
 		while (iter.hasNext ()) {
 			TileRegion working = iter.next ();
-			working.setTileData (cells);
+			working.setTileData (cells, MapInterface.objectsInTheMap);
 			drawTileRegion (working);
 		}
 	}
@@ -329,7 +331,7 @@ public abstract class SelectionRegion extends GuiComponent {
 		private int tileStartY;
 		private int tileWidth;
 		private int tileHeight;
-		
+		public GameObject [][] objects;
 		private Rectangle bounds;
 		private Rectangle[][] tiles;
 		
@@ -339,9 +341,10 @@ public abstract class SelectionRegion extends GuiComponent {
 			setTiles (startX, startY, width, height);
 		}
 		
-		public void setTileData (Rectangle[][] sourceTiles) {
+		public void setTileData (Rectangle[][] sourceTiles, GameObject[][]sourceObjects) {
 			if (tileStartX != -1 && tileStartY != -1) {
 				tiles = new Rectangle[tileHeight][tileWidth];
+				objects = new GameObject [tileHeight][tileWidth];
 				int vbound = -1;
 				int hbound = -1;
 				for (int wy = 0; wy < tileHeight; wy ++) {
@@ -358,6 +361,7 @@ public abstract class SelectionRegion extends GuiComponent {
 							}
 						} else {
 							tiles [wy][wx] = sourceTiles [wy + tileStartY][wx + tileStartX];
+							objects [wy][wx] = sourceObjects[(wx + tileStartX)][(wy + tileStartY)];
 						}
 					}
 				}

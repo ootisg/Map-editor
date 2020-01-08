@@ -4,6 +4,7 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -52,6 +53,7 @@ public class MapInterface extends MovableSelectionRegion {
 	
 	private Tile[][] usedTiles = new Tile[0][0];
 	private Tile[][] copyTiles;
+	private GameObject [][] copyObjects;
 	private Tile[][] copyTilesComplete;
 	public static GameObject[][] objectsInTheMap;
 	private Map map;
@@ -394,10 +396,19 @@ public class MapInterface extends MovableSelectionRegion {
 		g.fillRect (bounds.x, bounds.y, bounds.width, bounds.height);
 		setElements (map.getRenderedElements ());
 		super.render ();
-		for (int i = 0; i < 256; i = i + 16) {
-			for (int j = 0; j < 256; j = j + 16) {
+		for (int i = 0; i < 256; i = i + 1) {
+			for (int j = 0; j < 256; j = j + 1) {
 				if (objectsInTheMap[i][j] != null) {
-					objectsInTheMap[i][j].render(i + 160 , j);
+					BufferedImage oldIcon;
+					oldIcon = objectsInTheMap[i][j].getIcon();
+					Image scalledImage = objectsInTheMap[i][j].getIcon().getScaledInstance((int) (16 * this.getScale()), (int) (16 * this.getScale()), java.awt.Image.SCALE_DEFAULT);
+					BufferedImage image = new BufferedImage((int) (16 * this.getScale()), (int) (16 * this.getScale()), 3) ;
+					image.getGraphics().drawImage(scalledImage, 0,0, null);
+					objectsInTheMap[i][j].setIcon(image);
+					if ((((i* 16)* this.getScale()) + 160) - this.getViewX()> 160) {
+					objectsInTheMap[i][j].render((int)((((16* i)* this.getScale()) + 160) - this.getViewX()), (int)(((j* 16) * this.getScale())- this.getViewY()));
+					}
+					objectsInTheMap[i][j].setIcon(oldIcon);
 				}
 			}
 		}
@@ -514,7 +525,9 @@ public class MapInterface extends MovableSelectionRegion {
 	public void setCopyTiles (Tile[][] tiles) {
 		copyTiles = tiles;
 	}
-	
+	public void setCopyObjects (GameObject[][] objects) {
+		copyObjects = objects;
+	}
 	public int getAnchorX () {
 		return anchorX;
 	}
@@ -537,6 +550,9 @@ public class MapInterface extends MovableSelectionRegion {
 	
 	public Tile[][] getCopyTiles () {
 		return copyTiles;
+	}
+	public GameObject [][] getCopyObjects(){
+		return copyObjects;
 	}
 	
 	public Map getMap () { 

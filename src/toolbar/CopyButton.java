@@ -3,6 +3,7 @@ package toolbar;
 import java.awt.Rectangle;
 import java.io.IOException;
 
+import main.GameObject;
 import main.MainPanel;
 import main.SelectionRegion.TileRegion;
 import main.Tile;
@@ -21,6 +22,7 @@ public class CopyButton extends ToolbarItem {
 	@Override
 	public void use (int x, int y) {
 		Tile[][] tiles;
+		GameObject[][] objects;
 		MainPanel mainPanel = getMainPanel ();
 		if (mainPanel.getToolbar ().getSelectedItem () instanceof SelectButton) {
 			MapInterface mapInterface = mainPanel.getMapInterface ();
@@ -30,6 +32,7 @@ public class CopyButton extends ToolbarItem {
 				int startY = workingRegion.getStartY ();
 				int width = workingRegion.getTileWidth ();
 				int height = workingRegion.getTileHeight ();
+				objects = workingRegion.objects;
 				//Support for multiple layers to be added later
 				TileLayer currentLayer = mainPanel.getMap ().getActiveLayer ();
 				tiles = new Tile[height][width];
@@ -39,6 +42,7 @@ public class CopyButton extends ToolbarItem {
 					}
 				}
 				mapInterface.setCopyTiles (tiles);
+				mapInterface.setCopyObjects(objects);
 			}
 		}
 	}
