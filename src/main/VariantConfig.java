@@ -2,37 +2,145 @@ package main;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Scanner;
-import java.awt.BufferedImage;
+
+import resources.Sprite;
+
+import java.awt.image.BufferedImage;
 
 public class VariantConfig {
 
-	private Scanner configScanner;
-	private LinkedList<String> args;
+	private String configFile;
 	
-	private int index;
+	private Scanner configScanner;
+	private ArrayList<String> attributeNames;
+	private HashMap<String, ArrayList<String>> possibleArgs = null;
 	
 	public VariantConfig (String filepath) {
 		try {
-			configScanner = new Scanner (new File (filepath));
-		} catch (FileNotFoundException e) {
+			configFile = new String (Files.readAllBytes (Paths.get (filepath)));
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		index = 0;
-		args = new LinkedList<String> ();
+		attributeNames = new ArrayList<String> ();
+		configScanner = new Scanner (configFile);
+		configScanner.nextLine ();
 		String variant;
-		while (configScanner.hasNext ()) {
-			variant = configScanner.next ();
-			
+		possibleArgs = new HashMap<String, ArrayList<String>> ();
+		while (configScanner.hasNextLine ()) {
+			variant = configScanner.nextLine ();
+			LinkedList<String> tokens = getTokens (variant);
+			Iterator<String> tokenIter = tokens.iterator ();
+			String currName = null;
+			ArrayList<String> attributes = new ArrayList<String> ();
+			while (tokenIter.hasNext ()) {
+				String curr = tokenIter.next ();
+				String[] varSplit = curr.split ("=");
+				if (varSplit.length >= 2) {
+					if (varSplit [0].equals ("name")) {
+						currName = varSplit [1];
+						attributeNames.add (varSplit [1]);
+					} else if (varSplit [0].equals ("attributes")) {
+						String attributesString = curr.substring (11);
+						String[] attributesSplit = removeBrackets (attributesString).split (" ");
+						for (int i = 0; i < attributesSplit.length; i ++) {
+							String[] lolzSplit = attributesSplit [i].split ("=");
+							attributes.add (lolzSplit [0]);
+						}
+					}
+				}
+			}
+			possibleArgs.put (currName, attributes);
 		}
 	}
 	
 	public BufferedImage getIcon (HashMap<String, String> variantAttributes) {
 		
+		//Initialize variable map and default values
+		HashMap<String, String> varMap = new HashMap<String, String> ();
+		varMap.put ("name", "NULL");
+		varMap.put ("query", "FALSE");
+		varMap.put ("attributes", "NOT_SET");
+		varMap.put ("value", "NV");
+		varMap.put ("file", "NULL");
+		varMap.put ("tileIndex", "0");
+		varMap.put ("tileWidth", "16");
+		varMap.put ("tileHeight", "16");
+		varMap.put ("tileX", "NULL");
+		varMap.put ("tileY", "NULL");
+		varMap.put ("iconX", "NULL");
+		varMap.put ("iconY", "NULL");
+		
+		//Parse out file/icon info
+		configScanner = new Scanner (configFile);
+		int lineNum = 0;
+		while (configScanner.hasNextLine ()) {
+			String line = configScanner.nextLine ();
+			if (lineNum == 0) {
+				//TODO header and version check
+			} else {
+				String firstArg = line.split (" ")[0];
+				String[] assignmentVals = firstArg.split ("=");
+				String usedName = null;
+				String usedValue;
+				if (assignmentVals [0].equals ("name")) {
+					usedValue = variantAttributes.get (assignmentVals [1]);
+					varMap.put ("value", usedValue);
+				} else {
+					varMap.put ("name", "NULL");
+					varMap.put ("value", "NULL");
+				}
+				parse (line, varMap);
+			}
+			lineNum ++;
+		}
+		
+		//Get the image
+		String tileIndex = varMap.get ("tileIndex");
+		String tileX = varMap.get ("tileX");
+		String tileY = varMap.get ("tileY");
+		String iconX = varMap.get ("iconX");
+		String iconY = varMap.get ("iconY");
+		int tileWidth = Integer.parseInt (varMap.get ("tileWidth"));
+		int tileHeight = Integer.parseInt (varMap.get ("tileHeight"));
+		String filename = varMap.get ("filename");
+		System.out.println (filename);
+		Sprite loadSrc = new Sprite ("resources/objects/variants/icons/" + filename);
+		BufferedImage loadImg = loadSrc.getImageArray ()[0];
+		
+		//Find the region to parse out and return it
+		if (!(iconX.equals ("NULL")) && !(iconY.equals ("NULL"))) {
+			int xGet = Integer.parseInt (iconX);
+			int yGet = Integer.parseInt (iconY);
+			return loadImg.getSubimage (xGet, yGet, tileWidth, tileHeight);
+		} else if (!(tileX.equals ("NULL")) && !(tileY.equals ("NULL"))) {
+			int xGet = Integer.parseInt (tileX) * tileWidth;
+			int yGet = Integer.parseInt (tileY) * tileHeight;
+			return loadImg.getSubimage (xGet, yGet, tileWidth, tileHeight);
+		} else if (!(tileIndex.equals ("NULL"))) {
+			int rowLength = loadImg.getWidth () / tileWidth;
+			int xGet = (Integer.parseInt (tileIndex) % rowLength) * tileWidth;
+			int yGet = (Integer.parseInt (tileIndex) / rowLength) * tileHeight;
+			return loadImg.getSubimage (xGet, yGet, tileWidth, tileHeight);
+		} else {
+			return loadImg;
+		}
+	}
+	
+	public ArrayList<String> getAttributeNames () {
+		return attributeNames;
+	}
+	
+	public ArrayList<String> getAllowedValues (String attributeName) {
+		return possibleArgs.get (attributeName);
 	}
 	
 	private String parse (String str, HashMap<String, String> varMap) {
@@ -60,7 +168,7 @@ public class VariantConfig {
 					String[] valsList = attributeVals.split (" ");
 					String variantValue = varMap.get ("value");
 					for (int i = 0; i < valsList.length; i ++) {
-						if (valsList [i].split ("=")[0].equals (variantValue)) {
+						if (valsList [i].split ("=").length == 2 && valsList [i].split ("=")[0].equals (variantValue)) {
 							varMap.put ("value", valsList [i].split ("=")[1]);
 						}
 					}
@@ -111,7 +219,6 @@ public class VariantConfig {
 				working = str;
 			}
 			
-			
 			String cur = working;
 			if (cur.contains ("=")) {
 				String[] exprSplit = cur.split ("=");
@@ -143,11 +250,12 @@ public class VariantConfig {
 				working += removeQuotes (curr);
 			}
 		}
-		System.out.println (working);
+		//System.out.println (working);
 		return working;
 	}
 	
-	private String getArgument (ReadState s) {
+	//Completely replaced by getTokens
+	/*private String getArgument (ReadState s) {
 		int depth = 0;
 		String str = s.str;
 		String working = "";
@@ -184,7 +292,7 @@ public class VariantConfig {
 				}
 			}
 		}
-	}
+	}*/
 	
 	private String getVariable (String str, HashMap<String, String> varMap) {
 		if (str.charAt (0) == '$') {
@@ -274,7 +382,7 @@ public class VariantConfig {
 	
 	private String removeBrackets (String str) {
 		if (str.charAt (0) == '{' && str.charAt (str.length () - 1) == '}') {
-			return str.substring (1, str.length () - 2);
+			return str.substring (1, str.length () - 1);
 		} else {
 			return str;
 		}
