@@ -57,12 +57,15 @@ public abstract class SelectionRegion extends GuiComponent {
 			}
 			elementsHeight = elements.length;
 		}
-		
-		Rectangle[][] cells = makeGrid (new Rectangle (bounds.x - (int)viewX, bounds.y - (int)viewY, (int)(elements [0].length * elementWidth * scale), (int)(elements.length * elementHeight * scale)), displayWidth, displayHeight);
+		Rectangle[][] cells = makeGrid (new Rectangle (bounds.x - (int)viewX, bounds.y - (int)viewY, (int)(elementsWidth * elementWidth * scale), (int)(elementsHeight * elementHeight * scale)), displayWidth, displayHeight);
 		for (int i = 0; i < elements.length && i < cells.length; i ++) {
 			for (int j = 0; j < elements [0].length && j < cells [0].length; j ++) {
 				if (elements [i][j] != null && cells [i][j] != null) {
+					try {
 					((DisplayableImageElement)(elements [i][j])).render (cells [i][j], g);
+					} catch (ClassCastException e) {
+						((DisplayableTextElement)elements [i][j]).render(VariantSelectMenu.getVariantSelectRegion(), cells[i][j]);
+					}
 				}
 			}
 		}
@@ -334,7 +337,7 @@ public abstract class SelectionRegion extends GuiComponent {
 		public GameObject [][] objects;
 		private Rectangle bounds;
 		private Rectangle[][] tiles;
-		
+		private GameObject selectedObject;
 		private boolean hasTileData;
 		
 		public TileRegion (int startX, int startY, int width, int height) {
@@ -347,6 +350,7 @@ public abstract class SelectionRegion extends GuiComponent {
 				objects = new GameObject [tileHeight][tileWidth];
 				int vbound = -1;
 				int hbound = -1;
+				boolean firstObject = true;
 				for (int wy = 0; wy < tileHeight; wy ++) {
 					for (int wx = 0; wx < tileWidth; wx ++) {
 						if (wy + tileStartY >= sourceTiles.length || wx + tileStartX >= sourceTiles[0].length) {
@@ -362,6 +366,11 @@ public abstract class SelectionRegion extends GuiComponent {
 						} else {
 							tiles [wy][wx] = sourceTiles [wy + tileStartY][wx + tileStartX];
 							objects [wy][wx] = sourceObjects[(wx + tileStartX)][(wy + tileStartY)];
+							if (sourceObjects [(wx + tileStartX)][(wy + tileStartY)] != null && firstObject) {
+								firstObject = false;
+								selectedObject = sourceObjects [(wx + tileStartX)][(wy + tileStartY)];
+								VariantSelectMenu.variantSelect.changeDisplayingVariants();
+							}
 						}
 					}
 				}
@@ -377,7 +386,9 @@ public abstract class SelectionRegion extends GuiComponent {
 				hasTileData = true;
 			}
 		}
-		
+		public GameObject getSelectedGameObject () {
+			return selectedObject;
+		}
 		public int getStartX () {
 			return tileStartX;
 		}

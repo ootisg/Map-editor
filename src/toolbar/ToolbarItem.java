@@ -64,16 +64,6 @@ public abstract class ToolbarItem extends GuiComponent {
 		return selected;
 	}
 	
-	public MainPanel getMainPanel () {
-		GuiComponent working = this;
-		while (!(working instanceof MainPanel) && (working instanceof GuiComponent)) {
-			working = working.getParent ();
-		}
-		if (working instanceof MainPanel) {
-			return (MainPanel)working;
-		}
-		return null;
-	}
 	
 	@Override
 	public void draw () {

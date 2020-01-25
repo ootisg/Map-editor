@@ -1,0 +1,3 @@
+VF 1
+Partner:query
+sprite:query

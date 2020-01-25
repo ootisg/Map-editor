@@ -1,0 +1,23 @@
+VF 1
+Name:query
+Entry:query
+sprite:query
+message 1:query
+message 2:query
+message 3:query
+message 4:query
+message 5:query
+itemNeeded:query
+amountToCheck:query
+action:query
+itemMessage 1:query
+itemMessage 2:query
+itemMessage 3:query
+itemMessage 4:query
+itemMessage 5:query
+itemToExchange:query
+amountToExchange:query
+x_offset:query
+y_offset:query
+width:query
+height:query

@@ -11,10 +11,11 @@ public class MainPanel extends GuiComponent {
 	
 	private TileSelectMenu tileMenu;
 	private ObjectSelectMenu objectMenu;
+	private VariantSelectMenu variantMenu;
 	private MapInterface canvas;
 	private Toolbar toolbar;
 	private LinkedList<DisplayBox> boxes;
-	
+	private AttributeSelectRegion attributeRegion;
 	private Map map;
 	
 	public MainPanel (Rectangle bounds, Gui gui) {
@@ -26,13 +27,19 @@ public class MainPanel extends GuiComponent {
 		objectMenu = new ObjectSelectMenu (new Rectangle (16, 240, 144, 240), this);
 		toolbar = new Toolbar (new Rectangle (0, 0, 16, 480), this);
 		canvas = new MapInterface (new Rectangle (160, 0, 480, 480), tileMenu, objectMenu, toolbar, this);
+		variantMenu = new VariantSelectMenu (new Rectangle (160, 0, 96, 160), this);
+		attributeRegion = new AttributeSelectRegion (new Rectangle (160,0,96,160), this);
+		attributeRegion.hide();
 		boxes = new LinkedList<DisplayBox> ();
+		
 	}
 	
 	public MapInterface getMapInterface () {
 		return canvas;
 	}
-	
+	public AttributeSelectRegion getAttributeSelectRegion () {
+		return attributeRegion;
+	}
 	public TileSelectMenu getTileMenu () {
 		return tileMenu;
 	}
@@ -47,6 +54,9 @@ public class MainPanel extends GuiComponent {
 
 	public Toolbar getToolbar () {
 		return toolbar;
+	}
+	public VariantSelectMenu getVariantMenu() {
+		return variantMenu;
 	}
 	
 	public DisplayBox addDisplayBox (Rectangle bounds, String message) {

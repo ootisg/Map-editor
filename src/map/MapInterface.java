@@ -559,7 +559,7 @@ public class MapInterface extends MovableSelectionRegion {
 		return map;
 	}
 	
-	private MainPanel getMainPanel () {
+	public MainPanel getMainPanel () {
 		GuiComponent working = this;
 		while (!(working instanceof MainPanel) && (working instanceof GuiComponent)) {
 			working = working.getParent ();

@@ -60,7 +60,16 @@ public abstract class GuiComponent {
 			dispatchMouseEvent (x, y, event);
 		}
 	}
-	
+	public MainPanel getMainPanel () {
+		GuiComponent working = this;
+		while (!(working instanceof MainPanel) && (working instanceof GuiComponent)) {
+			working = working.getParent ();
+		}
+		if (working instanceof MainPanel) {
+			return (MainPanel)working;
+		}
+		return null;
+	}
 	public void dispatchMouseEvent (int x, int y, MouseEvent event) {
 		if (!hidden) {
 			switch (event.getID ()) {
@@ -122,7 +131,6 @@ public abstract class GuiComponent {
 		}
 		return false;
 	}
-	
 	public void frameEvent () {
 		if (!hidden) {
 			Iterator<GuiComponent> iter = children.iterator ();
@@ -196,7 +204,6 @@ public abstract class GuiComponent {
 	public boolean isHidden () {
 		return hidden;
 	}
-	
 	public boolean mouseDown () {
 		return getGui ().mouseDown ();
 	}
