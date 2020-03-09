@@ -40,7 +40,6 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 		while (oldString.charAt(i) != '\\' && oldString.charAt(i) != '/'  ) {
 			i = i - 1;
 		}
-		
 		String objectType =oldString.substring(i + 1, oldString.length() - 4) + ".txt";
 		oldString = oldString.substring(0,oldString.length() - objectType.length()) + "variants\\config\\" + objectType;
 		c = new VariantConfig (oldString);
@@ -56,17 +55,21 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 				 longestLength = currentName.length();
 			}
 			names.add(currentName);
+			// c.getAllowedValues is what I need to check out for quereys
 			nameToAttributes.put(currentName, c.getAllowedValues(currentName));
 			crap = crap + 1;
 		}
+		if (crap != 0) {
 		this.setBoundingRectangle(new Rectangle (((VariantSelectMenu) realParent).getMenuX(), ((VariantSelectMenu) realParent).getMenuY() + 32, (longestLength * 6) + 16, crap* 16));
 		this.setGridDimensions(1, crap);
 		this.setElementWidth(longestLength * 6);
 		this.setElements(working);	
 		realParent.setBoundingRectangle(new Rectangle (((VariantSelectMenu) realParent).getMenuX(), ((VariantSelectMenu) realParent).getMenuY() + 16, (longestLength * 6) + 16, (crap* 16) + 16));
+		}
 	}
 	@Override
 	public void doClickOnElement (int horizontalIndex, int verticalIndex) {
+		try {
 		int elementIndex = getElementIndex (horizontalIndex, verticalIndex);
 		ArrayList <String> currentAttributes = nameToAttributes.get(((DisplayableTextElement) this.getElements()[elementIndex][0]).getMessage());
 		AttributeSelectRegion region = this.getMainPanel().getAttributeSelectRegion();
@@ -83,6 +86,9 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 		region.setObject(currentObject);
 		region.setElements(icons);
 		region.show();
+		} catch (Exception e) {
+			
+		}
 	}
 
 }

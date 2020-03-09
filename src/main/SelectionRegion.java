@@ -57,6 +57,7 @@ public abstract class SelectionRegion extends GuiComponent {
 			}
 			elementsHeight = elements.length;
 		}
+		
 		Rectangle[][] cells = makeGrid (new Rectangle (bounds.x - (int)viewX, bounds.y - (int)viewY, (int)(elementsWidth * elementWidth * scale), (int)(elementsHeight * elementHeight * scale)), displayWidth, displayHeight);
 		for (int i = 0; i < elements.length && i < cells.length; i ++) {
 			for (int j = 0; j < elements [0].length && j < cells [0].length; j ++) {

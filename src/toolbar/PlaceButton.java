@@ -33,6 +33,7 @@ public class PlaceButton extends ToolbarItem {
 		Tile[][] usedTiles = null;
 		
 		//Get currently selected tiles
+		try {
 		if (!tileMenu.getTilesetSelect ().isHidden ()) {
 			Tileset selectedSet = tileMenu.getTilesetSelect ().getSelectedTileset ();
 			if (selectedSet != null) {
@@ -44,6 +45,9 @@ public class PlaceButton extends ToolbarItem {
 		Rectangle[][] grid = mapInterface.makeGrid (new Rectangle ((int)-mapInterface.getViewX (), (int)-mapInterface.getViewY (), (int)(mapInterface.getElements () [0].length * mapInterface.getElementWidth () * mapInterface.getScale ()), (int)(mapInterface.getElements ().length * mapInterface.getElementHeight () * mapInterface.getScale ())), mapInterface.getElementWidth () * mapInterface.getScale (), mapInterface.getElementHeight () * mapInterface.getScale ());
 		int[] selectedCell = mainPanel.getMapInterface ().getCell (x, y);
 		mainPanel.getMapInterface ().edit (new TileEdit (selectedCell [0], selectedCell [1], usedTiles [0].length, usedTiles.length, mapInterface.getMap (), usedTiles));
+		} catch (NullPointerException e) {
+			tilesOrObjects = true;
+		}
 		} else {
 	mainPanel.getMapInterface().edit (new ObjectEdit ((int) ((x/(16 * mapInterface.getScale())) + (mapInterface.getViewX()/(16 * mapInterface.getScale()))), (int) ((y/(16 * mapInterface.getScale())) + (mapInterface.getViewY()/(16 * mapInterface.getScale()))), MapInterface.objectsInTheMap,ObjectSelectMenu.objectSelect.getSelectedObject()));	
 		}
