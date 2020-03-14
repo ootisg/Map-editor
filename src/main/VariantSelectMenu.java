@@ -32,16 +32,10 @@ public class VariantSelectMenu extends SelectionMenu {
 			variantSelect.setBoundingRectangle(new Rectangle (variantSelect.getBoundingRectangle().x - menuX + oldX, variantSelect.getBoundingRectangle().y - menuY + oldY, variantSelect.getBoundingRectangle().width,variantSelect.getBoundingRectangle().height));
 			menuX = oldX;
 			menuY = oldY;
+		}	
 		}
-		}
-		
-	}
-	@Override 
-	public void frameEvent () {
-		if (this.mouseInside() && this.mouseDown()) {
-			mouseStartPosX = this.getWindow().getMouseX();
-			mouseStartPosY = this.getWindow().getMouseY();
-		}
+		mouseStartPosX = this.getWindow().getMouseX();
+		mouseStartPosY = this.getWindow().getMouseY();
 	}
 	public int getMenuX() {
 		return menuX;
