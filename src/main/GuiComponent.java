@@ -2,6 +2,7 @@ package main;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
@@ -60,6 +61,17 @@ public abstract class GuiComponent {
 			dispatchMouseEvent (x, y, event);
 		}
 	}
+	
+	public void doKeyEvent (KeyEvent event) {
+		if (!hidden) {
+			Iterator<GuiComponent> iter = children.iterator ();
+			while (iter.hasNext ()) {
+				iter.next ().doKeyEvent (event);
+			}
+			dispatchKeyEvent (event);
+		}
+	}
+	
 	public MainPanel getMainPanel () {
 		GuiComponent working = this;
 		while (!(working instanceof MainPanel) && (working instanceof GuiComponent)) {
@@ -101,6 +113,22 @@ public abstract class GuiComponent {
 		}
 	}
 	
+	public void dispatchKeyEvent (KeyEvent event) {
+		if (!hidden) {
+			switch (event.getID ()) {
+				case KeyEvent.KEY_TYPED:
+					keyTyped (event.getKeyChar ());
+					break;
+				case KeyEvent.KEY_PRESSED:
+					keyPressed (event.getKeyCode ());
+					break;
+				case KeyEvent.KEY_RELEASED:
+					keyReleased (event.getKeyCode ());
+					break;
+			}
+		}
+	}
+	
 	public void mouseClicked (int x, int y, int button) {
 		
 	}
@@ -122,6 +150,18 @@ public abstract class GuiComponent {
 	}
 	
 	public void mouseWheelMoved (int x, int y, double amount) {
+		
+	}
+	
+	public void keyTyped (char keyChar) {
+		
+	}
+	
+	public void keyPressed (int keyCode) {
+		
+	}
+	
+	public void keyReleased (int keyCode) {
 		
 	}
 	

@@ -20,6 +20,7 @@ import java.util.Stack;
 import javax.swing.JFileChooser;
 
 import main.DisplayableElement;
+import main.EntryField;
 import main.GameObject;
 import main.GuiComponent;
 import main.MainPanel;
@@ -81,6 +82,9 @@ public class MapInterface extends MovableSelectionRegion {
 		map.setMapInterface (this);
 		edits = new Stack<MapEdit> ();
 		undos = new Stack<MapEdit> ();
+		
+		EntryField f = new EntryField (new Rectangle (bounds.x, bounds.y, 32, 32), this);
+		f.setFilter ("[0-9]");
 	}
 	
 	public boolean edit (MapEdit edit) {

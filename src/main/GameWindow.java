@@ -64,6 +64,7 @@ public class GameWindow extends JFrame {
 		keyboardFocusManager.addKeyEventDispatcher (new KeyEventDispatcher () {
 			@Override
 			public boolean dispatchKeyEvent (KeyEvent e) {
+				gui.doKeyEvent (e);
 				return false;
 			}
 		});
