@@ -20,7 +20,7 @@ public class Map {
 	private MapInterface mapInterface;
 	private DisplayableElement[][] renderedTiles;
 	
-	private int topDisplayLayer;
+	private int topDisplayLayer = 0;
 	private boolean onlyTopLayer;
 	
 	public static final int STARTING_WIDTH = 30;
@@ -55,6 +55,21 @@ public class Map {
 		Graphics g = fullRender.getGraphics ();
 		for (int i = 0; i < mapData.size (); i ++) {
 			int l = mapData.size () - 1 - (i + topDisplayLayer) % mapData.size ();
+			//Only render top mode
+			if (onlyTopLayer) {
+				l = topDisplayLayer;
+				Tile iconTile = mapData.get (l).get (x, y);
+				BufferedImage icon;
+				if (iconTile == null) {
+					icon = null;
+				} else {
+					icon = iconTile.getIcon ();
+				}
+				if (icon != null) {
+					g.drawImage (icon, 0, 0, null);
+				}
+				break;
+			} 
 			Tile iconTile = mapData.get (l).get (x, y);
 			BufferedImage icon;
 			if (iconTile == null) {
@@ -69,10 +84,7 @@ public class Map {
 			if (mapData.size () == 1) {
 				break;
 			}
-			//Only render top mode
-			if (onlyTopLayer) {
-				break;
-			}
+			
 		}
 		Tile working = new Tile (fullRender, mapInterface);
 		renderedTiles [y][x] = working;
@@ -121,7 +133,6 @@ public class Map {
 	public TileLayer addLayer (int width, int height) {
 		TileLayer layer = new TileLayer (width, height);
 		mapData.add (layer);
-		activeLayer = layer;
 		return layer;
 	}
 	
@@ -139,6 +150,7 @@ public class Map {
 			topDisplayLayer = 0;
 		}
 		activeLayer = mapData.get (topDisplayLayer);
+		this.renderElements();
 	}
 	
 	public int getTopDisplayLayer () {

@@ -27,7 +27,7 @@ public class SwitchLayerButton extends ToolbarItem {
 	@Override
 	public void use (int x, int y) {
 		getMainPanel ().getMap ().changeLayer ();
-		getMainPanel ().getMap ().renderElements ();
+		//getMainPanel ().getMap ().renderElements ();
 		tbox.setMessage (getBoxMessage ());
 	}
 	
