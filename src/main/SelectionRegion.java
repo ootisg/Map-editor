@@ -59,10 +59,11 @@ public abstract class SelectionRegion extends GuiComponent {
 		}
 		
 		Rectangle[][] cells = makeGrid (new Rectangle (bounds.x - (int)viewX, bounds.y - (int)viewY, (int)(elementsWidth * elementWidth * scale), (int)(elementsHeight * elementHeight * scale)), displayWidth, displayHeight);
-		for (int i = 0; i < elements.length && i < cells.length; i ++) {
-			for (int j = 0; j < elements [0].length && j < cells [0].length; j ++) {
+		for (int i = 0; i <= elements.length && i < cells.length; i ++) {
+			for (int j = 0; j <= elements [0].length && j < cells [0].length; j ++) {
 				if (elements [i][j] != null && cells [i][j] != null) {
 					try {
+					
 					((DisplayableImageElement)(elements [i][j])).render (cells [i][j], g);
 					} catch (ClassCastException e) {
 						((DisplayableTextElement)elements [i][j]).render(VariantSelectMenu.getVariantSelectRegion(), cells[i][j]);
@@ -331,8 +332,8 @@ public abstract class SelectionRegion extends GuiComponent {
 	
 	public class TileRegion implements Comparable {
 		
-		private int tileStartX;
-		private int tileStartY;
+		private int tileStartX = -1;
+		private int tileStartY = -1;
 		private int tileWidth;
 		private int tileHeight;
 		public GameObject [][] objects;
@@ -340,11 +341,9 @@ public abstract class SelectionRegion extends GuiComponent {
 		private Rectangle[][] tiles;
 		private GameObject selectedObject;
 		private boolean hasTileData;
-		
 		public TileRegion (int startX, int startY, int width, int height) {
 			setTiles (startX, startY, width, height);
 		}
-		
 		public void setTileData (Rectangle[][] sourceTiles, GameObject[][]sourceObjects) {
 			if (tileStartX != -1 && tileStartY != -1) {
 				tiles = new Rectangle[tileHeight][tileWidth];
@@ -370,7 +369,9 @@ public abstract class SelectionRegion extends GuiComponent {
 							if (sourceObjects [(wx + tileStartX)][(wy + tileStartY)] != null && firstObject) {
 								firstObject = false;
 								selectedObject = sourceObjects [(wx + tileStartX)][(wy + tileStartY)];
+								if ( getMainPanel().getMapInterface().getSelectedRegion()!= null) {
 								VariantSelectMenu.variantSelect.changeDisplayingVariants();
+								}
 							}
 						}
 					}

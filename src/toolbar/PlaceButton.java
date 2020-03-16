@@ -9,6 +9,7 @@ import main.SelectionRegion.TileRegion;
 import main.Tile;
 import main.TileSelectMenu;
 import main.Tileset;
+import main.VariantSelectMenu;
 import map.MapInterface;
 import map.ObjectEdit;
 import map.TileEdit;
@@ -29,6 +30,7 @@ public class PlaceButton extends ToolbarItem {
 		TileSelectMenu tileMenu = mainPanel.getTileMenu ();
 		MapInterface mapInterface = mainPanel.getMapInterface ();
 		Toolbar toolbar = (Toolbar)getParent ();
+		if (!mainPanel.getVariantMenu().getBoundingRectangle().contains(x + 160, y)) {
 		if (!tilesOrObjects) {
 		Tile[][] usedTiles = null;
 		
@@ -50,6 +52,7 @@ public class PlaceButton extends ToolbarItem {
 		}
 		} else {
 	mainPanel.getMapInterface().edit (new ObjectEdit ((int) ((x/(16 * mapInterface.getScale())) + (mapInterface.getViewX()/(16 * mapInterface.getScale()))), (int) ((y/(16 * mapInterface.getScale())) + (mapInterface.getViewY()/(16 * mapInterface.getScale()))), MapInterface.objectsInTheMap,ObjectSelectMenu.objectSelect.getSelectedObject()));	
+		}
 		}
 	}
 	

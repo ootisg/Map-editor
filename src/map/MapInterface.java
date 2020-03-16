@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -76,7 +77,7 @@ public class MapInterface extends MovableSelectionRegion {
 		this.tileMenu = tileMenu;
 		this.objectMenu = objectMenu;
 		this.toolbar = toolbar;
-		objectsInTheMap = new GameObject [256] [256];
+		objectsInTheMap = new GameObject [30] [30];
 		map = ((MainPanel)getParent ()).getMap ();
 		map.setMapInterface (this);
 		edits = new Stack<MapEdit> ();
@@ -147,7 +148,19 @@ public class MapInterface extends MovableSelectionRegion {
 		writeInt (fileBuffer, map.getNumLayers ());
 		
 		//Write object count info
-		writeInt (fileBuffer, 0);
+		int objectCount = 0;
+		ArrayList <GameObject> objects = new ArrayList <GameObject>();
+		for (int i = 0; i < map.getWidth(); i = i + 1) {
+			for (int j = 0; j < map.getHeight(); j = j + 1) {
+				if (objectsInTheMap[i][j] != null) {
+					objectsInTheMap[i][j].setCoords(i, j);
+					objects.add(objectsInTheMap[i][j]);
+					objectCount = objectCount + 1; 
+				}
+			}
+		}
+				
+		writeInt (fileBuffer, objectCount);
 		
 		//Write the list of tilesets
 		for (int i = 0; i < tilesetList.size () - 1; i ++) {
@@ -160,8 +173,19 @@ public class MapInterface extends MovableSelectionRegion {
 		}
 		
 		//Write the list of objects
+		Iterator<GameObject> iter = objects.iterator();
+		ArrayList <GameObject> objectsUsed = new ArrayList <GameObject>();
+		while (iter.hasNext()) {
+			GameObject objectToCheck = iter.next();
+				if (!objectsUsed.contains(objectToCheck)){
+					if (!objectsUsed.isEmpty()) {
+					addString (fileBuffer, ",");
+					}
+					addString (fileBuffer, objectToCheck.getObjectName());
+					objectsUsed.add(objectToCheck);
+				}
+			}
 		addString (fileBuffer, ";");
-		
 		//Write the tiles
 		ArrayList<BufferedImage> allTiles = tileMenu.getAllTiles ();
 		HashMap<BufferedImage, Integer> tileMap = new HashMap<BufferedImage, Integer> ();
@@ -186,7 +210,29 @@ public class MapInterface extends MovableSelectionRegion {
 		}
 		
 		//Write the objects
-		
+		Iterator <GameObject>iter2 = objects.iterator();
+		while(iter2.hasNext()) {
+			GameObject currentObject = (GameObject) iter2.next();
+			this.writeBytes(fileBuffer, currentObject.getX()*16);
+			this.writeBytes(fileBuffer, currentObject.getY()*16);
+			Iterator <GameObject> iter3 = objectsUsed.iterator();
+			int index = 0;
+			while (iter3.hasNext()) {
+				if (currentObject.getObjectName().equals(iter3.next().getObjectName())) {
+					break;
+				}
+				index = index + 1;
+			}
+			this.writeBytes(fileBuffer, index);
+			Iterator <String> iter4 = currentObject.getNameList().iterator();
+			while (iter4.hasNext()) {
+				String currentName = iter4.next();
+				addString (fileBuffer, currentName + ":" + currentObject.getVariantInfo().get(currentName));
+				if (iter4.hasNext()) {
+					addString (fileBuffer, ",");
+				}
+			}
+		}
 		//Write changes to the file
 		byte[] writeData = new byte[fileBuffer.size ()];
 		for (int i = 0; i < fileBuffer.size (); i ++) {
@@ -232,7 +278,9 @@ public class MapInterface extends MovableSelectionRegion {
 		buffer.add ((byte)((value & 0x0000FF00) >>> 8));
 		buffer.add ((byte)(value & 0xFF));
 	}
-	
+	private void writeBytes (ArrayList<Byte> buffer, int value) {
+		this.writeBytes(buffer, value,this.getByteCount(value));
+	}
 	private void writeBytes (ArrayList<Byte> buffer, int value, int numBytes) {
 		if (numBytes >= 4) {buffer.add ((byte)((value & 0xFF000000) >>> 24));}
 		if (numBytes >= 3) {buffer.add ((byte)((value & 0x00FF0000) >>> 16));}
@@ -396,8 +444,8 @@ public class MapInterface extends MovableSelectionRegion {
 		g.fillRect (bounds.x, bounds.y, bounds.width, bounds.height);
 		setElements (map.getRenderedElements ());
 		super.render ();
-		for (int i = 0; i < 256; i = i + 1) {
-			for (int j = 0; j < 256; j = j + 1) {
+		for (int i = 0; i < map.getWidth(); i = i + 1) {
+			for (int j = 0; j < map.getHeight(); j = j + 1) {
 				if (objectsInTheMap[i][j] != null) {
 					BufferedImage oldIcon;
 					oldIcon = objectsInTheMap[i][j].getIcon();
@@ -405,7 +453,7 @@ public class MapInterface extends MovableSelectionRegion {
 					BufferedImage image = new BufferedImage((int) (16 * this.getScale()), (int) (16 * this.getScale()), 3) ;
 					image.getGraphics().drawImage(scalledImage, 0,0, null);
 					objectsInTheMap[i][j].setIcon(image);
-					if ((((i* 16)* this.getScale()) + 160) - this.getViewX()> 160) {
+					if ((((i* 16)* this.getScale()) + 160) - this.getViewX()>= 160) {
 					objectsInTheMap[i][j].render((int)((((16* i)* this.getScale()) + 160) - this.getViewX()), (int)(((j* 16) * this.getScale())- this.getViewY()));
 					}
 					objectsInTheMap[i][j].setIcon(oldIcon);
