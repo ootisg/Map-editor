@@ -47,6 +47,9 @@ public class GameObject extends DisplayableImageElement {
 	public HashMap <String, String> getVariantInfo () {
 		return variantInfo;
 	}
+	public void changeIcon (BufferedImage img) {
+		this.setIcon(img);
+	}
 	public void setVariantInfo (String name, String attribute){
 		if (!this.getNameList().contains(name)) {
 		variantInfo.put(name, attribute);

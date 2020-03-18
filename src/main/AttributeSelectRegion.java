@@ -20,8 +20,9 @@ public class AttributeSelectRegion extends SelectionRegion {
 	@Override
 	public void doClickOnElement (int horizontalIndex, int verticalIndex) {
 		int elementIndex = getElementIndex (horizontalIndex, verticalIndex);
+		VariantConfig c = new VariantConfig("resources/objects/variants/config/" + currentObject.getObjectName() + ".txt");
 		currentObject.setVariantInfo(name, currentAttributes.get(elementIndex));
-		
+		currentObject.setIcon(c.getIcon(currentObject.getVariantInfo()));
 	}
 	public void setCurrentInfo(ArrayList <String> attributes, String Name) {
 		name = Name;
