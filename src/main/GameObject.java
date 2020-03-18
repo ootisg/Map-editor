@@ -3,6 +3,7 @@ package main;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import resources.Sprite;
 
@@ -27,6 +28,19 @@ public class GameObject extends DisplayableImageElement {
 		BufferedImage loadBuffer = loadImg.getImageArray ()[0];
 		setIcon (loadBuffer);
 	}
+	@Override 
+	protected Object clone () {
+		GameObject working = new GameObject (this.getPath(),this.getParent());
+		Iterator<String> iter;
+		iter = this.getNameList().iterator();
+		while (iter.hasNext()) {
+			String worker = iter.next();
+			working.setVariantInfo(worker, this.getVariantInfo().get(worker));
+		}
+		working.setCoords(x, y);
+		working.mapObj = this.isMapObject();
+		return working;
+	}
 	public String getPath () {
 		return filepath;
 	}
@@ -34,22 +48,27 @@ public class GameObject extends DisplayableImageElement {
 		return variantInfo;
 	}
 	public void setVariantInfo (String name, String attribute){
+		if (!this.getNameList().contains(name)) {
 		variantInfo.put(name, attribute);
 		nameList.add(name);
+		} else {
+			variantInfo.remove(name);
+			variantInfo.put(name, attribute);
+		}
 	}
 	public ArrayList <String> getNameList(){
 		return nameList;
 	}
-	public void setCoords (int x, int y) {
-		this.x = x;
-		this.y = y;
+	public void setCoords (int newX, int newY) {
+		this.x = newX;
+		this.y = newY;
 		this.mapObj = true;
 	}
 	public int getX () {
-		return x;
+		return this.x;
 	}
 	public int getY() {
-		return y;
+		return this.y;
 	}
 	public String getObjectName () {
 		String working = this.getPath().split("\\\\|/")[this.getPath().split("\\\\|/").length -1];

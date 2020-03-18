@@ -89,7 +89,8 @@ public class ObjectSelectRegion extends ScrollableSelectionRegion {
 	
 	public GameObject getSelectedObject () {
 		if (selectedX != -1) {
-			return (GameObject)getElements ()[selectedY][selectedX];
+			GameObject working = (GameObject)getElements ()[selectedY][selectedX];
+			return (GameObject) working.clone();
 		} else {
 			return null;
 		}

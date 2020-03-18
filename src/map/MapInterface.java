@@ -26,6 +26,7 @@ import main.GuiComponent;
 import main.MainPanel;
 import main.MovableSelectionRegion;
 import main.ObjectSelectMenu;
+import main.ObjectSelectRegion;
 import main.SelectionRegion;
 import main.Tile;
 import main.TileSelectMenu;
@@ -159,7 +160,6 @@ public class MapInterface extends MovableSelectionRegion {
 				}
 			}
 		}
-				
 		writeInt (fileBuffer, objectCount);
 		
 		//Write the list of tilesets
@@ -177,13 +177,21 @@ public class MapInterface extends MovableSelectionRegion {
 		ArrayList <GameObject> objectsUsed = new ArrayList <GameObject>();
 		while (iter.hasNext()) {
 			GameObject objectToCheck = iter.next();
-				if (!objectsUsed.contains(objectToCheck)){
+				Iterator<GameObject> iter87electricBooglo = objectsUsed.iterator();
+				boolean unused = true;
+					while (iter87electricBooglo.hasNext()) {
+						if (objectToCheck.getObjectName().equals(iter87electricBooglo.next().getObjectName())){
+							unused = false;
+							break;
+						}
+					}
+					if (unused) {
 					if (!objectsUsed.isEmpty()) {
 					addString (fileBuffer, ",");
 					}
 					addString (fileBuffer, objectToCheck.getObjectName());
 					objectsUsed.add(objectToCheck);
-				}
+					}
 			}
 		addString (fileBuffer, ";");
 		//Write the tiles
@@ -212,7 +220,7 @@ public class MapInterface extends MovableSelectionRegion {
 		//Write the objects
 		Iterator <GameObject>iter2 = objects.iterator();
 		while(iter2.hasNext()) {
-			GameObject currentObject = (GameObject) iter2.next();
+			GameObject currentObject = iter2.next();
 			this.writeBytes(fileBuffer, currentObject.getX()*16);
 			this.writeBytes(fileBuffer, currentObject.getY()*16);
 			Iterator <GameObject> iter3 = objectsUsed.iterator();
@@ -232,6 +240,7 @@ public class MapInterface extends MovableSelectionRegion {
 					addString (fileBuffer, ",");
 				}
 			}
+			addString (fileBuffer, ";");
 		}
 		//Write changes to the file
 		byte[] writeData = new byte[fileBuffer.size ()];
@@ -320,7 +329,7 @@ public class MapInterface extends MovableSelectionRegion {
 		//Get relevant GUI components
 		MainPanel mainPanel = getMainPanel ();
 		TileSelectMenu tileMenu = mainPanel.getTileMenu ();
-		
+		ObjectSelectRegion objectMenu = mainPanel.getObjectMenu().objectSelect;
 		//Read the file
 		inData = new byte[(int) file.length ()];
 		FileInputStream stream = null;
@@ -374,7 +383,12 @@ public class MapInterface extends MovableSelectionRegion {
 			tileMenu.addTileset (tilesetList [i]);
 		}
 		//Read and import new objects
-		getString (';');
+		objectMenu.resetObjs ();
+		String objects = getString (';');
+		String[] objectList = objects.split(",");
+		for (int i = 0; i < objectList.length; i++) {
+			objectMenu.addGameObject("resources/objects" + objectList[i] + ".png");
+		}
 		//Read and import tile data
 		ArrayList<BufferedImage> tileImgs = tileMenu.getAllTiles ();
 		ArrayList<Tile> tileObjs = new ArrayList<Tile> ();
