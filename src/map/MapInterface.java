@@ -21,8 +21,11 @@ import java.util.Stack;
 import javax.swing.JFileChooser;
 
 import main.DisplayableElement;
+import main.EntryField;
+import main.ExtendButton;
 import main.GameObject;
 import main.GuiComponent;
+import main.IconButton;
 import main.MainPanel;
 import main.MovableSelectionRegion;
 import main.ObjectSelectMenu;
@@ -68,6 +71,10 @@ public class MapInterface extends MovableSelectionRegion {
 	public static final int SELECTION_PLACE_TILES = 1;
 	public static final int SELECTION_ENCASE_TILES = 2;
 	
+	//Resize buttons
+	ExtendButton rightExtend;
+	ExtendButton bottomExtend;
+	
 	//For use only by the load method and internal methods it calls
 	private int readPos;
 	private byte[] inData;
@@ -83,6 +90,10 @@ public class MapInterface extends MovableSelectionRegion {
 		map.setMapInterface (this);
 		edits = new Stack<MapEdit> ();
 		undos = new Stack<MapEdit> ();
+		
+		//Make extend buttons
+		rightExtend = new ExtendButton (new Rectangle (bounds.x, bounds.y, ExtendButton.VERTICAL_WIDTH, ExtendButton.VERTICAL_HEIGHT), ExtendButton.Layout.VERTICAL, this);
+		bottomExtend = new ExtendButton (new Rectangle (bounds.x, bounds.y, ExtendButton.HORIZONTAL_WIDTH, ExtendButton.HORIZONTAL_HEIGHT), ExtendButton.Layout.HORIZONTAL, this);
 	}
 	
 	public boolean edit (MapEdit edit) {
@@ -453,7 +464,26 @@ public class MapInterface extends MovableSelectionRegion {
 	
 	@Override
 	public void render () {
+		//Move right extend button
 		Rectangle bounds = getBoundingRectangle ();
+		Rectangle rightExtendBounds = rightExtend.getBoundingRectangle ();
+		int endX = (int)(getElementWidth () * getGridWidth () * getScale () - getViewX ());
+		int endY = (int)(getElementHeight () * getGridWidth () * getScale () - getViewY ());
+		int newY = bounds.height / 2 - rightExtendBounds.height / 2;
+		if (endY < bounds.height) {
+			newY = endY / 2 - rightExtendBounds.height / 2;
+		}
+		rightExtend.moveTo (bounds.x + endX + 16, bounds.y + newY);
+		
+		//Move left extend button
+		Rectangle bottomExtendBounds = bottomExtend.getBoundingRectangle ();
+		int newX = bounds.width / 2 - bottomExtendBounds.width / 2;
+		if (endX < bounds.width) {
+			newX = endX / 2 - bottomExtendBounds.width / 2;
+		}
+		bottomExtend.moveTo (bounds.x + newX, bounds.y + endY + 16);
+		
+		//Draw tiles
 		Graphics g = getGui ().getWindow ().getBuffer ();
 		g.setColor (new Color (0xA0A0A0));
 		g.fillRect (bounds.x, bounds.y, bounds.width, bounds.height);
@@ -620,6 +650,16 @@ public class MapInterface extends MovableSelectionRegion {
 	
 	public Map getMap () { 
 		return map;
+	}
+	
+	@Override
+	public int getGridWidth () {
+		return getElements ()[0].length;
+	}
+	
+	@Override
+	public int getGridHeight () {
+		return getElements ().length;
 	}
 	
 	public MainPanel getMainPanel () {

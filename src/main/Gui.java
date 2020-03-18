@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -21,6 +22,10 @@ public class Gui {
 	
 	public void doMouseEvent (int x, int y, MouseEvent event) {
 		panel.doMouseEvent (x, y, event);
+	}
+	
+	public void doKeyEvent (KeyEvent event) {
+		panel.doKeyEvent (event);
 	}
 	
 	public void frameEvent () {
