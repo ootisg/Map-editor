@@ -387,7 +387,8 @@ public class MapInterface extends MovableSelectionRegion {
 		String objects = getString (';');
 		String[] objectList = objects.split(",");
 		for (int i = 0; i < objectList.length; i++) {
-			objectMenu.addGameObject("resources/objects" + objectList[i] + ".png");
+			System.out.println("resources/objects/" + objectList[i] + ".png");
+			objectMenu.addGameObject("resources/objects/" + objectList[i] + ".png");
 		}
 		//Read and import tile data
 		ArrayList<BufferedImage> tileImgs = tileMenu.getAllTiles ();
