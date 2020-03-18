@@ -12,7 +12,7 @@ public class ObjectEdit implements  MapEdit {
 	GameObject[][] Objects;
 	GameObject objectToAdd;
 	public ObjectEdit (int x, int y, GameObject[][] objects, GameObject newObject) {
-		Objects = new GameObject [256] [256];
+		Objects = new GameObject [objects.length] [objects[0].length];
 		startX = x;
 		startY = y;
 		Objects = objects;
