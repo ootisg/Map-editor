@@ -53,6 +53,10 @@ public class EntryField extends GuiComponent {
 		this.maxLength = length;
 	}
 	
+	public String getContent () {
+		return value;
+	}
+	
 	private void addChar (char c) {
 		value += c;
 	}

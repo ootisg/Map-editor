@@ -120,6 +120,21 @@ public class MapInterface extends MovableSelectionRegion {
 		return redone.doEdit ();
 	}
 	
+	private void resizeObjects (int width, int height) {
+		GameObject[][] newObjs = new GameObject[width][height];
+		for (int wx = 0; wx < Math.min (objectsInTheMap.length, height); wx ++) {
+			for (int wy = 0; wy < Math.min (objectsInTheMap [0].length, width); wy ++) {
+				newObjs [wx][wy] = objectsInTheMap [wx][wy];
+			}
+		}
+		objectsInTheMap = newObjs;
+	}
+	
+	public void resize (int width, int height) {
+		map.resize (width, height);
+		resizeObjects (width, height);
+	}
+	
 	public void save () {
 		//START OF HEADER
 		//Bytes 0-3: RMF# (# is version number)

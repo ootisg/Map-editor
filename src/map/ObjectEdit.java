@@ -6,13 +6,12 @@ import main.GameObject;
 import main.Tile;
 import resources.Sprite;
 
-public class ObjectEdit implements  MapEdit {
+public class ObjectEdit implements MapEdit {
 	int startX;
 	int startY;
 	GameObject[][] Objects;
 	GameObject objectToAdd;
 	public ObjectEdit (int x, int y, GameObject[][] objects, GameObject newObject) {
-		Objects = new GameObject [256] [256];
 		startX = x;
 		startY = y;
 		Objects = objects;
