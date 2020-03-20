@@ -8,6 +8,8 @@ public class VariantSelectMenu extends SelectionMenu {
 	int mouseStartPosY = 0;
 	int menuX = 160;
 	int menuY = 0;
+	boolean didRun = true;
+	boolean hadRun = false;
 	public VariantSelectMenu (Rectangle bounds, GuiComponent parent) {
 		super (bounds, parent, "VARIANTS");
 		variantSelect = new VariantSelectRegion (new Rectangle (bounds.x, bounds.y + SelectionMenu.BAR_SIZE, bounds.width, bounds.height - SelectionMenu.BAR_SIZE), this);
@@ -15,8 +17,45 @@ public class VariantSelectMenu extends SelectionMenu {
 	public static VariantSelectRegion getVariantSelectRegion () {
 		return variantSelect;
 	}
+	public void reset () {
+		mouseStartPosX = 0; 
+		mouseStartPosY = 0;
+		menuX = 160;
+		menuY = 0;
+		didRun = true;
+		hadRun = false;
+	}
+	@Override 
+	public void frameEvent (){
+		if (mouseDown()) {
+		if (didRun) {
+			hadRun = true;
+			didRun = false;
+		} else {
+			if (hadRun && !mouseInside()) {
+				int oldX = menuX;
+				int oldY = menuY;
+				menuX = menuX + (this.getWindow().getMouseX() - mouseStartPosX);
+				menuY = menuY + (this.getWindow().getMouseY() - mouseStartPosY);
+				this.setBoundingRectangle(new Rectangle (this.getBoundingRectangle().x + menuX - oldX, this.getBoundingRectangle().y + menuY - oldY, this.getBoundingRectangle().width,this.getBoundingRectangle().height));
+				variantSelect.setBoundingRectangle(new Rectangle (variantSelect.getBoundingRectangle().x + menuX - oldX, variantSelect.getBoundingRectangle().y + menuY - oldY, variantSelect.getBoundingRectangle().width,variantSelect.getBoundingRectangle().height));
+				AttributeSelectRegion region = this.getMainPanel().getAttributeSelectRegion();
+				region.setBoundingRectangle(new Rectangle (region.getBoundingRectangle().x + menuX - oldX, region.getBoundingRectangle().y + menuY - oldY, region.getBoundingRectangle().width,region.getBoundingRectangle().height));
+				this.getMainPanel().getVariantCloseButton().setBoundingRectangle(new Rectangle (this.getMainPanel().getVariantCloseButton().getBoundingRectangle().x + menuX - oldX, this.getMainPanel().getVariantCloseButton().getBoundingRectangle().y + menuY - oldY,16,16));
+				mouseStartPosX = this.getWindow().getMouseX();
+				mouseStartPosY = this.getWindow().getMouseY();
+				} else {
+			hadRun = false;
+				}
+		}
+		} else {
+			didRun = false;
+		}
+	}
 	@Override
 	public void mouseDragged (int x, int y, int button) {
+		didRun = true;
+		if (mouseStartPosX != 0 && mouseStartPosY != 0) {
 		if (button == 1) {
 			int oldX = menuX;
 			int oldY = menuY;
@@ -26,13 +65,9 @@ public class VariantSelectMenu extends SelectionMenu {
 			variantSelect.setBoundingRectangle(new Rectangle (variantSelect.getBoundingRectangle().x + menuX - oldX, variantSelect.getBoundingRectangle().y + menuY - oldY, variantSelect.getBoundingRectangle().width,variantSelect.getBoundingRectangle().height));
 			AttributeSelectRegion region = this.getMainPanel().getAttributeSelectRegion();
 			region.setBoundingRectangle(new Rectangle (region.getBoundingRectangle().x + menuX - oldX, region.getBoundingRectangle().y + menuY - oldY, region.getBoundingRectangle().width,region.getBoundingRectangle().height));
-			if (!this.mouseInside()) {
-			this.setBoundingRectangle(new Rectangle (this.getBoundingRectangle().x - menuX + oldX, this.getBoundingRectangle().y - menuY + oldY, this.getBoundingRectangle().width,this.getBoundingRectangle().height));
-			region.setBoundingRectangle(new Rectangle (region.getBoundingRectangle().x - menuX + oldX, region.getBoundingRectangle().y - menuY + oldY, region.getBoundingRectangle().width,region.getBoundingRectangle().height));
-			variantSelect.setBoundingRectangle(new Rectangle (variantSelect.getBoundingRectangle().x - menuX + oldX, variantSelect.getBoundingRectangle().y - menuY + oldY, variantSelect.getBoundingRectangle().width,variantSelect.getBoundingRectangle().height));
-			menuX = oldX;
-			menuY = oldY;
-		}	
+			this.getMainPanel().getVariantCloseButton().setBoundingRectangle(new Rectangle (this.getMainPanel().getVariantCloseButton().getBoundingRectangle().x + menuX - oldX, this.getMainPanel().getVariantCloseButton().getBoundingRectangle().y + menuY - oldY,16,16));
+	
+		}
 		}
 		mouseStartPosX = this.getWindow().getMouseX();
 		mouseStartPosY = this.getWindow().getMouseY();

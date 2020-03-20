@@ -19,10 +19,14 @@ public class AttributeSelectRegion extends SelectionRegion {
 	}
 	@Override
 	public void doClickOnElement (int horizontalIndex, int verticalIndex) {
+		try {
 		int elementIndex = getElementIndex (horizontalIndex, verticalIndex);
 		VariantConfig c = new VariantConfig("resources/objects/variants/config/" + currentObject.getObjectName() + ".txt");
 		currentObject.setVariantInfo(name, currentAttributes.get(elementIndex));
 		currentObject.setIcon(c.getIcon(currentObject.getVariantInfo()));
+		} catch (IndexOutOfBoundsException e) {
+			
+		}
 	}
 	public void setCurrentInfo(ArrayList <String> attributes, String Name) {
 		name = Name;
@@ -33,12 +37,16 @@ public class AttributeSelectRegion extends SelectionRegion {
 	}
 	@Override 
 	public void frameEvent () {
+		try {
 		if (this.mouseInside() && !this.isHidden()) {
 			tbox.setMessage(currentAttributes.get((this.getWindow().getMouseX() - this.getBoundingRectangle().x)/16));
 			tbox.setBoundingRectangle(new Rectangle (this.getBoundingRectangle().x + (this.getWindow().getMouseX() - this.getBoundingRectangle().x), this.getBoundingRectangle().y + 16, 60, 16));
 			tbox.show();			
 		} else {
 			tbox.hide();
+		}
+		} catch (IndexOutOfBoundsException e) {
+			
 		}
 	}
 }

@@ -14,7 +14,9 @@ public class DisplayableImageElement extends DisplayableElement {
 		super (parent);
 		this.icon = icon;
 	}
-	
+	public DisplayableImageElement (GuiComponent parent) {
+		super (parent);
+	}
 	public void setIcon (BufferedImage icon) {
 		this.icon = icon;
 	}

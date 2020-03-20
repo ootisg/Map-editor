@@ -36,6 +36,7 @@ public class Toolbar extends GuiComponent {
 		new LayerModeButton (this);
 		new SaveButton (this);
 		new LoadButton (this);
+		new VariantButton (this);
 	}
 	
 	@Override
