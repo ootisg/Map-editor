@@ -79,6 +79,7 @@ public class ExtendButton extends GuiComponent {
 			//Set component attributes
 			button1.setMargins (ICON_BUTTON_MARGIN_LEFT, ICON_BUTTON_MARGIN_TOP);
 			button2.setMargins (ICON_BUTTON_MARGIN_LEFT, ICON_BUTTON_MARGIN_TOP);
+			entry.setFilter ("[0-9]");
 			
 		}
 	}
@@ -113,7 +114,7 @@ public class ExtendButton extends GuiComponent {
 			} else if (layoutType == Layout.VERTICAL) {
 				rt = new ResizeEdit (mp.getWidth () - Integer.parseInt (entry.getContent ()), mp.getHeight (), mp, m);
 			}
-			rt.doEdit ();
+			m.edit (rt);
 		}
 		if (button2.pressed ()) {
 			button2.reset ();
@@ -125,7 +126,7 @@ public class ExtendButton extends GuiComponent {
 			} else if (layoutType == Layout.VERTICAL) {
 				rt = new ResizeEdit (mp.getWidth () + Integer.parseInt (entry.getContent ()), mp.getHeight (), mp, m);
 			}
-			rt.doEdit ();
+			m.edit (rt);
 		}
 	}
 	

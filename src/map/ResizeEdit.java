@@ -13,7 +13,19 @@ public class ResizeEdit implements MapEdit {
 	
 	MapInterface mi;
 	
+	int initialWidth;
+	int initialHeight;
+	
+	int newWidth;
+	int newHeight;
+	
 	public ResizeEdit (int width, int height, Map map, MapInterface mi) {
+		//Set dimensions for future use
+		initialWidth = map.getWidth ();
+		initialHeight = map.getHeight ();
+		newWidth = width;
+		newHeight = height;
+		
 		//Save map interface for future use
 		this.mi = mi;
 		
@@ -61,9 +73,6 @@ public class ResizeEdit implements MapEdit {
 				}
 			}
 		}
-		
-		//Resize tile portion
-		mi.resize (width, height);
 	}
 	
 	@Override
@@ -74,12 +83,16 @@ public class ResizeEdit implements MapEdit {
 		for (int i = 0; i < objectEdits.size (); i ++) {
 			mi.edit (objectEdits.get (i));
 		}
+		
+		//Resize stuff
+		mi.resize (newWidth, newHeight);
 		return false;
 	}
 
 	@Override
 	public boolean undo () {
 		//Check for bugsssssss
+		mi.resize (initialWidth, initialHeight);
 		for (int i = 0; i < tileEdits.size (); i ++) {
 			mi.undo ();
 		}
