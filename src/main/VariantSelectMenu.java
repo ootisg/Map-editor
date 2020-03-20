@@ -50,6 +50,7 @@ public class VariantSelectMenu extends SelectionMenu {
 		}
 		} else {
 			didRun = false;
+			hadRun = false;
 		}
 	}
 	@Override

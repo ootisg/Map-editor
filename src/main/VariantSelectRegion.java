@@ -32,6 +32,11 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 		GameObject[][] toUse = new GameObject[getGridHeight ()][getGridWidth ()];
 		setElements (toUse);
 	}
+	public void reset () {
+		this.setElementWidth(96);
+		this.setGridDimensions(1, 10);
+		this.resetVars();
+	}
 	public void changeDisplayingVariants() {
 		String oldString = getMainPanel().getMapInterface().getSelectedRegion().getSelectedGameObject().getPath();
 		currentObject =  getMainPanel().getMapInterface().getSelectedRegion().getSelectedGameObject(); 
@@ -59,6 +64,7 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 			crap = crap + 1;
 		}
 		if (crap != 0) {
+		this.getMainPanel().getVariantCloseButton().setBoundingRectangle(new Rectangle(((VariantSelectMenu) realParent).getMenuX() + (longestLength * 6), ((VariantSelectMenu) realParent).getMenuY() + 16,16,16));
 		this.setBoundingRectangle(new Rectangle (((VariantSelectMenu) realParent).getMenuX(), ((VariantSelectMenu) realParent).getMenuY() + 32, (longestLength * 6) + 16, crap* 16));
 		this.setGridDimensions(1, crap);
 		this.setElementWidth(longestLength * 6);

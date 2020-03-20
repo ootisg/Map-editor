@@ -18,11 +18,11 @@ public class VariantButton extends ToolbarItem{
 		this.getMainPanel().getVariantMenu().show();
 		this.getMainPanel().getVariantCloseButton().show();
 		} else {
-			VariantSelectMenu.getVariantSelectRegion().resetVars();
 			this.getMainPanel().getVariantMenu().setBoundingRectangle(new Rectangle (160, 0, 96, 160));
 			VariantSelectMenu.getVariantSelectRegion().setBoundingRectangle(new Rectangle (160, SelectionMenu.BAR_SIZE, 96, 160 - SelectionMenu.BAR_SIZE));
 			this.getMainPanel().getAttributeSelectRegion().hide();
 			this.getMainPanel().getVariantMenu().reset();
+			VariantSelectMenu.getVariantSelectRegion().reset();
 			this.getMainPanel().getVariantCloseButton().setBoundingRectangle(new Rectangle (240,0,16,16));
 		}
 	}

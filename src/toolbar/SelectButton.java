@@ -21,7 +21,7 @@ public class SelectButton extends ToolbarItem {
 	public void use (int x, int y) {
 		MainPanel mainPanel = getMainPanel ();
 		MapInterface mapInterface = mainPanel.getMapInterface ();
-		if (!mainPanel.getVariantMenu().getBoundingRectangle().contains((x * 16) + 160, y * 16)) {
+		if (!(mainPanel.getVariantMenu().getBoundingRectangle().contains((x * 16) + 160, y * 16) && !mainPanel.getVariantMenu().isHidden())) {
 		if (mapInterface.getAnchorX () == -1 || mapInterface.getAnchorY () == -1) {
 			mapInterface.setAnchor (x, y);
 		}

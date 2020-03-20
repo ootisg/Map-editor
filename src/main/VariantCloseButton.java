@@ -23,5 +23,6 @@ public class VariantCloseButton extends SelectionRegion {
 	public void doClickOnElement (int horizontalIndex, int verticalIndex) {
 		this.getMainPanel().getVariantMenu().hide();
 		this.hide();
+		this.getMainPanel().getAttributeSelectRegion().hide();
 	}
 }

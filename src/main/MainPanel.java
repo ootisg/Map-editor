@@ -32,7 +32,8 @@ public class MainPanel extends GuiComponent {
 		closeButton = new VariantCloseButton (new Rectangle (240,0,16,16),this);
 		attributeRegion = new AttributeSelectRegion (new Rectangle (160,0,96,160), this);
 		attributeRegion.hide();
-		
+		variantMenu.hide();
+		closeButton.hide();
 		boxes = new LinkedList<DisplayBox> ();
 		
 	}
