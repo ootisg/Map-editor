@@ -34,6 +34,15 @@ public class EntryField extends GuiComponent {
 	
 	@Override
 	public void draw () {
+		//Really shouldn't be doing this here
+		if (!mouseInside () && mouseDown ()) {
+			focus = false;
+			if (value.equals ("")) {
+				value = defaultString;
+			}
+		}
+		
+		//Okay here's the reasonable code
 		Rectangle bounds = getBoundingRectangle ();
 		Graphics g = getGraphics ();
 		g.setColor (new Color (FILL_COLOR));
@@ -51,6 +60,10 @@ public class EntryField extends GuiComponent {
 	
 	public void setMaxLength (int length) {
 		this.maxLength = length;
+	}
+	
+	public String getContent () {
+		return value;
 	}
 	
 	private void addChar (char c) {
@@ -74,16 +87,18 @@ public class EntryField extends GuiComponent {
 	
 	@Override
 	public void keyPressed (int keyCode) {
-		if (keyCode == KeyEvent.VK_ENTER) {
-			//End entry
-			focus = false;
-			if (value.equals ("")) {
-				value = defaultString;
-			}
-		} else if (keyCode == KeyEvent.VK_BACK_SPACE || keyCode == KeyEvent.VK_DELETE) {
-			//Backspace character
-			if (value.length () > 0) {
-				value = value.substring (0, value.length () - 1);
+		if (focus) {
+			if (keyCode == KeyEvent.VK_ENTER) {
+				//End entry
+				focus = false;
+				if (value.equals ("")) {
+					value = defaultString;
+				}
+			} else if (keyCode == KeyEvent.VK_BACK_SPACE || keyCode == KeyEvent.VK_DELETE) {
+				//Backspace character
+				if (value.length () > 0) {
+					value = value.substring (0, value.length () - 1);
+				}
 			}
 		}
 	}

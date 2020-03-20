@@ -96,12 +96,18 @@ public abstract class SelectionRegion extends GuiComponent {
 				}
 			}
 		}
-		Collections.sort (scheduledRegions);
-		Iterator<TileRegion> iter = scheduledRegions.iterator ();
-		while (iter.hasNext ()) {
-			TileRegion working = iter.next ();
-			working.setTileData (cells, MapInterface.objectsInTheMap);
-			drawTileRegion (working);
+		try {
+			Collections.sort (scheduledRegions);
+			Iterator<TileRegion> iter = scheduledRegions.iterator ();
+			while (iter.hasNext ()) {
+				TileRegion working = iter.next ();
+				working.setTileData (cells, MapInterface.objectsInTheMap);
+				drawTileRegion (working);
+			}
+		} catch (Exception e) {
+			System.out.println ("Exception thrown while drawing tile region: \n" + e.toString ());
+			e.printStackTrace ();
+			//Continue
 		}
 	}
 	

@@ -5,6 +5,9 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import map.Map;
+import map.MapInterface;
+import map.ResizeEdit;
 import resources.Sprite;
 
 public class ExtendButton extends GuiComponent {
@@ -48,6 +51,9 @@ public class ExtendButton extends GuiComponent {
 	
 	public ExtendButton (Rectangle bounds, Layout layout, GuiComponent parent) {
 		super (bounds, parent);
+		//Set important shit
+		layoutType = layout;
+		
 		if (layout == Layout.HORIZONTAL) {
 			//Make components
 			int workingX = COMPONENT_MARGIN + 1;
@@ -73,6 +79,7 @@ public class ExtendButton extends GuiComponent {
 			//Set component attributes
 			button1.setMargins (ICON_BUTTON_MARGIN_LEFT, ICON_BUTTON_MARGIN_TOP);
 			button2.setMargins (ICON_BUTTON_MARGIN_LEFT, ICON_BUTTON_MARGIN_TOP);
+			entry.setFilter ("[0-9]");
 			
 		}
 	}
@@ -96,6 +103,31 @@ public class ExtendButton extends GuiComponent {
 		g.fillRect (0, 0, bounds.width, bounds.height);
 		g.setColor (new Color (OUTLINE_COLOR));
 		g.drawRect (0, 0, bounds.width - 1, bounds.height - 1);
+		
+		if (button1.pressed ()) {
+			button1.reset ();
+			MapInterface m = getMainPanel ().getMapInterface ();
+			Map mp = getMainPanel ().getMap ();
+			ResizeEdit rt = null;
+			if (layoutType == Layout.HORIZONTAL) {
+				rt = new ResizeEdit (mp.getWidth (), mp.getHeight () - Integer.parseInt (entry.getContent ()), mp, m);
+			} else if (layoutType == Layout.VERTICAL) {
+				rt = new ResizeEdit (mp.getWidth () - Integer.parseInt (entry.getContent ()), mp.getHeight (), mp, m);
+			}
+			m.edit (rt);
+		}
+		if (button2.pressed ()) {
+			button2.reset ();
+			MapInterface m = getMainPanel ().getMapInterface ();
+			Map mp = getMainPanel ().getMap ();
+			ResizeEdit rt = null;
+			if (layoutType == Layout.HORIZONTAL) {
+				rt = new ResizeEdit (mp.getWidth (), mp.getHeight () + Integer.parseInt (entry.getContent ()), mp, m);
+			} else if (layoutType == Layout.VERTICAL) {
+				rt = new ResizeEdit (mp.getWidth () + Integer.parseInt (entry.getContent ()), mp.getHeight (), mp, m);
+			}
+			m.edit (rt);
+		}
 	}
 	
 }
