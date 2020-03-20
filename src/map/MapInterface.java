@@ -249,8 +249,8 @@ public class MapInterface extends MovableSelectionRegion {
 		Iterator <GameObject>iter2 = objects.iterator();
 		while(iter2.hasNext()) {
 			GameObject currentObject = iter2.next();
-			this.writeBytes(fileBuffer, currentObject.getX()*16);
-			this.writeBytes(fileBuffer, currentObject.getY()*16);
+			this.writeBytes(fileBuffer, currentObject.getX()*16,this.getByteCount(this.getMap().getWidth()));
+			this.writeBytes(fileBuffer, currentObject.getY()*16,this.getByteCount(this.getMap().getHeight()));
 			Iterator <GameObject> iter3 = objectsUsed.iterator();
 			int index = 0;
 			while (iter3.hasNext()) {
@@ -259,7 +259,7 @@ public class MapInterface extends MovableSelectionRegion {
 				}
 				index = index + 1;
 			}
-			this.writeBytes(fileBuffer, index);
+			this.writeBytes(fileBuffer, index,this.getByteCount(objectsUsed.size()));
 			Iterator <String> iter4 = currentObject.getNameList().iterator();
 			while (iter4.hasNext()) {
 				String currentName = iter4.next();
@@ -314,9 +314,6 @@ public class MapInterface extends MovableSelectionRegion {
 		buffer.add ((byte)((value & 0x00FF0000) >>> 16));
 		buffer.add ((byte)((value & 0x0000FF00) >>> 8));
 		buffer.add ((byte)(value & 0xFF));
-	}
-	private void writeBytes (ArrayList<Byte> buffer, int value) {
-		this.writeBytes(buffer, value,this.getByteCount(value));
 	}
 	private void writeBytes (ArrayList<Byte> buffer, int value, int numBytes) {
 		if (numBytes >= 4) {buffer.add ((byte)((value & 0xFF000000) >>> 24));}
@@ -415,7 +412,7 @@ public class MapInterface extends MovableSelectionRegion {
 		String objects = getString (';');
 		String[] objectList = objects.split(",");
 		for (int i = 0; i < objectList.length; i++) {
-			objectMenu.addGameObject("resources/objects" + objectList[i] + ".png");
+			objectMenu.addGameObject("resources/objects/" + objectList[i] + ".png");
 		}
 		//Read and import tile data
 		ArrayList<BufferedImage> tileImgs = tileMenu.getAllTiles ();
@@ -433,6 +430,21 @@ public class MapInterface extends MovableSelectionRegion {
 			}
 		}
 		//Read and import object data
+		for (int i = 0; i < numObjects; i++) {
+			int x = getInteger (this.getByteCount(mapWidth));
+			int y = getInteger (this.getByteCount(mapHeight));
+			int object = getInteger (this.getByteCount(numObjects));
+			GameObject currentObject = new GameObject ("resources/objects/" + objectList[object] + ".png",this);
+			this.edit(new ObjectEdit (x/16,y/16,objectsInTheMap,currentObject));
+			String variantInfo = getString (';');
+			String [] variantList = variantInfo.split(",");
+			if(variantInfo.contains(":")) {
+				for (int j = 0; j < variantList.length; j ++) {
+					String[] infoSegments = variantList[j].split(":");
+					currentObject.setVariantInfo(infoSegments[0],infoSegments[1]);
+				}
+		}
+		}
 		//...
 	}
 	
