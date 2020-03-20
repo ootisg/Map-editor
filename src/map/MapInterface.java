@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -97,9 +98,10 @@ public class MapInterface extends MovableSelectionRegion {
 	}
 	
 	public boolean edit (MapEdit edit) {
-		edits.push (edit);
 		undos = new Stack<MapEdit> ();
-		return edit.doEdit ();
+		boolean editResult = edit.doEdit ();
+		edits.push (edit);
+		return editResult;
 	}
 	
 	public boolean undo () {
@@ -118,6 +120,21 @@ public class MapInterface extends MovableSelectionRegion {
 		MapEdit redone = undos.pop ();
 		edits.push (redone);
 		return redone.doEdit ();
+	}
+	
+	private void resizeObjects (int width, int height) {
+		GameObject[][] newObjs = new GameObject[width][height];
+		for (int wx = 0; wx < Math.min (objectsInTheMap.length, width); wx ++) {
+			for (int wy = 0; wy < Math.min (objectsInTheMap [0].length, height); wy ++) {
+				newObjs [wx][wy] = objectsInTheMap [wx][wy];
+			}
+		}
+		objectsInTheMap = newObjs;
+	}
+	
+	public void resize (int width, int height) {
+		map.resize (width, height);
+		resizeObjects (width, height);
 	}
 	
 	public void save () {
@@ -479,12 +496,18 @@ public class MapInterface extends MovableSelectionRegion {
 		Rectangle bounds = getBoundingRectangle ();
 		Rectangle rightExtendBounds = rightExtend.getBoundingRectangle ();
 		int endX = (int)(getElementWidth () * getGridWidth () * getScale () - getViewX ());
-		int endY = (int)(getElementHeight () * getGridWidth () * getScale () - getViewY ());
+		int endY = (int)(getElementHeight () * getGridHeight () * getScale () - getViewY ());
 		int newY = bounds.height / 2 - rightExtendBounds.height / 2;
 		if (endY < bounds.height) {
 			newY = endY / 2 - rightExtendBounds.height / 2;
 		}
 		rightExtend.moveTo (bounds.x + endX + 16, bounds.y + newY);
+		//Hide or show
+		if (endX + 16 < 0) {
+			rightExtend.hide ();
+		} else if (rightExtend.isHidden ()) {
+			rightExtend.show ();
+		}
 		
 		//Move left extend button
 		Rectangle bottomExtendBounds = bottomExtend.getBoundingRectangle ();
@@ -493,6 +516,12 @@ public class MapInterface extends MovableSelectionRegion {
 			newX = endX / 2 - bottomExtendBounds.width / 2;
 		}
 		bottomExtend.moveTo (bounds.x + newX, bounds.y + endY + 16);
+		//Hide or show
+		if (newX < 0) {
+			bottomExtend.hide ();
+		} else if (bottomExtend.isHidden ()) {
+			bottomExtend.show ();
+		}
 		
 		//Draw tiles
 		Graphics g = getGui ().getWindow ().getBuffer ();
@@ -535,7 +564,7 @@ public class MapInterface extends MovableSelectionRegion {
 					}
 				}
 			}
-		} else if (toolbar.getSelectedItem () instanceof SelectButton) {
+		} else if (toolbar.getSelectedItem () instanceof SelectButton && region.getBounds () != null) {
 			Rectangle bounds = region.getBounds ();
 			g.setColor (new Color (0x0000FF));
 			g.drawRect (bounds.x, bounds.y, bounds.width, bounds.height);
@@ -570,7 +599,7 @@ public class MapInterface extends MovableSelectionRegion {
 			Rectangle[][] grid = makeGrid (new Rectangle ((int)-getViewX (), (int)-getViewY (), (int)(getElements () [0].length * getElementWidth () * getScale ()), (int)(getElements ().length * getElementHeight () * getScale ())), getElementWidth () * getScale (), getElementHeight () * getScale ());
 			int[] selectedCell = getCell (x, y);
 			if (selectWidth != -1) {
-					select (new TileRegion (selectedCell [0], selectedCell [1], selectWidth, selectHeight));
+				select (new TileRegion (selectedCell [0], selectedCell [1], selectWidth, selectHeight));
 			}
 		}
 	}
@@ -587,8 +616,10 @@ public class MapInterface extends MovableSelectionRegion {
 	
 	@Override
 	public void doClickOnElement (int x, int y) {
-		if (toolbar.getSelectedItem () instanceof SelectButton || toolbar.getSelectedItem () instanceof EraseButton) {
-			toolbar.getSelectedItem ().use (x, y);
+		if (this.lastMouseButtonPressed () == MouseEvent.BUTTON1) {
+			if (toolbar.getSelectedItem () instanceof SelectButton || toolbar.getSelectedItem () instanceof EraseButton) {
+				toolbar.getSelectedItem ().use (x, y);
+			}
 		}
 	}
 	
@@ -603,6 +634,7 @@ public class MapInterface extends MovableSelectionRegion {
 	
 	@Override
 	public void mouseReleased (int x, int y, int button) {
+		super.mouseReleased (x, y, button);
 		if (toolbar.getSelectedItem () instanceof SelectButton) {
 			anchorX = -1;
 		} else {

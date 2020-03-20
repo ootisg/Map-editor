@@ -157,6 +157,12 @@ public class Map {
 		return topDisplayLayer;
 	}
 	
+	public void resize (int width, int height) {
+		for (int i = 0; i < getNumLayers (); i ++) {
+			mapData.get (i).resize (width, height);
+		}
+	}
+	
 	public class TileLayer {
 		
 		private Tile[][] data;
@@ -206,8 +212,8 @@ public class Map {
 		public void resize (int width, int height) {
 			Tile[][] temp = new Tile[height][width];
 			DisplayableElement[][] displayTemp = new DisplayableElement[height][width];
-			for (int wy = 0; wy < getHeight (); wy ++) {
-				for (int wx = 0; wx < getWidth (); wx ++) {
+			for (int wy = 0; wy < Math.min (height, getHeight ()); wy ++) {
+				for (int wx = 0; wx < Math.min (width, getWidth ()); wx ++) {
 					temp [wy][wx] = data [wy][wx];
 					displayTemp [wy][wx] = renderedTiles [wy][wx];
 				}

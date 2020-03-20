@@ -25,12 +25,15 @@ public class SelectButton extends ToolbarItem {
 		if (mapInterface.getAnchorX () == -1 || mapInterface.getAnchorY () == -1) {
 			mapInterface.setAnchor (x, y);
 		}
-		mapInterface.setSelect (x, y);
-		TileRegion newRegion = mapInterface.makeRegion (mapInterface.getAnchorX (), mapInterface.getAnchorY (), mapInterface.getSelectX (), mapInterface.getSelectY ());
-		if (!newRegion.equals (mapInterface.getSelectedRegion ())) {
-			mapInterface.removeDrawRequest (mapInterface.getSelectedRegion ());
-			mapInterface.select (newRegion);
-		}
+		if (x < mapInterface.getGridWidth () && y < mapInterface.getGridHeight ()) {
+			//I'm unsure why this doesn't fix the selection outside of map bug, check on this later
+			mapInterface.setSelect (x, y);
+			TileRegion newRegion = mapInterface.makeRegion (mapInterface.getAnchorX (), mapInterface.getAnchorY (), mapInterface.getSelectX (), mapInterface.getSelectY ());
+			if (!newRegion.equals (mapInterface.getSelectedRegion ())) {
+				mapInterface.removeDrawRequest (mapInterface.getSelectedRegion ());
+				mapInterface.select (newRegion);
+			}
+			}
 		}
 	}
 	
