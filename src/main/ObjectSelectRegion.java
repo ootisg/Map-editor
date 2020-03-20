@@ -44,17 +44,23 @@ public class ObjectSelectRegion extends ScrollableSelectionRegion {
 			if (getWindow ().chooser.getSelectedFile () != null) {
 				addGameObject (getWindow ().chooser.getSelectedFile ().getPath ());
 			}
-			if (selectedX == -1) {
+			/*if (selectedX == -1) {
 				selectedX = horizontalIndex;
 				selectedY = verticalIndex;
 				PlaceButton.tilesOrObjects = true;
-			}
+			}*/
 		} else {
-			PlaceButton.tilesOrObjects = true;
-			selectedX = horizontalIndex;
-			selectedY = verticalIndex;
-			if (getElements ()[selectedY][selectedX] != null) {
+			try {
+				
+			if (getElements ()[verticalIndex][horizontalIndex] != null) {
+				PlaceButton.tilesOrObjects = true;
+				selectedX = horizontalIndex;
+				selectedY = verticalIndex;
+				System.out.println(getElements ()[verticalIndex][horizontalIndex]);
 				select (new TileRegion (selectedX, selectedY, 1, 1));
+			}
+			} catch (ArrayIndexOutOfBoundsException e) {
+				
 			}
 		}
 	}

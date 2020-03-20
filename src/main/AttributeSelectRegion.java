@@ -25,7 +25,8 @@ public class AttributeSelectRegion extends SelectionRegion {
 		currentObject.setVariantInfo(name, currentAttributes.get(elementIndex));
 		currentObject.setIcon(c.getIcon(currentObject.getVariantInfo()));
 		} catch (IndexOutOfBoundsException e) {
-			
+			Query query;
+			query = new Query (new Rectangle (this.getBoundingRectangle().x + ((getElementIndex(horizontalIndex,verticalIndex)) * 16),this.getBoundingRectangle().y - 10,100,30),this);
 		}
 	}
 	public void setCurrentInfo(ArrayList <String> attributes, String Name) {
