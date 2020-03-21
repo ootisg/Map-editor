@@ -56,7 +56,6 @@ public class ObjectSelectRegion extends ScrollableSelectionRegion {
 				PlaceButton.tilesOrObjects = true;
 				selectedX = horizontalIndex;
 				selectedY = verticalIndex;
-				System.out.println(getElements ()[verticalIndex][horizontalIndex]);
 				select (new TileRegion (selectedX, selectedY, 1, 1));
 			}
 			} catch (ArrayIndexOutOfBoundsException e) {

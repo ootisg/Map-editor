@@ -8,14 +8,16 @@ public class AttributeSelectRegion extends SelectionRegion {
 	ArrayList<String> currentAttributes = new ArrayList<String>();
 	String name;
 	GameObject currentObject;
+	Query query;
 	private DisplayBox tbox;
 	public AttributeSelectRegion (Rectangle bounds, GuiComponent parent) {
 		super (bounds, parent);
+		query = new Query (new Rectangle (this.getBoundingRectangle().x,this.getBoundingRectangle().y - 10,100,30),this);
 		this.setGridDimensions(10, 1);
 		tbox = getMainPanel ().addDisplayBox (new Rectangle (0, 0, 60, 16), "HIYA");
-		tbox.setBgColor(new Color (0x1D0EC3));
+		tbox.setBgColor(new Color (0x77787d));
 		tbox.hide ();
-		
+		query.hide();
 	}
 	@Override
 	public void doClickOnElement (int horizontalIndex, int verticalIndex) {
@@ -25,8 +27,9 @@ public class AttributeSelectRegion extends SelectionRegion {
 		currentObject.setVariantInfo(name, currentAttributes.get(elementIndex));
 		currentObject.setIcon(c.getIcon(currentObject.getVariantInfo()));
 		} catch (IndexOutOfBoundsException e) {
-			Query query;
-			query = new Query (new Rectangle (this.getBoundingRectangle().x + ((getElementIndex(horizontalIndex,verticalIndex)) * 16),this.getBoundingRectangle().y - 10,100,30),this);
+			query.setBoundingRectangle(new Rectangle (this.getBoundingRectangle().x + ((getElementIndex(horizontalIndex,verticalIndex)) * 16),this.getBoundingRectangle().y - 10,100,30));
+			query.show();
+			query.start();
 		}
 	}
 	public void setCurrentInfo(ArrayList <String> attributes, String Name) {
