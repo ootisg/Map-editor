@@ -104,29 +104,38 @@ public class ExtendButton extends GuiComponent {
 		g.setColor (new Color (OUTLINE_COLOR));
 		g.drawRect (0, 0, bounds.width - 1, bounds.height - 1);
 		
-		if (button1.pressed ()) {
-			button1.reset ();
-			MapInterface m = getMainPanel ().getMapInterface ();
-			Map mp = getMainPanel ().getMap ();
-			ResizeEdit rt = null;
-			if (layoutType == Layout.HORIZONTAL) {
-				rt = new ResizeEdit (mp.getWidth (), mp.getHeight () - Integer.parseInt (entry.getContent ()), mp, m);
-			} else if (layoutType == Layout.VERTICAL) {
-				rt = new ResizeEdit (mp.getWidth () - Integer.parseInt (entry.getContent ()), mp.getHeight (), mp, m);
+		//REEEEEEE
+		if (!entry.getContent ().equals ("")) {
+			if (button1.pressed ()) {
+				button1.reset ();
+				MapInterface m = getMainPanel ().getMapInterface ();
+				Map mp = getMainPanel ().getMap ();
+				ResizeEdit rt = null;
+				if (layoutType == Layout.HORIZONTAL) {
+					if (Integer.parseInt (entry.getContent ()) > mp.getWidth ()) {
+						return;
+					}
+					rt = new ResizeEdit (mp.getWidth (), mp.getHeight () - Integer.parseInt (entry.getContent ()), mp, m);
+				} else if (layoutType == Layout.VERTICAL) {
+					if (Integer.parseInt (entry.getContent ()) > mp.getHeight ()) {
+						return;
+					}
+					rt = new ResizeEdit (mp.getWidth () - Integer.parseInt (entry.getContent ()), mp.getHeight (), mp, m);
+				}
+				m.edit (rt);
 			}
-			m.edit (rt);
-		}
-		if (button2.pressed ()) {
-			button2.reset ();
-			MapInterface m = getMainPanel ().getMapInterface ();
-			Map mp = getMainPanel ().getMap ();
-			ResizeEdit rt = null;
-			if (layoutType == Layout.HORIZONTAL) {
-				rt = new ResizeEdit (mp.getWidth (), mp.getHeight () + Integer.parseInt (entry.getContent ()), mp, m);
-			} else if (layoutType == Layout.VERTICAL) {
-				rt = new ResizeEdit (mp.getWidth () + Integer.parseInt (entry.getContent ()), mp.getHeight (), mp, m);
+			if (button2.pressed ()) {
+				button2.reset ();
+				MapInterface m = getMainPanel ().getMapInterface ();
+				Map mp = getMainPanel ().getMap ();
+				ResizeEdit rt = null;
+				if (layoutType == Layout.HORIZONTAL) {
+					rt = new ResizeEdit (mp.getWidth (), mp.getHeight () + Integer.parseInt (entry.getContent ()), mp, m);
+				} else if (layoutType == Layout.VERTICAL) {
+					rt = new ResizeEdit (mp.getWidth () + Integer.parseInt (entry.getContent ()), mp.getHeight (), mp, m);
+				}
+				m.edit (rt);
 			}
-			m.edit (rt);
 		}
 	}
 	

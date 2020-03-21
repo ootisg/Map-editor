@@ -35,6 +35,7 @@ import main.SelectionRegion;
 import main.Tile;
 import main.TileSelectMenu;
 import main.Tileset;
+import main.VariantConfig;
 import main.SelectionRegion.TileRegion;
 import resources.Sprite;
 import toolbar.EraseButton;
@@ -79,6 +80,8 @@ public class MapInterface extends MovableSelectionRegion {
 	//For use only by the load method and internal methods it calls
 	private int readPos;
 	private byte[] inData;
+	
+	BufferedImage testImg;
 	
 	public MapInterface (Rectangle bounds, TileSelectMenu tileMenu, ObjectSelectMenu objectMenu, Toolbar toolbar, GuiComponent parent) {
 		super (bounds, parent);

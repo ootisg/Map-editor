@@ -70,6 +70,10 @@ public class EntryField extends GuiComponent {
 		value += c;
 	}
 	
+	public void reset () {
+		value = defaultString;
+	}
+	
 	@Override
 	public void keyTyped (char keyChar) {
 		if (focus && value.length () < maxLength) {

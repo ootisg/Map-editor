@@ -70,7 +70,8 @@ public class VariantConfig {
 		varMap.put ("query", "FALSE");
 		varMap.put ("attributes", "NOT_SET");
 		varMap.put ("value", "NV");
-		varMap.put ("file", "NULL");
+		varMap.put ("filename", "NULL");
+		varMap.put ("frame", "0");
 		varMap.put ("tileIndex", "0");
 		varMap.put ("tileWidth", "16");
 		varMap.put ("tileHeight", "16");
@@ -93,6 +94,12 @@ public class VariantConfig {
 				String usedValue;
 				if (assignmentVals [0].equals ("name")) {
 					usedValue = variantAttributes.get (assignmentVals [1]);
+					if (usedValue == null) {
+						ArrayList<String> argsList = possibleArgs.get (assignmentVals [1]);
+						if (argsList != null && argsList.size () > 0) {
+							usedValue = argsList.get (0);
+						}
+					}
 					varMap.put ("value", usedValue);
 				} else {
 					varMap.put ("name", "NULL");
@@ -115,7 +122,7 @@ public class VariantConfig {
 		System.out.println (filename);
 		Sprite loadSrc = new Sprite ("resources/objects/variants/icons/" + filename);
 		BufferedImage loadImg = loadSrc.getImageArray ()[0];
-		
+		System.out.println (varMap.get ("frame"));
 		//Find the region to parse out and return it
 		if (!(iconX.equals ("NULL")) && !(iconY.equals ("NULL"))) {
 			int xGet = Integer.parseInt (iconX);
@@ -133,6 +140,7 @@ public class VariantConfig {
 		} else {
 			return loadImg;
 		}
+		
 	}
 	
 	public ArrayList<String> getAttributeNames () {
@@ -147,7 +155,7 @@ public class VariantConfig {
 		
 		//Set defaults
 		if (varMap.get ("value") == null) {
-			varMap.put ("value", "nv");
+			varMap.put ("value", "NULL");
 		}
 		
 		LinkedList<String> elements = getTokens (str);
@@ -223,7 +231,7 @@ public class VariantConfig {
 			if (cur.contains ("=")) {
 				String[] exprSplit = cur.split ("=");
 				if (exprSplit.length == 2) {
-					varMap.put (exprSplit [0], exprSplit [1]);
+					varMap.put (exprSplit [0], getVariable (exprSplit [1], varMap));
 					//Do not add to evaluated tokens
 				}
 			} else {

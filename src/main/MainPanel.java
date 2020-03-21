@@ -16,6 +16,7 @@ public class MainPanel extends GuiComponent {
 	private Toolbar toolbar;
 	private VariantCloseButton closeButton;
 	private LinkedList<DisplayBox> boxes;
+	private ResizeWindow resizeWindow;
 	private AttributeSelectRegion attributeRegion;
 	private Map map;
 	
@@ -31,10 +32,15 @@ public class MainPanel extends GuiComponent {
 		variantMenu = new VariantSelectMenu (new Rectangle (160, 0, 96, 160), this);
 		closeButton = new VariantCloseButton (new Rectangle (240,0,16,16),this);
 		attributeRegion = new AttributeSelectRegion (new Rectangle (160,0,96,160), this);
+<<<<<<< HEAD
 		attributeRegion.hide();
 		variantMenu.hide();
 		closeButton.hide();
+=======
+>>>>>>> master
 		boxes = new LinkedList<DisplayBox> ();
+		resizeWindow = new ResizeWindow (new Rectangle (24, 104, ResizeWindow.WINDOW_WIDTH, ResizeWindow.WINDOW_HEIGHT), this);
+		attributeRegion.hide();
 		
 	}
 	
@@ -62,8 +68,12 @@ public class MainPanel extends GuiComponent {
 	public Toolbar getToolbar () {
 		return toolbar;
 	}
-	public VariantSelectMenu getVariantMenu() {
+	public VariantSelectMenu getVariantMenu () {
 		return variantMenu;
+	}
+	
+	public ResizeWindow getResizeWindow () {
+		return resizeWindow;
 	}
 	
 	public DisplayBox addDisplayBox (Rectangle bounds, String message) {
