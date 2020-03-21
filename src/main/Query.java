@@ -78,7 +78,10 @@ public class Query extends GuiComponent {
 				}
 			}
 		}
-	
+	public String getValue () {
+		return value;
+		
+	}
 	public void start () {
 		this.finished = false;
 	}

@@ -78,17 +78,16 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 		int elementIndex = getElementIndex (horizontalIndex, verticalIndex);
 		ArrayList <String> currentAttributes = nameToAttributes.get(((DisplayableTextElement) this.getElements()[elementIndex][0]).getMessage());
 		AttributeSelectRegion region = this.getMainPanel().getAttributeSelectRegion();
-		region.setBoundingRectangle(new Rectangle (((VariantSelectMenu) realParent).getMenuX() + 16 + this.getElementWidth(), ((VariantSelectMenu) realParent).getMenuY() + 32+ (elementIndex * 16),((currentAttributes.size()) * 16) + 16, 16));
+		region.setBoundingRectangle(new Rectangle (((VariantSelectMenu) realParent).getMenuX() + 16 + this.getElementWidth(), ((VariantSelectMenu) realParent).getMenuY() + 32+ (elementIndex * 16),(currentAttributes.size()) * 16 , 16));
 		int index = 0;
 		DisplayableImageElement [][] icons = new DisplayableImageElement [1][10];
-		while (index < currentAttributes.size()) {
 		HashMap<String,String> temporaryInfo = new HashMap<String, String> ();
+		temporaryInfo = currentObject.getVariantInfo();
+		while (index < currentAttributes.size()) {
 		temporaryInfo.put(names.get(elementIndex),currentAttributes.get(index) );
 		icons[0][index] = new DisplayableImageElement (c.getIcon(temporaryInfo),region);
 		index = index + 1;
 		}
-		VariantAddButton button = new VariantAddButton(region);
-		icons[0][index] = new DisplayableImageElement (button.getIcon(),region);
 		region.setCurrentInfo(currentAttributes, names.get(elementIndex));
 		region.setObject(currentObject);
 		region.setElements(icons);

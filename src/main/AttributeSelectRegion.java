@@ -49,6 +49,10 @@ public class AttributeSelectRegion extends SelectionRegion {
 		} else {
 			tbox.hide();
 		}
+		if (query.isFinished()) {
+			currentObject.setVariantInfo(name, query.getValue());
+			query.start();
+		}
 		} catch (IndexOutOfBoundsException e) {
 			
 		}
