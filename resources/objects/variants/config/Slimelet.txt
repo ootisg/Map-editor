@@ -1,4 +1,4 @@
-
+VF 1
 name=type attributes={nv=nv fire=fire ice=ice} filename={Slimelet. value .png}
-name=flip attributes={false=0 true=4} frame=value
-name=direction attributes={right=0 up=1 left=2 down=3} frame={frame value +}
+name=flip attributes={false=0 true=4} tileIndex=value
+name=direction attributes={right=0 up=1 left=2 down=3} tileIndex={tileIndex value +}
