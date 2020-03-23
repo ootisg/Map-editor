@@ -46,6 +46,8 @@ import toolbar.Toolbar;
 
 public class MapInterface extends MovableSelectionRegion {
 	
+	public static String BACKGROUND_LOCATION = "resources/backgrounds/";
+	
 	private TileSelectMenu tileMenu;
 	private ObjectSelectMenu objectMenu;
 	private Toolbar toolbar;
@@ -101,10 +103,20 @@ public class MapInterface extends MovableSelectionRegion {
 	}
 	
 	public boolean edit (MapEdit edit) {
-		undos = new Stack<MapEdit> ();
-		boolean editResult = edit.doEdit ();
-		edits.push (edit);
-		return editResult;
+		if (edit instanceof BackgroundEdit || 
+			edit instanceof ResizeEdit ||
+			edit instanceof ObjectEdit ||
+			map.canEdit () //If map is editable and edit is not one of the above exceptions
+		) {
+			//Do the edit
+			undos = new Stack<MapEdit> ();
+			boolean editResult = edit.doEdit ();
+			edits.push (edit);
+			return editResult;
+		}
+		//Don't do the edit and maybe display a toast or something idfk
+		//Also return false because it didn't do the edit
+		return false;
 	}
 	
 	public boolean undo () {
@@ -148,8 +160,9 @@ public class MapInterface extends MovableSelectionRegion {
 		//Bytes 12-15: Number of layers
 		//Bytes 16-19: Number of objects (placed)
 		//END OF HEADER
-		//Tileset list
+		//Tileset list (background layers are excluded)
 		//Object import list
+		//Background list
 		//Tiles
 		//Object list (x, y, id, variant)
 		JFileChooser chooser = new JFileChooser ("resources/maps");
@@ -225,6 +238,27 @@ public class MapInterface extends MovableSelectionRegion {
 					}
 			}
 		addString (fileBuffer, ";");
+		
+		//Write background list
+		String layerString = "";
+		ArrayList<Map.TileLayer> layers = map.getTileData ();
+		for (int i = 0; i < layers.size (); i ++) {
+			if (i != 0) {
+				addString (fileBuffer, ",");
+			}
+			if (layers.get (i).isBackgroundLayer ()) {
+				//Store layer and scroll info
+				addString (fileBuffer, layers.get (i).getBackgroundFilename ());
+				addString (fileBuffer, ",");
+				addString (fileBuffer, Double.toString (layers.get (i).getBackgroundScrollX ()));
+				addString (fileBuffer, ",");
+				addString (fileBuffer, Double.toString (layers.get (i).getBackgroundScrollY ()));
+			} else {
+				addString (fileBuffer, "_NULL");
+			}
+		}
+		addString (fileBuffer, ";");
+		
 		//Write the tiles
 		ArrayList<BufferedImage> allTiles = tileMenu.getAllTiles ();
 		HashMap<BufferedImage, Integer> tileMap = new HashMap<BufferedImage, Integer> ();
@@ -234,16 +268,18 @@ public class MapInterface extends MovableSelectionRegion {
 		int tileCount = allTiles.size ();
 		int tileSize = getByteCount (tileCount);
 		for (int layer = 0; layer < map.getNumLayers (); layer ++) {
-			for (int wy = 0; wy < map.getHeight (); wy ++) {
-				for (int wx = 0; wx < map.getWidth (); wx ++) {
-					Tile current = map.getTile (layer, wx, wy);
-					int tileId;
-					if (current == null) {
-						tileId = 0;
-					} else {
-						tileId = tileMap.get (current.getIcon ());
+			if (!layers.get (layer).isBackgroundLayer ()) {
+				for (int wy = 0; wy < map.getHeight (); wy ++) {
+					for (int wx = 0; wx < map.getWidth (); wx ++) {
+						Tile current = map.getTile (layer, wx, wy);
+						int tileId;
+						if (current == null) {
+							tileId = 0;
+						} else {
+							tileId = tileMap.get (current.getIcon ());
+						}
+						writeBytes (fileBuffer, tileId, tileSize);
 					}
-					writeBytes (fileBuffer, tileId, tileSize);
 				}
 			}
 		}
@@ -273,6 +309,7 @@ public class MapInterface extends MovableSelectionRegion {
 			}
 			addString (fileBuffer, ";");
 		}
+		
 		//Write changes to the file
 		byte[] writeData = new byte[fileBuffer.size ()];
 		for (int i = 0; i < fileBuffer.size (); i ++) {
@@ -344,6 +381,7 @@ public class MapInterface extends MovableSelectionRegion {
 		//END OF HEADER
 		//Tileset list
 		//Object import list
+		//Background list
 		//Tiles
 		//Object list (x, y, id, variant)
 		JFileChooser chooser = new JFileChooser ("resources/maps");
@@ -401,22 +439,48 @@ public class MapInterface extends MovableSelectionRegion {
 		int mapHeight = getInteger (4);
 		int numLayers = getInteger (4);
 		int numObjects = getInteger (4);
+		
 		//Reset map and tilesets
 		map.resetMap (mapWidth, mapHeight);
 		tileMenu.resetTilesets ();
+		
 		//Read and load new tilesets
 		String tilesets = getString (';');
 		String[] tilesetList = tilesets.split (",");
 		for (int i = 0; i < tilesetList.length; i ++) {
 			tileMenu.addTileset (tilesetList [i]);
 		}
+		
 		//Read and import new objects
 		objectMenu.resetObjs ();
 		String objects = getString (';');
 		String[] objectList = objects.split(",");
-		for (int i = 0; i < objectList.length; i++) {
-			objectMenu.addGameObject("resources/objects/" + objectList[i] + ".png");
+		if (!(objectList [0].equals ("") && objectList.length == 1)) {
+			for (int i = 0; i < objectList.length; i++) {
+				objectMenu.addGameObject("resources/objects/" + objectList[i] + ".png");
+			}
 		}
+		
+		//Read and import backgrounds
+		ArrayList<Map.TileLayer> tiledLayers = new ArrayList<Map.TileLayer> ();
+		String backgrounds = getString (';');
+		String[] backgroundList = backgrounds.split (",");
+		int bi = 0;
+		for (int l = 0; l < numLayers; l ++) {
+			Map.TileLayer newLayer = map.addLayer (mapWidth, mapHeight);
+			System.out.println (backgrounds);
+			if (backgroundList [bi].equals ("_NULL")) {
+				//Layer is a tile layer
+				tiledLayers.add (newLayer);
+			} else {
+				//Layer is a background layer
+				newLayer.setBackground (backgroundList [bi]);
+				double scrollX = Double.parseDouble (backgroundList [bi ++]);
+				double scrollY = Double.parseDouble (backgroundList [bi ++]);
+				newLayer.setBackgroundScroll (scrollX, scrollY);
+			}
+		}
+		
 		//Read and import tile data
 		ArrayList<BufferedImage> tileImgs = tileMenu.getAllTiles ();
 		ArrayList<Tile> tileObjs = new ArrayList<Tile> ();
@@ -424,14 +488,15 @@ public class MapInterface extends MovableSelectionRegion {
 			tileObjs.add (new Tile (tileImgs.get (i), this));
 		}
 		int tileSize = getByteCount (tileObjs.size ());
-		for (int l = 0; l < numLayers; l ++) {
-			Map.TileLayer newLayer = map.addLayer (mapWidth, mapHeight);
+		for (int l = 0; l < tiledLayers.size (); l ++) {
+			Map.TileLayer currentLayer = tiledLayers.get (l);
 			for (int wy = 0; wy < mapHeight; wy ++) {
 				for (int wx = 0; wx < mapWidth; wx ++) {
-					newLayer.set (wx, wy, tileObjs.get (getInteger (tileSize)));
+					currentLayer.set (wx, wy, tileObjs.get (getInteger (tileSize)));
 				}
 			}
 		}
+		
 		//Read and import object data
 		for (int i = 0; i < numObjects; i++) {
 			int x = getInteger (this.getByteCount(mapWidth));

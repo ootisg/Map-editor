@@ -119,10 +119,8 @@ public class VariantConfig {
 		int tileWidth = Integer.parseInt (varMap.get ("tileWidth"));
 		int tileHeight = Integer.parseInt (varMap.get ("tileHeight"));
 		String filename = varMap.get ("filename");
-		System.out.println (filename);
 		Sprite loadSrc = new Sprite ("resources/objects/variants/icons/" + filename);
 		BufferedImage loadImg = loadSrc.getImageArray ()[0];
-		System.out.println (varMap.get ("frame"));
 		//Find the region to parse out and return it
 		if (!(iconX.equals ("NULL")) && !(iconY.equals ("NULL"))) {
 			int xGet = Integer.parseInt (iconX);
