@@ -3,6 +3,7 @@ package main;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -75,26 +76,32 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 	@Override
 	public void doClickOnElement (int horizontalIndex, int verticalIndex) {
 		try {
-		int elementIndex = getElementIndex (horizontalIndex, verticalIndex);
-		ArrayList <String> currentAttributes = nameToAttributes.get(((DisplayableTextElement) this.getElements()[elementIndex][0]).getMessage());
-		AttributeSelectRegion region = this.getMainPanel().getAttributeSelectRegion();
-		region.setBoundingRectangle(new Rectangle (((VariantSelectMenu) realParent).getMenuX() + 16 + this.getElementWidth(), ((VariantSelectMenu) realParent).getMenuY() + 32+ (elementIndex * 16),(currentAttributes.size()) * 16 , 16));
-		int index = 0;
-		DisplayableImageElement [][] icons = new DisplayableImageElement [1][10];
-		HashMap<String,String> temporaryInfo = new HashMap<String, String> ();
-		temporaryInfo = currentObject.getVariantInfo();
-		while (index < currentAttributes.size()) {
-		temporaryInfo.put(names.get(elementIndex),currentAttributes.get(index) );
-		icons[0][index] = new DisplayableImageElement (c.getIcon(temporaryInfo),region);
-		index = index + 1;
-		}
-		region.setCurrentInfo(currentAttributes, names.get(elementIndex));
-		region.setObject(currentObject);
-		region.setElements(icons);
-		region.show();
-		} catch (Exception e) {
+			int elementIndex = getElementIndex (horizontalIndex, verticalIndex);
+			ArrayList <String> currentAttributes = nameToAttributes.get(((DisplayableTextElement) this.getElements()[elementIndex][0]).getMessage());
+			AttributeSelectRegion region = this.getMainPanel().getAttributeSelectRegion();
+			region.setBoundingRectangle(new Rectangle (((VariantSelectMenu) realParent).getMenuX() + 16 + this.getElementWidth(), ((VariantSelectMenu) realParent).getMenuY() + 32+ (elementIndex * 16),((currentAttributes.size()) * 16) + 16, 16));
+			int index = 0;
+			DisplayableImageElement [][] icons = new DisplayableImageElement [1][10];
+			HashMap<String,String> temporaryInfo = ((GameObject) currentObject.clone()).getVariantInfo();
+			while (index < currentAttributes.size()) {
 			
-		}
+			temporaryInfo.put(names.get(elementIndex),currentAttributes.get(index) );
+			icons[0][index] = new DisplayableImageElement (c.getIcon(temporaryInfo),region);
+			index = index + 1;
+			}
+			VariantAddButton button = new VariantAddButton(region);
+			icons[0][index] = new DisplayableImageElement (button.getIcon(),region);
+			region.setCurrentInfo(currentAttributes, names.get(elementIndex));
+			region.setObject(currentObject);
+			region.setElements(icons);
+			region.show();
+			} catch (Exception e) {
+				
+			}
 	}
-
+	@Override
+	public void draw() {
+		super.draw();
+		System.out.println(currentObject.getStrangeVariantInfo().get("flip"));
+	}
 }

@@ -185,7 +185,7 @@ public class MapInterface extends MovableSelectionRegion {
 		for (int i = 0; i < map.getWidth(); i = i + 1) {
 			for (int j = 0; j < map.getHeight(); j = j + 1) {
 				if (objectsInTheMap[i][j] != null) {
-					objectsInTheMap[i][j].setCoords(i, j);
+					objectsInTheMap[i][j].setCoords(j, i);
 					objects.add(objectsInTheMap[i][j]);
 					objectCount = objectCount + 1; 
 				}
@@ -268,6 +268,15 @@ public class MapInterface extends MovableSelectionRegion {
 				String currentName = iter4.next();
 				addString (fileBuffer, currentName + ":" + currentObject.getVariantInfo().get(currentName));
 				if (iter4.hasNext()) {
+					addString (fileBuffer, ",");
+				}
+			}
+			addString (fileBuffer, "#");
+			Iterator <String> iter5 = currentObject.getStrangeNameList().iterator();
+			while (iter5.hasNext()) {
+				String currentName = iter5.next();
+				addString (fileBuffer, currentName + ":" + currentObject.getStrangeVariantInfo().get(currentName));
+				if (iter5.hasNext()) {
 					addString (fileBuffer, ",");
 				}
 			}
@@ -440,7 +449,13 @@ public class MapInterface extends MovableSelectionRegion {
 			GameObject currentObject = new GameObject ("resources/objects/" + objectList[object] + ".png",this);
 			this.edit(new ObjectEdit (x/16,y/16,objectsInTheMap,currentObject));
 			String variantInfo = getString (';');
-			String [] variantList = variantInfo.split(",");
+			String [] variantInfos = new String [2];
+			if (variantInfo.contains("#")) {
+				variantInfos = variantInfo.split("#");
+			} else {
+				variantInfos[0] = variantInfo;
+			}
+			String [] variantList = variantInfos[0].split(",");
 			if(variantInfo.contains(":")) {
 				for (int j = 0; j < variantList.length; j ++) {
 					String[] infoSegments = variantList[j].split(":");
