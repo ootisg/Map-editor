@@ -31,6 +31,7 @@ public class Toolbar extends GuiComponent {
 		new UndoButton (this);
 		new RedoButton (this);
 		new ResizeButton (this);
+		new BackgroundButton (this);
 		new NewLayerButton (this);
 		new SwitchLayerButton (this);
 		new LayerModeButton (this);

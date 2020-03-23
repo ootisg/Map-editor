@@ -3,11 +3,13 @@ package map;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Stack;
 
 import main.DisplayableElement;
 import main.Tile;
+import resources.Sprite;
 
 public class Map {
 	
@@ -163,9 +165,18 @@ public class Map {
 		}
 	}
 	
+	public boolean canEdit () {
+		return !getActiveLayer ().isBackgroundLayer ();
+	}
+	
 	public class TileLayer {
 		
 		private Tile[][] data;
+		private String backgroundPath;
+		private BufferedImage background;
+		
+		private double backgroundScrollX;
+		private double backgroundScrollY;
 		
 		public TileLayer (int width, int height) {
 			data = new Tile[height][width];
@@ -220,6 +231,62 @@ public class Map {
 			}
 			data = temp;
 			renderedTiles = displayTemp;
+		}
+		
+		public boolean hasTiles () {
+			for (int wy = 0; wy < data.length; wy ++) {
+				for (int wx = 0; wx < data [0].length; wx ++) {
+					if (data [wy][wx] != null) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+		
+		public boolean isBackgroundLayer () {
+			return background != null;
+		}
+		
+		public String getBackgroundFilename () {
+			String[] elements = backgroundPath.split ("\\\\|/");
+			return elements [elements.length - 1];
+		}
+		
+		public String getBackgroundPath () {
+			return backgroundPath;
+		}
+		
+		public BufferedImage getBackground () {
+			return background;
+		}
+		
+		public void setBackgroundScroll (double scrollX, double scrollY) {
+			backgroundScrollX = scrollX;
+			backgroundScrollY = scrollY;
+		}
+		
+		public double getBackgroundScrollX () {
+			return backgroundScrollX;
+		}
+		
+		public double getBackgroundScrollY () {
+			return backgroundScrollY;
+		}
+		
+		/**
+		 * Sets the background to the given filepath. Throws an IllegalStateException if this layer has any tiles on it.
+		 * @param path the filepath to the background
+		 * @throws IllegalStateException
+		 * @throws FileNotFoundException
+		 */
+		public void setBackground (String path) throws IllegalStateException {
+			if (hasTiles ()) {
+				throw new IllegalStateException ("Layers with tiles cannot have a background");
+			} else {
+				backgroundPath = path;
+				background = Sprite.getImage (path);
+			}
 		}
 	}
 }
