@@ -40,7 +40,18 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 	}
 	public void changeDisplayingVariants() {
 		String oldString = getMainPanel().getMapInterface().getSelectedRegion().getSelectedGameObject().getPath();
+		GameObject oldObject;
+		try {
+		oldObject = (GameObject) currentObject.clone();
+		} catch (NullPointerException e) {
+		oldObject =	getMainPanel().getMapInterface().getSelectedRegion().getSelectedGameObject(); 
+		}
 		currentObject =  getMainPanel().getMapInterface().getSelectedRegion().getSelectedGameObject(); 
+		if (!oldObject.getObjectName().equals((currentObject).getObjectName())) {
+			names = new ArrayList <String>();
+			nameToAttributes = new HashMap<String,ArrayList<String>>();
+			this.getMainPanel().getAttributeSelectRegion().hide();
+		}
 		int i = oldString.length() - 1;
 		while (oldString.charAt(i) != '\\' && oldString.charAt(i) != '/'  ) {
 			i = i - 1;
@@ -81,7 +92,7 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 			AttributeSelectRegion region = this.getMainPanel().getAttributeSelectRegion();
 			region.setBoundingRectangle(new Rectangle (((VariantSelectMenu) realParent).getMenuX() + 16 + this.getElementWidth(), ((VariantSelectMenu) realParent).getMenuY() + 32+ (elementIndex * 16),((currentAttributes.size()) * 16) + 16, 16));
 			int index = 0;
-			DisplayableImageElement [][] icons = new DisplayableImageElement [1][10];
+			DisplayableImageElement [][] icons = new DisplayableImageElement [1][20];
 			HashMap<String,String> temporaryInfo = ((GameObject) currentObject.clone()).getVariantInfo();
 			while (index < currentAttributes.size()) {
 			
@@ -98,10 +109,5 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 			} catch (Exception e) {
 				
 			}
-	}
-	@Override
-	public void draw() {
-		super.draw();
-		System.out.println(currentObject.getStrangeVariantInfo().get("flip"));
 	}
 }

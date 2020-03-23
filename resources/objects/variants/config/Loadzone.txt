@@ -1,2 +1,2 @@
 VF 1
-destination:query
+name=destination attributes={nv=nv} filename={Loadzone.png}

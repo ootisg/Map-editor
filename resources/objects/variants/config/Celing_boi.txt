@@ -1,2 +1,2 @@
 VF 1
-startPos;left,middle,right:variant
+name=startPos attributes={left=0 middle=1 right=2} filename={Celing_boi.png} tileIndex=value
