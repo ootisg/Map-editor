@@ -3,6 +3,7 @@ package map;
 import java.util.Arrays;
 
 import main.Tile;
+import main.Tileset;
 
 public class TileEdit implements MapEdit {
 

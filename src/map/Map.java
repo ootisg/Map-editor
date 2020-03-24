@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 import main.DisplayableElement;
+import main.MainPanel;
 import main.Tile;
+import main.Tileset;
 import resources.Sprite;
 
 public class Map {
@@ -45,14 +47,27 @@ public class Map {
 	}
 	
 	public void renderElements () {
-		for (int wy = 0; wy < renderedTiles.length; wy ++) {
+		//Now unnecessary ;-;
+		/*for (int wy = 0; wy < renderedTiles.length; wy ++) {
 			for (int wx = 0; wx < renderedTiles [0].length; wx ++) {
 				renderCell (wx, wy);
+			}
+		}*/
+	}
+	
+	public void renderElements (double viewX, double viewY, double viewWidth, double viewHeight) {
+		int minX = (int)viewX;
+		int maxX = (int)Math.ceil (viewX + viewWidth);
+		int minY = (int)viewY;
+		int maxY = (int)Math.ceil (viewY + viewHeight);
+		for (int wy = minY; wy < maxY && wy < renderedTiles.length; wy ++) {
+			for (int wx = minX; wx < maxX && wx < renderedTiles [0].length; wx ++) {
+				renderCell (wx, wy, viewX, viewY);
 			}
 		}
 	}
 	
-	public void renderCell (int x, int y) {
+	public void renderCell (int x, int y, double viewX, double viewY) {
 		BufferedImage fullRender = new BufferedImage (mapInterface.getElementWidth (), mapInterface.getElementHeight (), BufferedImage.TYPE_INT_ARGB);
 		Graphics g = fullRender.getGraphics ();
 		for (int i = 0; i < mapData.size (); i ++) {
@@ -60,7 +75,85 @@ public class Map {
 			//Only render top mode
 			if (onlyTopLayer) {
 				l = topDisplayLayer;
-				Tile iconTile = mapData.get (l).get (x, y);
+				if (mapData.get (l).isBackgroundLayer ()) {
+					int subWidth = mapInterface.getElementWidth ();
+					int subHeight = mapInterface.getElementHeight ();
+					int subX = (int)((x - (viewX) * mapData.get (l).getBackgroundScrollX ()) * subWidth);
+					int subY = (int)((y - (viewY) * mapData.get (l).getBackgroundScrollY ()) * subHeight);
+					int offsX = 0;
+					int offsY = 0;
+					BufferedImage bkg = mapData.get (l).getBackground ();
+					if (subX >= bkg.getWidth () || subY >= bkg.getHeight () || subX <= -subWidth || subY <= -subHeight) {
+						break; //Don't draw anything
+					} else {
+						//Make subimage area smaller to avoid out-of-bounds
+						if (subX < 0) {
+							offsX = -subX;
+							subWidth = subWidth + subX;
+							subX = 0;
+						}
+						if (subY < 0) {
+							offsY = -subY;
+							subHeight = subHeight + subY;
+							subY = 0;
+						}
+						if (subX + subWidth > bkg.getWidth ()) {
+							subWidth = bkg.getWidth () - subX;
+						}
+						if (subY + subHeight > bkg.getHeight ()) {
+							subHeight = bkg.getHeight () - subY;
+						}
+					}
+					BufferedImage subimg = bkg.getSubimage (subX, subY, subWidth, subHeight);
+					g.drawImage (subimg, offsX, offsY, null);
+					break;
+				} else {
+					Tile iconTile = mapData.get (l).get (x, y);
+					BufferedImage icon;
+					if (iconTile == null) {
+						icon = null;
+					} else {
+						icon = iconTile.getIcon ();
+					}
+					if (icon != null) {
+						g.drawImage (icon, 0, 0, null);
+					}
+					break;
+				}
+			} 
+			Tile iconTile = mapData.get (l).get (x, y);
+			if (mapData.get (l).isBackgroundLayer ()) {
+				int subWidth = mapInterface.getElementWidth ();
+				int subHeight = mapInterface.getElementHeight ();
+				int subX = (int)((x - (viewX) * mapData.get (l).getBackgroundScrollX ()) * subWidth);
+				int subY = (int)((y - (viewY) * mapData.get (l).getBackgroundScrollY ()) * subHeight);
+				int offsX = 0;
+				int offsY = 0;
+				BufferedImage bkg = mapData.get (l).getBackground ();
+				if (subX >= bkg.getWidth () || subY >= bkg.getHeight () || subX <= -subWidth || subY <= -subHeight) {
+					break; //Don't draw anything
+				} else {
+					//Make subimage area smaller to avoid out-of-bounds
+					if (subX < 0) {
+						offsX = -subX;
+						subWidth = subWidth + subX;
+						subX = 0;
+					}
+					if (subY < 0) {
+						offsY = -subY;
+						subHeight = subHeight + subY;
+						subY = 0;
+					}
+					if (subX + subWidth > bkg.getWidth ()) {
+						subWidth = bkg.getWidth () - subX;
+					}
+					if (subY + subHeight > bkg.getHeight ()) {
+						subHeight = bkg.getHeight () - subY;
+					}
+				}
+				BufferedImage subimg = bkg.getSubimage (subX, subY, subWidth, subHeight);
+				g.drawImage (subimg, offsX, offsY, null);
+			} else {
 				BufferedImage icon;
 				if (iconTile == null) {
 					icon = null;
@@ -70,27 +163,19 @@ public class Map {
 				if (icon != null) {
 					g.drawImage (icon, 0, 0, null);
 				}
-				break;
-			} 
-			Tile iconTile = mapData.get (l).get (x, y);
-			BufferedImage icon;
-			if (iconTile == null) {
-				icon = null;
-			} else {
-				icon = iconTile.getIcon ();
-			}
-			if (icon != null) {
-				g.drawImage (icon, 0, 0, null);
 			}
 			//Avoid an infinite loop for the 1 layer case
 			if (mapData.size () == 1) {
 				break;
 			}
-			
 		}
 		Tile working = new Tile (fullRender, mapInterface);
 		renderedTiles [y][x] = working;
 	}
+	
+	/*public BufferedImage getBackground () {
+		
+	}*/
 	
 	public DisplayableElement[][] getRenderedElements () {
 		return renderedTiles;
@@ -135,6 +220,7 @@ public class Map {
 	public TileLayer addLayer (int width, int height) {
 		TileLayer layer = new TileLayer (width, height);
 		mapData.add (layer);
+		activeLayer = mapData.get (mapData.size () - 1);
 		return layer;
 	}
 	
@@ -213,7 +299,7 @@ public class Map {
 					resized = true;
 				}
 				data [y][x] = tile;
-				renderCell (x, y);
+				//renderCell (x, y);
 				return resized;
 			} else {
 				return false;

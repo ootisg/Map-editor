@@ -11,14 +11,21 @@ public class Tileset extends DisplayableImageElement {
 	private String path;
 	private BufferedImage[][] images;
 	
+	public static final BufferedImage[][] nullSet = parseImage ("resources/tilesets/transparent.png", 16, 16);
+	
 	public Tileset (String path, int tileWidth, int tileHeight, GuiComponent parent) {
 		super (null, parent);
-		images = parseImage (path, tileWidth, tileHeight);
+		if (path == null) {
+			images = nullSet;
+			this.path = "_NULL";
+		} else {
+			images = parseImage (path, tileWidth, tileHeight);
+			this.path = path;
+		}
 		setIcon (images [0][0]);
-		this.path = path;
 	}
 	
-	public BufferedImage[][] parseImage (String path, int tileWidth, int tileHeight) {
+	public static BufferedImage[][] parseImage (String path, int tileWidth, int tileHeight) {
 		Sprite loadImg = null;
 		loadImg = new Sprite (path);
 		BufferedImage loadBuffer = loadImg.getImageArray ()[0];
@@ -38,6 +45,9 @@ public class Tileset extends DisplayableImageElement {
 	}
 	
 	public Tile[][] getParsedTiles (GuiComponent parent) {
+		if (images == null) {
+			return null;
+		}
 		Tile[][] result = new Tile[images.length][images [0].length];
 		for (int i = 0; i < images.length; i ++) {
 			for (int j = 0; j < images[0].length; j ++) {

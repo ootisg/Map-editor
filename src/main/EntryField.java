@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 public class EntryField extends GuiComponent {
 
 	public static final int OUTLINE_COLOR = 0x000000;
+	public static final int OUTLINE_COLOR_INVALID = 0xFF0000;
 	public static final int FILL_COLOR = 0xC0C0C0;
 	public static final int TEXT_COLOR = 0x000000;
 	
@@ -18,6 +19,7 @@ public class EntryField extends GuiComponent {
 	public static final int TEXT_PADDING_TOP = 0;
 	
 	boolean focus = false;
+	boolean valid = true;
 	
 	int maxLength = 3;
 	
@@ -43,11 +45,17 @@ public class EntryField extends GuiComponent {
 		}
 		
 		//Okay here's the reasonable code
+		//Set the outline color
+		int outlineColor = OUTLINE_COLOR;
+		if (!valid) {
+			outlineColor = OUTLINE_COLOR_INVALID;
+		}
+		//Then do the stuff
 		Rectangle bounds = getBoundingRectangle ();
 		Graphics g = getGraphics ();
 		g.setColor (new Color (FILL_COLOR));
 		g.fillRect (0, 0, bounds.width, bounds.height);
-		g.setColor (new Color (OUTLINE_COLOR));
+		g.setColor (new Color (outlineColor));
 		g.drawRect (0, 0, bounds.width - 1, bounds.height - 1);
 		g.setColor (new Color (TEXT_COLOR));
 		g.drawString (value, TEXT_PADDING_LEFT, TEXT_PADDING_TOP + g.getFontMetrics ().getAscent ());
@@ -66,12 +74,28 @@ public class EntryField extends GuiComponent {
 		return value;
 	}
 	
+	public void setContent (String s) {
+		value = s;
+	}
+	
 	private void addChar (char c) {
 		value += c;
 	}
 	
 	public void reset () {
 		value = defaultString;
+		valid = true;
+	}
+	
+	public boolean isValid () {
+		return valid;
+	}
+	
+	private void checkValid () {
+		GuiComponent parent = getParent ();
+		if (parent instanceof EntryFieldValidator) {
+			valid = ((EntryFieldValidator)parent).isValid (this);
+		}
 	}
 	
 	@Override
@@ -87,6 +111,7 @@ public class EntryField extends GuiComponent {
 				addChar (keyChar);
 			}
 		}
+		checkValid ();
 	}
 	
 	@Override
@@ -105,6 +130,7 @@ public class EntryField extends GuiComponent {
 				}
 			}
 		}
+		checkValid ();
 	}
 	
 	@Override

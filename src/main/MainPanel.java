@@ -9,16 +9,17 @@ import toolbar.Toolbar;
 
 public class MainPanel extends GuiComponent {
 	
-	private TileSelectMenu tileMenu;
-	private ObjectSelectMenu objectMenu;
-	private VariantSelectMenu variantMenu;
-	private MapInterface canvas;
-	private Toolbar toolbar;
-	private VariantCloseButton closeButton;
-	private LinkedList<DisplayBox> boxes;
-	private ResizeWindow resizeWindow;
-	private AttributeSelectRegion attributeRegion;
-	private Map map;
+	private static TileSelectMenu tileMenu;
+	private static ObjectSelectMenu objectMenu;
+	private static VariantSelectMenu variantMenu;
+	private static MapInterface canvas;
+	private static Toolbar toolbar;
+	private static VariantCloseButton closeButton;
+	private static LinkedList<DisplayBox> boxes;
+	private static ResizeWindow resizeWindow;
+	private static BackgroundWindow backgroundWindow;
+	private static AttributeSelectRegion attributeRegion;
+	private static Map map;
 	
 	public MainPanel (Rectangle bounds, Gui gui) {
 		super (bounds, gui);
@@ -36,41 +37,46 @@ public class MainPanel extends GuiComponent {
 		variantMenu.hide();
 		closeButton.hide();
 		boxes = new LinkedList<DisplayBox> ();
+		backgroundWindow = new BackgroundWindow (new Rectangle (24, 104, BackgroundWindow.WINDOW_WIDTH, BackgroundWindow.WINDOW_HEIGHT), this);
 		resizeWindow = new ResizeWindow (new Rectangle (24, 104, ResizeWindow.WINDOW_WIDTH, ResizeWindow.WINDOW_HEIGHT), this);
 		attributeRegion.hide();
 		
 	}
 	
-	public MapInterface getMapInterface () {
+	public static MapInterface getMapInterface () {
 		return canvas;
 	}
-	public VariantCloseButton getVariantCloseButton () {
+	public static VariantCloseButton getVariantCloseButton () {
 		return closeButton;
 	}
-	public AttributeSelectRegion getAttributeSelectRegion () {
+	public static AttributeSelectRegion getAttributeSelectRegion () {
 		return attributeRegion;
 	}
-	public TileSelectMenu getTileMenu () {
+	public static TileSelectMenu getTileMenu () {
 		return tileMenu;
 	}
 	
-	public ObjectSelectMenu getObjectMenu () {
+	public static ObjectSelectMenu getObjectMenu () {
 		return objectMenu;
 	}
 	
-	public Map getMap () {
+	public static Map getMap () {
 		return map;
 	}
 
-	public Toolbar getToolbar () {
+	public static Toolbar getToolbar () {
 		return toolbar;
 	}
-	public VariantSelectMenu getVariantMenu () {
+	public static VariantSelectMenu getVariantMenu () {
 		return variantMenu;
 	}
 	
-	public ResizeWindow getResizeWindow () {
+	public static ResizeWindow getResizeWindow () {
 		return resizeWindow;
+	}
+	
+	public static BackgroundWindow getBackgroundWindow () {
+		return backgroundWindow;
 	}
 	
 	public DisplayBox addDisplayBox (Rectangle bounds, String message) {

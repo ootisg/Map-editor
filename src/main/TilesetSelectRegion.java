@@ -16,7 +16,7 @@ public class TilesetSelectRegion extends ScrollableSelectionRegion {
 	public TilesetSelectRegion (Rectangle bounds, GuiComponent parent) {
 		super (bounds, parent);
 		resetTilesets ();
-		addTileset ("resources/tilesets/transparent.png");
+		addTileset (null);
 	}
 	
 	public void resetTilesets () {
@@ -54,7 +54,7 @@ public class TilesetSelectRegion extends ScrollableSelectionRegion {
 				if (getSelectedRegion ().getStartX () == selectedX && getSelectedRegion ().getStartY () == selectedY) {
 					//CLICKCEPTION!
 					BufferedImage[][] parsedImages = ((Tileset)(getElements ()[selectedY][selectedX])).getParsedImages ();
-					if (!(parsedImages.length == 1 && parsedImages [0].length == 1)) {
+					if (parsedImages != null && !(parsedImages.length == 1 && parsedImages [0].length == 1)) {
 						TileSelectMenu frame = (TileSelectMenu)getParent ();
 						frame.getTileSelect ().setTileset ((Tileset)getElements ()[selectedY][selectedX]);
 						frame.getTileSelect ().show ();
@@ -99,7 +99,7 @@ public class TilesetSelectRegion extends ScrollableSelectionRegion {
 	
 	public void addTileset (String path) {
 		Tileset workingSet = getTileset (path);
-		if (/*!hasTileset (workingSet)*/true) {
+		if (!hasTileset (workingSet)) {
 			if (setCount >= getElements ().length * getElements ()[0].length) {
 				addRow ();
 			}

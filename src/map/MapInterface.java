@@ -27,6 +27,7 @@ import main.ExtendButton;
 import main.GameObject;
 import main.GuiComponent;
 import main.IconButton;
+import main.MainLoop;
 import main.MainPanel;
 import main.MovableSelectionRegion;
 import main.ObjectSelectMenu;
@@ -468,13 +469,13 @@ public class MapInterface extends MovableSelectionRegion {
 		int bi = 0;
 		for (int l = 0; l < numLayers; l ++) {
 			Map.TileLayer newLayer = map.addLayer (mapWidth, mapHeight);
-			System.out.println (backgrounds);
 			if (backgroundList [bi].equals ("_NULL")) {
 				//Layer is a tile layer
 				tiledLayers.add (newLayer);
+				bi ++;
 			} else {
 				//Layer is a background layer
-				newLayer.setBackground (backgroundList [bi]);
+				newLayer.setBackground (BACKGROUND_LOCATION + backgroundList [bi ++]);
 				double scrollX = Double.parseDouble (backgroundList [bi ++]);
 				double scrollY = Double.parseDouble (backgroundList [bi ++]);
 				newLayer.setBackgroundScroll (scrollX, scrollY);
@@ -485,14 +486,19 @@ public class MapInterface extends MovableSelectionRegion {
 		ArrayList<BufferedImage> tileImgs = tileMenu.getAllTiles ();
 		ArrayList<Tile> tileObjs = new ArrayList<Tile> ();
 		for (int i = 0; i < tileImgs.size (); i ++) {
-			tileObjs.add (new Tile (tileImgs.get (i), this));
+			tileObjs.add (new Tile (tileImgs.get (i), this)); //TODO provide non-blank string here or let null tiles save
 		}
 		int tileSize = getByteCount (tileObjs.size ());
 		for (int l = 0; l < tiledLayers.size (); l ++) {
 			Map.TileLayer currentLayer = tiledLayers.get (l);
 			for (int wy = 0; wy < mapHeight; wy ++) {
 				for (int wx = 0; wx < mapWidth; wx ++) {
-					currentLayer.set (wx, wy, tileObjs.get (getInteger (tileSize)));
+					int tileId = getInteger (tileSize);
+					if (tileId == 0) {
+						currentLayer.set (wx, wy, null);
+					} else {
+						currentLayer.set (wx, wy, tileObjs.get (tileId));
+					}
 				}
 			}
 		}
@@ -591,6 +597,13 @@ public class MapInterface extends MovableSelectionRegion {
 			bottomExtend.show ();
 		}
 		
+		//Calculate redraw area and re-render tiles
+		double redrawX = getViewX () / (getElementWidth () * getScale ());
+		double redrawWidth = bounds.getWidth () / (getElementWidth () * getScale ());
+		double redrawY = getViewY () / (getElementHeight () * getScale ());
+		double redrawHeight = bounds.getHeight () / (getElementHeight () * getScale ());
+		map.renderElements (redrawX, redrawY, redrawWidth, redrawHeight);
+		
 		//Draw tiles
 		Graphics g = getGui ().getWindow ().getBuffer ();
 		g.setColor (new Color (0xA0A0A0));
@@ -617,10 +630,17 @@ public class MapInterface extends MovableSelectionRegion {
 	
 	@Override
 	public void drawTileRegion (TileRegion region) {
+		//Null check
+		if (region == null) {
+			return;
+		}
 		Graphics2D g = (Graphics2D)getGraphics ();
 		if (toolbar.getSelectedItem () instanceof PlaceButton || toolbar.getSelectedItem () instanceof PasteButton) {
 			//May be hacky, check later
 			Tile[][] renderedTiles = usedTiles;
+			if (usedTiles == null) {
+				return;
+			}
 			if (toolbar.getSelectedItem () instanceof PasteButton) {
 				renderedTiles = copyTiles;
 			}
