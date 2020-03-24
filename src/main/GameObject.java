@@ -14,11 +14,14 @@ public class GameObject extends DisplayableImageElement {
 	private int y;
 	HashMap<String, String> variantInfo = new HashMap<String, String>();
 	String filepath = "";
+	HashMap <String, String> strangeVariantInfo = new HashMap<String, String>();
 	private ArrayList  <String> nameList= new ArrayList<String>();
+	private ArrayList <String> strangeNameList = new ArrayList<String> ();
 	static BufferedImage loadBuffer = null;
 	
 	public GameObject (BufferedImage img, GuiComponent parent) {
 		super (img, parent);
+		
 	}
 	public GameObject (String path, GuiComponent parent) {
 		super (null, parent);
@@ -36,6 +39,8 @@ public class GameObject extends DisplayableImageElement {
 		while (iter.hasNext()) {
 			String worker = iter.next();
 			working.setVariantInfo(worker, this.getVariantInfo().get(worker));
+			working.setStrangeVariantInfo(worker, this.getVariantInfo().get(worker));
+			
 		}
 		working.setCoords(x, y);
 		working.mapObj = this.isMapObject();
@@ -52,6 +57,10 @@ public class GameObject extends DisplayableImageElement {
 	}
 	public void setVariantInfo (String name, String attribute){
 		if (!this.getNameList().contains(name)) {
+			if (this.getStrangeNameList().contains(name)) {
+				strangeVariantInfo.remove(name);
+				strangeNameList.remove(name);
+			}
 		variantInfo.put(name, attribute);
 		nameList.add(name);
 		} else {
@@ -59,8 +68,27 @@ public class GameObject extends DisplayableImageElement {
 			variantInfo.put(name, attribute);
 		}
 	}
+	public HashMap<String, String> getStrangeVariantInfo () {
+		return strangeVariantInfo;
+	}
+	public void setStrangeVariantInfo (String name, String attribute){
+		if (!this.getStrangeNameList().contains(name)) {
+			if (this.getNameList().contains(name)) {
+				variantInfo.remove(name);
+				nameList.remove(name);
+			}
+		strangeVariantInfo.put(name, attribute);
+		strangeNameList.add(name);
+		} else {
+			strangeVariantInfo.remove(name);
+			strangeVariantInfo.put(name, attribute);
+		}
+	}
 	public ArrayList <String> getNameList(){
 		return nameList;
+	}
+	public ArrayList <String> getStrangeNameList (){
+		return strangeNameList;
 	}
 	public void setCoords (int newX, int newY) {
 		this.x = newX;
@@ -80,5 +108,4 @@ public class GameObject extends DisplayableImageElement {
 	public boolean isMapObject () {
 		return mapObj;
 	}
-	
 }

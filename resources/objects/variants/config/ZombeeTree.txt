@@ -1,2 +1,2 @@
 VF 1
-Type;Normal,Wood,Petrified Wood:variant
+name=Type attributes={Normal=N Wood=W PetrifiedWood=PW} filename={ZombeeTree.png}

@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -289,8 +290,8 @@ public class MapInterface extends MovableSelectionRegion {
 		Iterator <GameObject>iter2 = objects.iterator();
 		while(iter2.hasNext()) {
 			GameObject currentObject = iter2.next();
-			this.writeBytes(fileBuffer, currentObject.getX()*16,this.getByteCount(this.getMap().getWidth()));
-			this.writeBytes(fileBuffer, currentObject.getY()*16,this.getByteCount(this.getMap().getHeight()));
+			this.writeBytes(fileBuffer, currentObject.getX(),this.getByteCount(this.getMap().getWidth()));
+			this.writeBytes(fileBuffer, currentObject.getY(),this.getByteCount(this.getMap().getHeight()));
 			Iterator <GameObject> iter3 = objectsUsed.iterator();
 			int index = 0;
 			while (iter3.hasNext()) {
@@ -305,6 +306,17 @@ public class MapInterface extends MovableSelectionRegion {
 				String currentName = iter4.next();
 				addString (fileBuffer, currentName + ":" + currentObject.getVariantInfo().get(currentName));
 				if (iter4.hasNext()) {
+					addString (fileBuffer, ",");
+				}
+			}
+			if (!currentObject.getNameList().isEmpty()) {
+			addString (fileBuffer, "#");
+			}
+			Iterator <String> iter5 = currentObject.getStrangeNameList().iterator();
+			while (iter5.hasNext()) {
+				String currentName = iter5.next();
+				addString (fileBuffer, currentName + ":" + currentObject.getStrangeVariantInfo().get(currentName));
+				if (iter5.hasNext()) {
 					addString (fileBuffer, ",");
 				}
 			}
@@ -444,7 +456,9 @@ public class MapInterface extends MovableSelectionRegion {
 		//Reset map and tilesets
 		map.resetMap (mapWidth, mapHeight);
 		tileMenu.resetTilesets ();
-		
+		for (int i= 0; i < mapWidth; i++) {
+			Arrays.fill(objectsInTheMap[i], null);
+		}
 		//Read and load new tilesets
 		String tilesets = getString (';');
 		String[] tilesetList = tilesets.split (",");
@@ -453,6 +467,7 @@ public class MapInterface extends MovableSelectionRegion {
 		}
 		
 		//Read and import new objects
+		resizeObjects(mapWidth,mapHeight);
 		objectMenu.resetObjs ();
 		String objects = getString (';');
 		String[] objectList = objects.split(",");
@@ -509,18 +524,37 @@ public class MapInterface extends MovableSelectionRegion {
 			int y = getInteger (this.getByteCount(mapHeight));
 			int object = getInteger (this.getByteCount(numObjects));
 			GameObject currentObject = new GameObject ("resources/objects/" + objectList[object] + ".png",this);
-			this.edit(new ObjectEdit (x/16,y/16,objectsInTheMap,currentObject));
+			this.edit(new ObjectEdit (x,y,objectsInTheMap,currentObject));
 			String variantInfo = getString (';');
-			String [] variantList = variantInfo.split(",");
-			if(variantInfo.contains(":")) {
+			String [] variantInfos = new String [2];
+			boolean strangeInfo = false;
+			if (variantInfo.contains("#")) {
+				strangeInfo = true;
+				variantInfos = variantInfo.split("#");
+			} else {
+				variantInfos[0] = variantInfo;
+			}
+			String [] variantList = variantInfos[0].split(",");
+			if(variantInfos[0].contains(":")) {
 				for (int j = 0; j < variantList.length; j ++) {
 					String[] infoSegments = variantList[j].split(":");
 					currentObject.setVariantInfo(infoSegments[0],infoSegments[1]);
 				}
+				VariantConfig c = new VariantConfig ("resources/objects/variants/config/" + currentObject.getObjectName() +".txt");
+				currentObject.changeIcon(c.getIcon(currentObject.getVariantInfo()));
 		}
+			if (strangeInfo) {
+			String [] strangevariantList = variantInfos[1].split(",");
+			if(variantInfos[1].contains(":")) {
+				for (int j = 0; j < strangevariantList.length; j ++) {
+					String[] infoSegments = strangevariantList[j].split(":");
+					currentObject.setStrangeVariantInfo(infoSegments[0],infoSegments[1]);
+				}
+			}
 		}
-		//...
 	}
+		//...
+}
 	
 	private String getString (int length) {
 		byte[] usedData = new byte[length];

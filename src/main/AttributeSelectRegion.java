@@ -3,6 +3,7 @@ package main;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AttributeSelectRegion extends SelectionRegion {
 	ArrayList<String> currentAttributes = new ArrayList<String>();
@@ -25,6 +26,7 @@ public class AttributeSelectRegion extends SelectionRegion {
 		int elementIndex = getElementIndex (horizontalIndex, verticalIndex);
 		VariantConfig c = new VariantConfig("resources/objects/variants/config/" + currentObject.getObjectName() + ".txt");
 		currentObject.setVariantInfo(name, currentAttributes.get(elementIndex));
+	
 		currentObject.setIcon(c.getIcon(currentObject.getVariantInfo()));
 		} catch (IndexOutOfBoundsException e) {
 			query.setBoundingRectangle(new Rectangle (this.getBoundingRectangle().x + ((getElementIndex(horizontalIndex,verticalIndex)) * 16),this.getBoundingRectangle().y - 10,100,30));
@@ -50,7 +52,7 @@ public class AttributeSelectRegion extends SelectionRegion {
 			tbox.hide();
 		}
 		if (query.isFinished()) {
-			currentObject.setVariantInfo(name, query.getValue());
+			currentObject.setStrangeVariantInfo(name, query.getValue());
 			query.start();
 		}
 		} catch (IndexOutOfBoundsException e) {

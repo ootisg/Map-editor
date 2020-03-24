@@ -51,8 +51,12 @@ public class PlaceButton extends ToolbarItem {
 			tilesOrObjects = true;
 		}
 		} else {
+			try {
 	mainPanel.getMapInterface().edit (new ObjectEdit ((int) ((x/(16 * mapInterface.getScale())) + (mapInterface.getViewX()/(16 * mapInterface.getScale()))), (int) ((y/(16 * mapInterface.getScale())) + (mapInterface.getViewY()/(16 * mapInterface.getScale()))), MapInterface.objectsInTheMap,ObjectSelectMenu.objectSelect.getSelectedObject()));	
-		}
+			} catch (IndexOutOfBoundsException e) {
+				
+			}
+			}
 		}
 	}
 	

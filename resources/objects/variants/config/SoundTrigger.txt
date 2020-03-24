@@ -1,2 +1,2 @@
 VF 1
-effectName:query
+name=effectName attributes={nv=nv} filename={SoundTrigger.png}

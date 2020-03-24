@@ -1,2 +1,2 @@
 VF 1
-cutsceen:query
+name=cutsceen attributes={nv=nv} filename={CutsceenTrigger.png}
