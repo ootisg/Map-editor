@@ -37,9 +37,16 @@ public class PlaceButton extends ToolbarItem {
 		//Get currently selected tiles
 		try {
 		if (!tileMenu.getTilesetSelect ().isHidden ()) {
+			boolean nullTile = false;
+			TileRegion selectedSetRegion = tileMenu.getTilesetSelect ().getSelectedRegion ();
+			if (selectedSetRegion.getStartX () == 0 && selectedSetRegion.getStartY () == 0) {
+				nullTile = true;
+			}
 			Tileset selectedSet = tileMenu.getTilesetSelect ().getSelectedTileset ();
-			if (selectedSet != null) {
+			if (selectedSet != null && !nullTile) {
 				usedTiles = selectedSet.getParsedTiles (this);
+			} else {
+				usedTiles = null;
 			}
 		} else {
 			usedTiles = tileMenu.getTileSelect ().getSelectedTiles (this);
