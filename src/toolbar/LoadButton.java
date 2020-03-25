@@ -12,7 +12,7 @@ import map.TileEdit;
 import resources.Sprite;
 
 public class LoadButton extends ToolbarItem {
-	
+	boolean pressed = false;
 	public LoadButton (Toolbar parent) {
 		super (parent);
 		setIcon (new Sprite ("resources/images/load_icon.png").getImageArray () [0]);
@@ -21,6 +21,13 @@ public class LoadButton extends ToolbarItem {
 
 	@Override
 	public void use (int x, int y) {
-		getMainPanel ().getMapInterface ().load ();
+		pressed = true;
+	}
+	@Override 
+	public void frameEvent () {
+		if (pressed) {
+			getMainPanel ().getMapInterface ().load ();
+			pressed = false;
+		}
 	}
 }

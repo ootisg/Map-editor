@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -27,6 +28,7 @@ import main.ExtendButton;
 import main.GameObject;
 import main.GuiComponent;
 import main.IconButton;
+import main.MainLoop;
 import main.MainPanel;
 import main.MovableSelectionRegion;
 import main.ObjectSelectMenu;
@@ -288,8 +290,8 @@ public class MapInterface extends MovableSelectionRegion {
 		Iterator <GameObject>iter2 = objects.iterator();
 		while(iter2.hasNext()) {
 			GameObject currentObject = iter2.next();
-			this.writeBytes(fileBuffer, currentObject.getX()*16,this.getByteCount(this.getMap().getWidth()));
-			this.writeBytes(fileBuffer, currentObject.getY()*16,this.getByteCount(this.getMap().getHeight()));
+			this.writeBytes(fileBuffer, currentObject.getX(),this.getByteCount(this.getMap().getWidth()));
+			this.writeBytes(fileBuffer, currentObject.getY(),this.getByteCount(this.getMap().getHeight()));
 			Iterator <GameObject> iter3 = objectsUsed.iterator();
 			int index = 0;
 			while (iter3.hasNext()) {
@@ -304,6 +306,17 @@ public class MapInterface extends MovableSelectionRegion {
 				String currentName = iter4.next();
 				addString (fileBuffer, currentName + ":" + currentObject.getVariantInfo().get(currentName));
 				if (iter4.hasNext()) {
+					addString (fileBuffer, ",");
+				}
+			}
+			if (!currentObject.getNameList().isEmpty()) {
+			addString (fileBuffer, "#");
+			}
+			Iterator <String> iter5 = currentObject.getStrangeNameList().iterator();
+			while (iter5.hasNext()) {
+				String currentName = iter5.next();
+				addString (fileBuffer, currentName + ":" + currentObject.getStrangeVariantInfo().get(currentName));
+				if (iter5.hasNext()) {
 					addString (fileBuffer, ",");
 				}
 			}
@@ -443,7 +456,9 @@ public class MapInterface extends MovableSelectionRegion {
 		//Reset map and tilesets
 		map.resetMap (mapWidth, mapHeight);
 		tileMenu.resetTilesets ();
-		
+		for (int i= 0; i < mapWidth; i++) {
+			Arrays.fill(objectsInTheMap[i], null);
+		}
 		//Read and load new tilesets
 		String tilesets = getString (';');
 		String[] tilesetList = tilesets.split (",");
@@ -452,6 +467,7 @@ public class MapInterface extends MovableSelectionRegion {
 		}
 		
 		//Read and import new objects
+		resizeObjects(mapWidth,mapHeight);
 		objectMenu.resetObjs ();
 		String objects = getString (';');
 		String[] objectList = objects.split(",");
@@ -468,13 +484,13 @@ public class MapInterface extends MovableSelectionRegion {
 		int bi = 0;
 		for (int l = 0; l < numLayers; l ++) {
 			Map.TileLayer newLayer = map.addLayer (mapWidth, mapHeight);
-			System.out.println (backgrounds);
 			if (backgroundList [bi].equals ("_NULL")) {
 				//Layer is a tile layer
 				tiledLayers.add (newLayer);
+				bi ++;
 			} else {
 				//Layer is a background layer
-				newLayer.setBackground (backgroundList [bi]);
+				newLayer.setBackground (BACKGROUND_LOCATION + backgroundList [bi ++]);
 				double scrollX = Double.parseDouble (backgroundList [bi ++]);
 				double scrollY = Double.parseDouble (backgroundList [bi ++]);
 				newLayer.setBackgroundScroll (scrollX, scrollY);
@@ -485,14 +501,19 @@ public class MapInterface extends MovableSelectionRegion {
 		ArrayList<BufferedImage> tileImgs = tileMenu.getAllTiles ();
 		ArrayList<Tile> tileObjs = new ArrayList<Tile> ();
 		for (int i = 0; i < tileImgs.size (); i ++) {
-			tileObjs.add (new Tile (tileImgs.get (i), this));
+			tileObjs.add (new Tile (tileImgs.get (i), this)); //TODO provide non-blank string here or let null tiles save
 		}
 		int tileSize = getByteCount (tileObjs.size ());
 		for (int l = 0; l < tiledLayers.size (); l ++) {
 			Map.TileLayer currentLayer = tiledLayers.get (l);
 			for (int wy = 0; wy < mapHeight; wy ++) {
 				for (int wx = 0; wx < mapWidth; wx ++) {
-					currentLayer.set (wx, wy, tileObjs.get (getInteger (tileSize)));
+					int tileId = getInteger (tileSize);
+					if (tileId == 0) {
+						currentLayer.set (wx, wy, null);
+					} else {
+						currentLayer.set (wx, wy, tileObjs.get (tileId));
+					}
 				}
 			}
 		}
@@ -503,18 +524,37 @@ public class MapInterface extends MovableSelectionRegion {
 			int y = getInteger (this.getByteCount(mapHeight));
 			int object = getInteger (this.getByteCount(numObjects));
 			GameObject currentObject = new GameObject ("resources/objects/" + objectList[object] + ".png",this);
-			this.edit(new ObjectEdit (x/16,y/16,objectsInTheMap,currentObject));
+			this.edit(new ObjectEdit (x,y,objectsInTheMap,currentObject));
 			String variantInfo = getString (';');
-			String [] variantList = variantInfo.split(",");
-			if(variantInfo.contains(":")) {
+			String [] variantInfos = new String [2];
+			boolean strangeInfo = false;
+			if (variantInfo.contains("#")) {
+				strangeInfo = true;
+				variantInfos = variantInfo.split("#");
+			} else {
+				variantInfos[0] = variantInfo;
+			}
+			String [] variantList = variantInfos[0].split(",");
+			if(variantInfos[0].contains(":")) {
 				for (int j = 0; j < variantList.length; j ++) {
 					String[] infoSegments = variantList[j].split(":");
 					currentObject.setVariantInfo(infoSegments[0],infoSegments[1]);
 				}
+				VariantConfig c = new VariantConfig ("resources/objects/variants/config/" + currentObject.getObjectName() +".txt");
+				currentObject.changeIcon(c.getIcon(currentObject.getVariantInfo()));
 		}
+			if (strangeInfo) {
+			String [] strangevariantList = variantInfos[1].split(",");
+			if(variantInfos[1].contains(":")) {
+				for (int j = 0; j < strangevariantList.length; j ++) {
+					String[] infoSegments = strangevariantList[j].split(":");
+					currentObject.setStrangeVariantInfo(infoSegments[0],infoSegments[1]);
+				}
+			}
 		}
-		//...
 	}
+		//...
+}
 	
 	private String getString (int length) {
 		byte[] usedData = new byte[length];
@@ -591,6 +631,13 @@ public class MapInterface extends MovableSelectionRegion {
 			bottomExtend.show ();
 		}
 		
+		//Calculate redraw area and re-render tiles
+		double redrawX = getViewX () / (getElementWidth () * getScale ());
+		double redrawWidth = bounds.getWidth () / (getElementWidth () * getScale ());
+		double redrawY = getViewY () / (getElementHeight () * getScale ());
+		double redrawHeight = bounds.getHeight () / (getElementHeight () * getScale ());
+		map.renderElements (redrawX, redrawY, redrawWidth, redrawHeight);
+		
 		//Draw tiles
 		Graphics g = getGui ().getWindow ().getBuffer ();
 		g.setColor (new Color (0xA0A0A0));
@@ -617,10 +664,17 @@ public class MapInterface extends MovableSelectionRegion {
 	
 	@Override
 	public void drawTileRegion (TileRegion region) {
+		//Null check
+		if (region == null) {
+			return;
+		}
 		Graphics2D g = (Graphics2D)getGraphics ();
 		if (toolbar.getSelectedItem () instanceof PlaceButton || toolbar.getSelectedItem () instanceof PasteButton) {
 			//May be hacky, check later
 			Tile[][] renderedTiles = usedTiles;
+			if (usedTiles == null) {
+				return;
+			}
 			if (toolbar.getSelectedItem () instanceof PasteButton) {
 				renderedTiles = copyTiles;
 			}

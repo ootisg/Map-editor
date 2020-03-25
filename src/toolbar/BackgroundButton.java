@@ -12,7 +12,7 @@ public class BackgroundButton extends ToolbarItem {
 
 	@Override
 	public void use (int x, int y) {
-		System.out.println ("DO YOU WANT TO CARRY MORE BOMBS?????");
+		getMainPanel ().getBackgroundWindow ().show ();
 	}
 	
 }

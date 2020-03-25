@@ -1,3 +1,3 @@
 VF 1
-Partner:query
-sprite:query
+name=Partner attributes={nv=0} filename={temporaryWall.png}
+name=sprite attributes={nv=0}

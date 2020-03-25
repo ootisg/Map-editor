@@ -1,0 +1,3 @@
+VF 1
+name=color attributes={blue=blue grey=grey red=red} filename={value Car.png}
+name=flip attributes={true=0 false=1} tileIndex=value

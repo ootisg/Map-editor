@@ -58,13 +58,14 @@ public abstract class SelectionRegion extends GuiComponent {
 			elementsHeight = elements.length;
 		}
 		
+		int runs = 0;
 		Rectangle[][] cells = makeGrid (new Rectangle (bounds.x - (int)viewX, bounds.y - (int)viewY, (int)(elementsWidth * elementWidth * scale), (int)(elementsHeight * elementHeight * scale)), displayWidth, displayHeight);
 		for (int i = 0; i <= elements.length && i < cells.length; i ++) {
 			for (int j = 0; j <= elements [0].length && j < cells [0].length; j ++) {
 				if (elements [i][j] != null && cells [i][j] != null) {
 					try {
 					
-					((DisplayableImageElement)(elements [i][j])).render (cells [i][j], g);
+						((DisplayableImageElement)(elements [i][j])).render (cells [i][j], g);
 					} catch (ClassCastException e) {
 						((DisplayableTextElement)elements [i][j]).render(VariantSelectMenu.getVariantSelectRegion(), cells[i][j]);
 					}

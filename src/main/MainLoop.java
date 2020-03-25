@@ -8,6 +8,7 @@ public class MainLoop {
 	private static GameWindow gameWindow;
 	private static MainCode mainCode;
 	private static int delay;
+	private static long globalStartTime;
 	public static void main (String[] args) {
 		double framerate = 30;
 		boolean running = true;
@@ -45,5 +46,11 @@ public class MainLoop {
 	}
 	public static long getDelay () {
 		return delay;
+	}
+	public static void resetTimer () {
+		globalStartTime = System.nanoTime ();
+	}
+	public static void printTime () {
+		System.out.println (System.nanoTime () - globalStartTime);
 	}
 }

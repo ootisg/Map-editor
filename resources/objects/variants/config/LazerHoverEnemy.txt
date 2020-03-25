@@ -1,0 +1,2 @@
+VF 1
+name=flip attributes={true=0 false=1} filename={Laser_Enemy.png} tileIndex=value

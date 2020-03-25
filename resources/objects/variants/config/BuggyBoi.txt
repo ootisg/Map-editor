@@ -1,0 +1,2 @@
+VF 1
+name=wayPoint attributes={yellow=Yellow green=Green blue=Blue orange=Orange purple=Purple red=Red} filename={BuggyBoi value .png}

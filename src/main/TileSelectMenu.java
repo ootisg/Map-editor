@@ -44,6 +44,10 @@ public class TileSelectMenu extends SelectionMenu {
 	}
 	
 	public void addTileset (String filepath) {
+		if (filepath.equals ("_NULL")) {
+			tilesetSelect.addTileset (null);
+			return;
+		}
 		tilesetSelect.addTileset (filepath);
 	}
 	

@@ -3,7 +3,9 @@ package toolbar;
 import java.awt.Rectangle;
 import java.io.IOException;
 
+import main.BackgroundWindow;
 import main.DisplayBox;
+import main.GuiComponent;
 import main.MainPanel;
 import resources.Sprite;
 
@@ -26,8 +28,15 @@ public class SwitchLayerButton extends ToolbarItem {
 
 	@Override
 	public void use (int x, int y) {
+		//Change the layer
 		getMainPanel ().getMap ().changeLayer ();
-		//getMainPanel ().getMap ().renderElements ();
+		
+		//Validate the background window
+		GuiComponent bgWindow = getMainPanel ().getBackgroundWindow ();
+		if (!bgWindow.isHidden ()) {
+			bgWindow.hide ();
+			bgWindow.show ();
+		}
 		tbox.setMessage (getBoxMessage ());
 	}
 	

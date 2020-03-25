@@ -24,6 +24,7 @@ public class ObjectEdit implements MapEdit {
 		if (objectToAdd == null) {
 			erasedObject = Objects[startX][startY];
 		}
+		
 		Objects[startX][startY] = objectToAdd;
 		MapInterface.objectsInTheMap = Objects;
 		return true;
