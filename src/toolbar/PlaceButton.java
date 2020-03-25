@@ -35,25 +35,27 @@ public class PlaceButton extends ToolbarItem {
 		Tile[][] usedTiles = null;
 		
 		//Get currently selected tiles
+		boolean nullTile = false;
 		try {
 		if (!tileMenu.getTilesetSelect ().isHidden ()) {
-			boolean nullTile = false;
 			TileRegion selectedSetRegion = tileMenu.getTilesetSelect ().getSelectedRegion ();
 			if (selectedSetRegion.getStartX () == 0 && selectedSetRegion.getStartY () == 0) {
 				nullTile = true;
 			}
 			Tileset selectedSet = tileMenu.getTilesetSelect ().getSelectedTileset ();
-			if (selectedSet != null && !nullTile) {
+			if (selectedSet != null) {
 				usedTiles = selectedSet.getParsedTiles (this);
-			} else {
-				usedTiles = null;
 			}
 		} else {
 			usedTiles = tileMenu.getTileSelect ().getSelectedTiles (this);
 		}
 		Rectangle[][] grid = mapInterface.makeGrid (new Rectangle ((int)-mapInterface.getViewX (), (int)-mapInterface.getViewY (), (int)(mapInterface.getElements () [0].length * mapInterface.getElementWidth () * mapInterface.getScale ()), (int)(mapInterface.getElements ().length * mapInterface.getElementHeight () * mapInterface.getScale ())), mapInterface.getElementWidth () * mapInterface.getScale (), mapInterface.getElementHeight () * mapInterface.getScale ());
 		int[] selectedCell = mainPanel.getMapInterface ().getCell (x, y);
-		mainPanel.getMapInterface ().edit (new TileEdit (selectedCell [0], selectedCell [1], usedTiles [0].length, usedTiles.length, mapInterface.getMap (), usedTiles));
+		if (!nullTile) {
+			mainPanel.getMapInterface ().edit (new TileEdit (selectedCell [0], selectedCell [1], usedTiles [0].length, usedTiles.length, mapInterface.getMap (), usedTiles));
+		} else {
+			mainPanel.getMapInterface ().edit (new TileEdit (selectedCell [0], selectedCell [1], 1, 1, mapInterface.getMap (), new Tile[][] {{null}}));
+		}
 		} catch (NullPointerException e) {
 			tilesOrObjects = true;
 		}
