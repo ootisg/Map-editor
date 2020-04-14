@@ -19,13 +19,13 @@ public class PlaceButton extends ToolbarItem {
 	public static boolean tilesOrObjects = false; 
 	public PlaceButton (Toolbar parent) {
 		super (parent);
+		this.setDragable(true);
 		setIcon (new Sprite ("resources/images/Place.png").getImageArray () [0]);
 	}
 
 	@Override
 	public void use (int x, int y) {
 		// TODO Auto-generated method stub
-		
 		MainPanel mainPanel = getMainPanel ();
 		TileSelectMenu tileMenu = mainPanel.getTileMenu ();
 		MapInterface mapInterface = mainPanel.getMapInterface ();

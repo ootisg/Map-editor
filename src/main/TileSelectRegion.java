@@ -5,6 +5,8 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 
+import toolbar.PlaceButton;
+
 public class TileSelectRegion extends MovableSelectionRegion {
 	
 	private Tileset currentSet;
@@ -46,6 +48,9 @@ public class TileSelectRegion extends MovableSelectionRegion {
 		if (anchorX == -1) {
 			anchorX = x;
 			anchorY = y;
+		}
+		if (getElements ()[x][y] != null) {
+			PlaceButton.tilesOrObjects = false;
 		}
 		if (getElements ().length > y && getElements () [0].length > x) {
 			selectX = x;

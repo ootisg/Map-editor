@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -64,6 +65,7 @@ public class MapInterface extends MovableSelectionRegion {
 	
 	private Tile[][] usedTiles = new Tile[0][0];
 	private Tile[][] copyTiles;
+	private GameObject [][] usedObjects = new GameObject[0][0];
 	private GameObject [][] copyObjects;
 	private Tile[][] copyTilesComplete;
 	public static GameObject[][] objectsInTheMap;
@@ -454,6 +456,7 @@ public class MapInterface extends MovableSelectionRegion {
 		int numObjects = getInteger (4);
 		
 		//Reset map and tilesets
+		resizeObjects(mapWidth,mapHeight);
 		map.resetMap (mapWidth, mapHeight);
 		tileMenu.resetTilesets ();
 		for (int i= 0; i < mapWidth; i++) {
@@ -467,7 +470,6 @@ public class MapInterface extends MovableSelectionRegion {
 		}
 		
 		//Read and import new objects
-		resizeObjects(mapWidth,mapHeight);
 		objectMenu.resetObjs ();
 		String objects = getString (';');
 		String[] objectList = objects.split(",");
@@ -540,8 +542,13 @@ public class MapInterface extends MovableSelectionRegion {
 					String[] infoSegments = variantList[j].split(":");
 					currentObject.setVariantInfo(infoSegments[0],infoSegments[1]);
 				}
-				VariantConfig c = new VariantConfig ("resources/objects/variants/config/" + currentObject.getObjectName() +".txt");
-				currentObject.changeIcon(c.getIcon(currentObject.getVariantInfo()));
+				VariantConfig c;
+				try {
+					c = new VariantConfig ("resources/objects/variants/config/" + currentObject.getObjectName() +".txt");
+					currentObject.changeIcon(c.getIcon(currentObject.getVariantInfo()));
+				} catch (NoSuchFileException e) {
+					// TODO Auto-generated catch block
+				}
 		}
 			if (strangeInfo) {
 			String [] strangevariantList = variantInfos[1].split(",");
@@ -672,17 +679,34 @@ public class MapInterface extends MovableSelectionRegion {
 		if (toolbar.getSelectedItem () instanceof PlaceButton || toolbar.getSelectedItem () instanceof PasteButton) {
 			//May be hacky, check later
 			Tile[][] renderedTiles = usedTiles;
+			GameObject[][] usedObjects = this.usedObjects;
 			if (usedTiles == null) {
 				return;
 			}
 			if (toolbar.getSelectedItem () instanceof PasteButton) {
+				if (copyTiles != null) {
 				renderedTiles = copyTiles;
+				}
 			}
 			g.setComposite (AlphaComposite.getInstance (AlphaComposite.SRC_OVER, 0.5f));
 			for (int i = 0; i < renderedTiles.length; i ++) {
 				for (int j = 0; j < renderedTiles [0].length; j ++) {
 					if (j + region.getStartX () < map.getActiveLayer ().getWidth () && i + region.getStartY () < map.getActiveLayer ().getHeight () && region.getTiles () != null) {
-						renderedTiles [i][j].render (region.getTiles () [i][j], g);
+						if (renderedTiles[i][j] != null) {
+							renderedTiles [i][j].render (region.getTiles () [i][j], g);
+						}
+					}
+				}
+			}
+			if (usedObjects == null) {
+				return;
+			}
+			for (int i = 0; i < usedObjects.length; i ++) {
+				for (int j = 0; j < usedObjects [0].length; j ++) {
+					if (j + region.getStartX () < map.getActiveLayer ().getWidth () && i + region.getStartY () < map.getActiveLayer ().getHeight () && region.objects != null) {
+						if (usedObjects[i][j] != null) {
+								usedObjects [i][j].render (region.getTiles() [i][j], g);
+						}
 					}
 				}
 			}
@@ -698,13 +722,19 @@ public class MapInterface extends MovableSelectionRegion {
 	public void mouseMoved (int x, int y) {
 		if (toolbar.getSelectedItem () instanceof PlaceButton || toolbar.getSelectedItem () instanceof PasteButton) {
 			//Get currently selected tiles
-			if (!tileMenu.getTilesetSelect ().isHidden ()) {
-				Tileset selectedSet = tileMenu.getTilesetSelect ().getSelectedTileset ();
-				if (selectedSet != null) {
-					usedTiles = selectedSet.getParsedTiles (this);
-				}
+			if (PlaceButton.tilesOrObjects && toolbar.getSelectedItem() instanceof PlaceButton) {
+				usedObjects = new GameObject[1][1];
+				usedObjects[0][0] = ObjectSelectMenu.objectSelect.getSelectedObject ();
+				usedTiles = new Tile[][] {{null}};
 			} else {
-				usedTiles = tileMenu.getTileSelect ().getSelectedTiles (this);
+				if (!tileMenu.getTilesetSelect ().isHidden ()) {
+					Tileset selectedSet = tileMenu.getTilesetSelect ().getSelectedTileset ();
+					if (selectedSet != null) {
+						usedTiles = selectedSet.getParsedTiles (this);
+					}
+				} else {
+					usedTiles = tileMenu.getTileSelect ().getSelectedTiles (this);
+				}
 			}
 			
 			int selectWidth = -1;
@@ -716,11 +746,18 @@ public class MapInterface extends MovableSelectionRegion {
 			if (toolbar.getSelectedItem () instanceof PasteButton && copyTiles != null && copyTiles.length != 0) {
 				selectWidth = copyTiles[0].length;
 				selectHeight = copyTiles.length;
+				usedObjects =  copyObjects;
+				}
+			if (toolbar.getSelectedItem () instanceof PlaceButton && PlaceButton.tilesOrObjects && ObjectSelectMenu.objectSelect.getSelectedObject () != null) {
+				selectWidth = 1;
+				selectHeight = 1;
 			}
 			
 			Rectangle[][] grid = makeGrid (new Rectangle ((int)-getViewX (), (int)-getViewY (), (int)(getElements () [0].length * getElementWidth () * getScale ()), (int)(getElements ().length * getElementHeight () * getScale ())), getElementWidth () * getScale (), getElementHeight () * getScale ());
 			int[] selectedCell = getCell (x, y);
-			if (selectWidth != -1) {
+			if (selectWidth != -1 && PlaceButton.tilesOrObjects && toolbar.getSelectedItem() instanceof PlaceButton) {
+				select (new TileRegion (selectedCell[0], selectedCell[1], 1, 1));
+			} else if (selectWidth != -1) {
 				select (new TileRegion (selectedCell [0], selectedCell [1], selectWidth, selectHeight));
 			}
 		}
@@ -729,10 +766,14 @@ public class MapInterface extends MovableSelectionRegion {
 	@Override
 	public void mouseDragged (int x, int y, int button) {
 		super.mouseDragged (x, y, button);
-		if (toolbar.getSelectedItem () != null && toolbar.getSelectedItem ().dragable () && toolbar.getSelectedItem ().usesClickOnElement ()) {
-			Rectangle[][] grid = makeGrid (new Rectangle ((int)-getViewX (), (int)-getViewY (), (int)(getElements () [0].length * getElementWidth () * getScale ()), (int)(getElements ().length * getElementHeight () * getScale ())), getElementWidth () * getScale (), getElementHeight () * getScale ());
-			int[] selectedCell = getCell (x, y);
-			doClickOnElement (selectedCell [0], selectedCell [1]);
+		if (toolbar.getSelectedItem () != null && (toolbar.getSelectedItem () instanceof PlaceButton || (toolbar.getSelectedItem ().dragable () && toolbar.getSelectedItem ().usesClickOnElement ()))) {
+			if (toolbar.getSelectedItem () instanceof PlaceButton && button == 1) {
+				toolbar.getSelectedItem().use(x, y);
+			} else {
+				Rectangle[][] grid = makeGrid (new Rectangle ((int)-getViewX (), (int)-getViewY (), (int)(getElements () [0].length * getElementWidth () * getScale ()), (int)(getElements ().length * getElementHeight () * getScale ())), getElementWidth () * getScale (), getElementHeight () * getScale ());
+				int[] selectedCell = getCell (x, y);
+				doClickOnElement (selectedCell [0], selectedCell [1]);
+			}
 		}
 	}
 	
@@ -757,14 +798,16 @@ public class MapInterface extends MovableSelectionRegion {
 	@Override
 	public void mouseReleased (int x, int y, int button) {
 		super.mouseReleased (x, y, button);
-		if (toolbar.getSelectedItem () instanceof SelectButton) {
-			anchorX = -1;
-		} else {
-			if (toolbar.getSelectedItem () != null) {
-				toolbar.getSelectedItem ().use (x, y);
+			if (button == 1) {
+				if (toolbar.getSelectedItem () instanceof SelectButton) {
+					anchorX = -1;
+				} else {
+					if (toolbar.getSelectedItem () != null) {
+						toolbar.getSelectedItem ().use (x, y);
+					}
+				}
 			}
 		}
-	}
 	
 	public void setAnchor (int anchorX, int anchorY) {
 		this.anchorX = anchorX;

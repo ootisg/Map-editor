@@ -7,6 +7,8 @@ public abstract class MovableSelectionRegion extends SelectionRegion {
 
 	private int dragPreviousX;
 	private int dragPreviousY;
+	private double oldViewX;
+	private double oldViewY;
 	private boolean mousePressedLastFrame;
 	
 	protected static final double MOUSE_WHEEL_SENSITIVITY = .05;
@@ -21,7 +23,11 @@ public abstract class MovableSelectionRegion extends SelectionRegion {
 			if (mousePressedLastFrame) {
 				double newViewX = Math.max (dragPreviousX - x + getViewX (), 0);
 				double newViewY = Math.max (dragPreviousY - y + getViewY (), 0);
+				
+				
 				setView (newViewX, newViewY);
+				oldViewX = newViewX;
+				oldViewY = newViewY;
 			} else {
 				mousePressedLastFrame = true;
 			}

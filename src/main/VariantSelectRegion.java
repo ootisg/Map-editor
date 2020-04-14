@@ -2,6 +2,8 @@ package main;
 
 
 import java.awt.Rectangle;
+import java.io.FileNotFoundException;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -58,7 +60,11 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 		}
 		String objectType =oldString.substring(i + 1, oldString.length() - 4) + ".txt";
 		oldString = oldString.substring(0,oldString.length() - objectType.length()) + "variants\\config\\" + objectType;
+		try {
 		c = new VariantConfig (oldString);
+		} catch (Exception e) {
+			return;
+		}
 		ArrayList <String> variantNames = c.getAttributeNames();
 		Iterator <String> iter = variantNames.iterator();
 		DisplayableTextElement [][] working = new DisplayableTextElement [10][1];

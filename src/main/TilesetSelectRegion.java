@@ -39,7 +39,20 @@ public class TilesetSelectRegion extends ScrollableSelectionRegion {
 			getWindow ().chooser = new JFileChooser ("resources/tilesets/");
 			getWindow ().chooser.showOpenDialog (getWindow ());
 			if (getWindow ().chooser.getSelectedFile () != null) {
-				addTileset (getWindow ().chooser.getSelectedFile ().getPath ());
+				String[] parsedPath = getWindow ().chooser.getSelectedFile ().getPath ().split("\\\\|/");
+				boolean pastResources = false;
+				String newPath = "resources";
+				for (int i = 0; i < parsedPath.length; i ++) {
+					if (!pastResources) {
+						if (parsedPath[i].equals ("resources")) {
+							pastResources = true;
+						}
+					} else {
+						newPath += "/" + parsedPath[i];
+					}
+				}
+				addTileset (newPath);
+				
 			}
 			if (selectedX == -1) {
 				selectedX = horizontalIndex;

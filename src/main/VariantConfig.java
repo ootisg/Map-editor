@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class VariantConfig {
 	private ArrayList<String> attributeNames;
 	private HashMap<String, ArrayList<String>> possibleArgs = null;
 	
-	public VariantConfig (String filepath) {
+	public VariantConfig (String filepath) throws NoSuchFileException{
 		try {
 			configFile = new String (Files.readAllBytes (Paths.get (filepath)));
 		} catch (IOException e) {
