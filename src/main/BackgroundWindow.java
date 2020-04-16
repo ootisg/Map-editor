@@ -80,7 +80,6 @@ public class BackgroundWindow extends GuiComponent implements EntryFieldValidato
 		wy += ENTRY_BOX_HEIGHT + COMPONENT_PADDING_VERTICAL;
 		yField = new EntryField (new Rectangle (bounds.x + WINDOW_PADDING_HORIZONTAL + COMPONENT_PADDING_HORIZONTAL, bounds.y + wy, ENTRY_BOX_WIDTH, ENTRY_BOX_HEIGHT), this);
 		wy += ENTRY_BOX_HEIGHT + APPLY_BUTTON_PADDING_VERTICAL;
-		
 		//Set max lengths
 		xField.setMaxLength (8);
 		yField.setMaxLength (8);
@@ -170,8 +169,8 @@ public class BackgroundWindow extends GuiComponent implements EntryFieldValidato
 		if (activeLayer.hasTiles ()) {
 			return;
 		}
-		xField.reset ();
-		yField.reset ();
+		xField.resetToValue ("1");
+		yField.resetToValue ("1");
 		if (!activeLayer.isBackgroundLayer ()) {
 			imgPath = IMAGE_PATH_DEFAULT;
 		} else {

@@ -86,7 +86,10 @@ public class EntryField extends GuiComponent {
 		value = defaultString;
 		valid = true;
 	}
-	
+	public void resetToValue(String value) {
+		this.value = value;
+		valid = true;
+	}
 	public boolean isValid () {
 		return valid;
 	}

@@ -261,8 +261,8 @@ public class Map {
 		private String backgroundPath;
 		private BufferedImage background;
 		
-		private double backgroundScrollX;
-		private double backgroundScrollY;
+		private double backgroundScrollX = 1;
+		private double backgroundScrollY = 1;
 		
 		public TileLayer (int width, int height) {
 			data = new Tile[height][width];
