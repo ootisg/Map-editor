@@ -63,6 +63,10 @@ public class MapInterface extends MovableSelectionRegion {
 	private int selectX = -1;
 	private int selectY = -1;
 	
+	private String mapName = "new map";
+	private int mapNumber = 0;
+	private int timer = 0;
+	
 	private Tile[][] usedTiles = new Tile[0][0];
 	private Tile[][] copyTiles;
 	private GameObject [][] usedObjects = new GameObject[0][0];
@@ -561,6 +565,11 @@ public class MapInterface extends MovableSelectionRegion {
 		}
 	}
 		//...
+		mapName = file.getName();
+		mapNumber = 0;
+		mapNumber = mapNumber + 1;
+		File newFile = new File ("resources/maps/backups/" + mapName + "_" + mapNumber + ".rmf");
+		this.save(newFile);
 }
 	
 	private String getString (int length) {
@@ -668,7 +677,16 @@ public class MapInterface extends MovableSelectionRegion {
 			}
 		}
 	}
-	
+	@Override 
+	public void frameEvent() {
+		timer = timer + 1;
+		if (timer == 36000) {
+			mapNumber = mapNumber + 1;
+			File newFile = new File ("resources/maps/backups/" + mapName + "_" + mapNumber + ".rmf");
+			this.save(newFile);
+			timer = 0;
+		}
+	}
 	@Override
 	public void drawTileRegion (TileRegion region) {
 		//Null check
@@ -768,7 +786,9 @@ public class MapInterface extends MovableSelectionRegion {
 		super.mouseDragged (x, y, button);
 		if (toolbar.getSelectedItem () != null && (toolbar.getSelectedItem () instanceof PlaceButton || (toolbar.getSelectedItem ().dragable () && toolbar.getSelectedItem ().usesClickOnElement ()))) {
 			if (toolbar.getSelectedItem () instanceof PlaceButton && button == 1) {
-				toolbar.getSelectedItem().use(x, y);
+				if (x < (int) (this.getGridWidth() *(16*this.getScale())) && y < (int)(this.getGridHeight()* (16*this.getScale()))) {
+					toolbar.getSelectedItem ().use (x, y);
+				}
 			} else {
 				Rectangle[][] grid = makeGrid (new Rectangle ((int)-getViewX (), (int)-getViewY (), (int)(getElements () [0].length * getElementWidth () * getScale ()), (int)(getElements ().length * getElementHeight () * getScale ())), getElementWidth () * getScale (), getElementHeight () * getScale ());
 				int[] selectedCell = getCell (x, y);
@@ -776,6 +796,7 @@ public class MapInterface extends MovableSelectionRegion {
 			}
 		}
 	}
+	
 	
 	@Override
 	public void doClickOnElement (int x, int y) {
@@ -803,7 +824,9 @@ public class MapInterface extends MovableSelectionRegion {
 					anchorX = -1;
 				} else {
 					if (toolbar.getSelectedItem () != null) {
-						toolbar.getSelectedItem ().use (x, y);
+						if (x < this.getGridWidth() *(16*this.getScale()) && y < this.getGridHeight()* (16*this.getScale())) {
+							toolbar.getSelectedItem ().use (x, y);
+						}
 					}
 				}
 			}

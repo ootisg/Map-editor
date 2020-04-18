@@ -20,22 +20,22 @@ public abstract class MovableSelectionRegion extends SelectionRegion {
 	@Override
 	public void mouseDragged (int x, int y, int button) {
 		if (button == MouseEvent.BUTTON3) {
-			if (mousePressedLastFrame) {
-				double newViewX = Math.max (dragPreviousX - x + getViewX (), 0);
-				double newViewY = Math.max (dragPreviousY - y + getViewY (), 0);
-				
-				
-				setView (newViewX, newViewY);
-				oldViewX = newViewX;
-				oldViewY = newViewY;
-			} else {
-				mousePressedLastFrame = true;
-			}
+			double newViewX = Math.max (dragPreviousX - x + getViewX (), 0);
+			double newViewY = Math.max (dragPreviousY - y + getViewY (), 0);
+			setView (newViewX, newViewY);
+			oldViewX = newViewX;
+			oldViewY = newViewY;
 			dragPreviousX = x;
 			dragPreviousY = y;
 		}
 	}
-	
+	@Override 
+	public void mousePressed (int x, int y, int button) {
+		if (button == MouseEvent.BUTTON3) {
+		dragPreviousX = x;
+		dragPreviousY = y;
+		}
+	}
 	@Override
 	public void mouseReleased (int x, int y, int button) {
 		mousePressedLastFrame = false;

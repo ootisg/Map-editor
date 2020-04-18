@@ -70,11 +70,22 @@ public class Map {
 	public void renderCell (int x, int y, double viewX, double viewY) {
 		BufferedImage fullRender = new BufferedImage (mapInterface.getElementWidth (), mapInterface.getElementHeight (), BufferedImage.TYPE_INT_ARGB);
 		Graphics g = fullRender.getGraphics ();
-		for (int i = 0; i < mapData.size (); i ++) {
-			int l = mapData.size () - 1 - (i + topDisplayLayer) % mapData.size ();
+		for (int i = mapData.size() - 1; i >= 0; i --) {
+			int l;
+			if (i == 0) {
+				l = topDisplayLayer;
+				
+			} else {
+				if (i > topDisplayLayer) {
+				l = i;
+				} else {
+				l = i - 1;
+				}
+			}
 			//Only render top mode
 			if (onlyTopLayer) {
 				l = topDisplayLayer;
+
 				if (mapData.get (l).isBackgroundLayer ()) {
 					int subWidth = mapInterface.getElementWidth ();
 					int subHeight = mapInterface.getElementHeight ();
@@ -122,6 +133,7 @@ public class Map {
 				}
 			} 
 			Tile iconTile = mapData.get (l).get (x, y);
+			
 			if (mapData.get (l).isBackgroundLayer ()) {
 				int subWidth = mapInterface.getElementWidth ();
 				int subHeight = mapInterface.getElementHeight ();
@@ -131,7 +143,7 @@ public class Map {
 				int offsY = 0;
 				BufferedImage bkg = mapData.get (l).getBackground ();
 				if (subX >= bkg.getWidth () || subY >= bkg.getHeight () || subX <= -subWidth || subY <= -subHeight) {
-					break; //Don't draw anything
+					 //Don't draw anything
 				} else {
 					//Make subimage area smaller to avoid out-of-bounds
 					if (subX < 0) {
@@ -150,9 +162,10 @@ public class Map {
 					if (subY + subHeight > bkg.getHeight ()) {
 						subHeight = bkg.getHeight () - subY;
 					}
+					BufferedImage subimg = bkg.getSubimage (subX, subY, subWidth, subHeight);
+					g.drawImage (subimg, offsX, offsY, null);
 				}
-				BufferedImage subimg = bkg.getSubimage (subX, subY, subWidth, subHeight);
-				g.drawImage (subimg, offsX, offsY, null);
+				
 			} else {
 				BufferedImage icon;
 				if (iconTile == null) {
@@ -161,6 +174,7 @@ public class Map {
 					icon = iconTile.getIcon ();
 				}
 				if (icon != null) {
+					
 					g.drawImage (icon, 0, 0, null);
 				}
 			}
@@ -221,11 +235,16 @@ public class Map {
 		TileLayer layer = new TileLayer (width, height);
 		mapData.add (layer);
 		activeLayer = mapData.get (mapData.size () - 1);
+		topDisplayLayer = mapData.size () - 1;
 		return layer;
 	}
 	
 	public TileLayer addLayer () {
-		return addLayer (mapData.get (0).getWidth (), mapData.get (0).getHeight ());
+		TileLayer layer = new TileLayer (mapData.get (0).getWidth (), mapData.get (0).getHeight ());
+		mapData.add (layer);
+		activeLayer = mapData.get (mapData.size () - 1);
+		topDisplayLayer = mapData.size () - 1;
+		return layer;
 	}
 	
 	public void toggleLayerMode () {
@@ -233,10 +252,11 @@ public class Map {
 	}
 	
 	public void changeLayer () {
-		topDisplayLayer ++;
-		if (topDisplayLayer >= mapData.size ()) {
-			topDisplayLayer = 0;
+		int beeeeeees = topDisplayLayer + 1;
+		if (beeeeeees >= mapData.size ()) {
+			beeeeeees = 0;
 		}
+		topDisplayLayer = beeeeeees;
 		activeLayer = mapData.get (topDisplayLayer);
 		this.renderElements();
 	}
