@@ -1,0 +1,3 @@
+VF 1
+name=direction attributes={up=up down=down left=left right=right} filename={Portal value .png}
+name=partner attributes={nv=0 one=1 two=2 three=3 four=4 five=5 six=6 seven=7 eight=8 nine=9} tileIndex=value

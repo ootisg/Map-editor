@@ -7,7 +7,7 @@ import java.awt.event.MouseEvent;
 
 import toolbar.PlaceButton;
 
-public class TileSelectRegion extends SelectionRegion {
+public class TileSelectRegion extends MovableSelectionRegion {
 	
 	private Tileset currentSet;
 	private Tile[][] tiles;
@@ -49,14 +49,13 @@ public class TileSelectRegion extends SelectionRegion {
 			anchorX = x;
 			anchorY = y;
 		}
-		if (getElements ()[x][y] != null) {
+		if (getElements ()[y][x] != null) {
 			PlaceButton.tilesOrObjects = false;
 		}
 		if (getElements ().length > y && getElements () [0].length > x) {
 			selectX = x;
 			selectY = y;
 		}
-		System.out.println("debug");
 		TileRegion newRegion = makeRegion (anchorX, anchorY, selectX, selectY);
 		if (!newRegion.equals (getSelectedRegion ())) {
 			removeDrawRequest (getSelectedRegion ());

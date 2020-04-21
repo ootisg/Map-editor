@@ -31,6 +31,7 @@ public abstract class MovableSelectionRegion extends SelectionRegion {
 	}
 	@Override 
 	public void mousePressed (int x, int y, int button) {
+		super.mousePressed(x, y, button);
 		if (button == MouseEvent.BUTTON3) {
 		dragPreviousX = x;
 		dragPreviousY = y;

@@ -2,6 +2,7 @@ package main;
 
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -24,10 +25,15 @@ public class AttributeSelectRegion extends SelectionRegion {
 	public void doClickOnElement (int horizontalIndex, int verticalIndex) {
 		try {
 		int elementIndex = getElementIndex (horizontalIndex, verticalIndex);
-		VariantConfig c = new VariantConfig("resources/objects/variants/config/" + currentObject.getObjectName() + ".txt");
-		currentObject.setVariantInfo(name, currentAttributes.get(elementIndex));
-	
-		currentObject.setIcon(c.getIcon(currentObject.getVariantInfo()));
+		VariantConfig c;
+		try {
+			c = new VariantConfig("resources/objects/variants/config/" + currentObject.getObjectName() + ".txt");
+			currentObject.setVariantInfo(name, currentAttributes.get(elementIndex));
+			currentObject.setIcon(c.getIcon(currentObject.getVariantInfo()));
+		} catch (NoSuchFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		} catch (IndexOutOfBoundsException e) {
 			query.setBoundingRectangle(new Rectangle (this.getBoundingRectangle().x + ((getElementIndex(horizontalIndex,verticalIndex)) * 16),this.getBoundingRectangle().y - 10,100,30));
 			query.show();
