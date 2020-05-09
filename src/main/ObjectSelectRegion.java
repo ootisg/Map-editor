@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
 
@@ -92,10 +93,12 @@ public class ObjectSelectRegion extends ScrollableSelectionRegion {
 			objCount ++;
 	}
 	
-	public GameObject getSelectedObject () {
+	public ArrayList <GameObject> getSelectedObject () {
 		if (selectedX != -1) {
 			GameObject working = (GameObject)getElements ()[selectedY][selectedX];
-			return (GameObject) working.clone();
+			ArrayList <GameObject> workinger = new ArrayList <GameObject>();
+			workinger.add((GameObject) working.clone());
+			return workinger;
 		} else {
 			return null;
 		}

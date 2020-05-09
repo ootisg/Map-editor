@@ -1,6 +1,7 @@
 package map;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import main.GameObject;
 import main.Tile;
@@ -9,23 +10,27 @@ import resources.Sprite;
 public class ObjectEdit implements MapEdit {
 	int startX;
 	int startY;
-	GameObject erasedObject;
-	GameObject[][] Objects;
-	GameObject objectToAdd;
-	public ObjectEdit (int x, int y, GameObject[][] objects, GameObject newObject) {
+	ArrayList <GameObject> erasedObject;
+	ArrayList <GameObject> [][] Objects;
+	ArrayList<GameObject> objectToAdd;
+	public ObjectEdit (int x, int y, ArrayList<GameObject>[][] objects, ArrayList <GameObject> newObject) {
 		startX = x;
 		startY = y;
-		erasedObject = null;
 		Objects = objects;
 		objectToAdd = newObject;
+		erasedObject = Objects[startX][startY];
 	}
 	@Override
 	public boolean doEdit() {
+		erasedObject = Objects[startX][startY];
 		if (objectToAdd == null) {
-			erasedObject = Objects[startX][startY];
+			Objects[startX][startY].clear();
+			return true;
 		}
-		
-		Objects[startX][startY] = objectToAdd;
+		if (Objects[startX][startY] == null) {
+		Objects[startX][startY] = new ArrayList <GameObject>();
+		}
+		Objects[startX][startY].addAll(objectToAdd);
 		MapInterface.objectsInTheMap = Objects;
 		return true;
 	}

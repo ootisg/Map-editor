@@ -60,12 +60,12 @@ public class ResizeEdit implements MapEdit {
 		}
 		
 		//Check the checktangles (objects)
-		GameObject[][] objs = MapInterface.objectsInTheMap;
+		ArrayList <GameObject>[][] objs = MapInterface.objectsInTheMap;
 		for (int i = 0; i < checktangles.size (); i ++) {
 			Rectangle checktangle = checktangles.get (i);
 			for (int wx = 0; wx < checktangle.width; wx ++) {
 				for (int wy = 0; wy < checktangle.height; wy ++) {
-					GameObject cur = objs[checktangle.x + wx][checktangle.y + wy];
+					ArrayList<GameObject> cur = objs[checktangle.x + wx][checktangle.y + wy];
 					if (cur != null) {
 						ObjectEdit oEdit = new ObjectEdit (checktangle.x + wx, checktangle.y + wy, objs, null);
 						objectEdits.add (oEdit);

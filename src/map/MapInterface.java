@@ -69,10 +69,10 @@ public class MapInterface extends MovableSelectionRegion {
 	
 	private Tile[][] usedTiles = new Tile[0][0];
 	private Tile[][] copyTiles;
-	private GameObject [][] usedObjects = new GameObject[0][0];
-	private GameObject [][] copyObjects;
+	private ArrayList <GameObject> [][] usedObjects = new ArrayList[0][0];
+	private ArrayList <GameObject> [][] copyObjects;
 	private Tile[][] copyTilesComplete;
-	public static GameObject[][] objectsInTheMap;
+	public static ArrayList<GameObject>[][] objectsInTheMap;
 	private Map map;
 	
 	private Stack<MapEdit> edits;
@@ -99,7 +99,7 @@ public class MapInterface extends MovableSelectionRegion {
 		this.tileMenu = tileMenu;
 		this.objectMenu = objectMenu;
 		this.toolbar = toolbar;
-		objectsInTheMap = new GameObject [30] [30];
+		objectsInTheMap =  new ArrayList [30] [30];
 		map = ((MainPanel)getParent ()).getMap ();
 		map.setMapInterface (this);
 		edits = new Stack<MapEdit> ();
@@ -146,7 +146,7 @@ public class MapInterface extends MovableSelectionRegion {
 	}
 	
 	private void resizeObjects (int width, int height) {
-		GameObject[][] newObjs = new GameObject[width][height];
+		ArrayList <GameObject> [][] newObjs = new ArrayList[width][height];
 		for (int wx = 0; wx < Math.min (objectsInTheMap.length, width); wx ++) {
 			for (int wy = 0; wy < Math.min (objectsInTheMap [0].length, height); wy ++) {
 				newObjs [wx][wy] = objectsInTheMap [wx][wy];
@@ -205,10 +205,12 @@ public class MapInterface extends MovableSelectionRegion {
 		ArrayList <GameObject> objects = new ArrayList <GameObject>();
 		for (int i = 0; i < map.getWidth(); i = i + 1) {
 			for (int j = 0; j < map.getHeight(); j = j + 1) {
-				if (objectsInTheMap[i][j] != null) {
-					objectsInTheMap[i][j].setCoords(i, j);
-					objects.add(objectsInTheMap[i][j]);
-					objectCount = objectCount + 1; 
+				for (int g = 0; i < objectsInTheMap[i][j].size(); i++) {
+					if 	(objectsInTheMap[i][j].get(g) != null) {
+						objectsInTheMap[i][j].get(g).setCoords(i, j);
+						objects.add(objectsInTheMap[i][j].get(g));
+						objectCount = objectCount + 1; 
+					}
 				}
 			}
 		}
@@ -315,7 +317,7 @@ public class MapInterface extends MovableSelectionRegion {
 					addString (fileBuffer, ",");
 				}
 			}
-			if (!currentObject.getNameList().isEmpty()) {
+			if (!currentObject.getStrangeNameList().isEmpty()) {
 			addString (fileBuffer, "#");
 			}
 			Iterator <String> iter5 = currentObject.getStrangeNameList().iterator();
@@ -415,6 +417,10 @@ public class MapInterface extends MovableSelectionRegion {
 		MainPanel mainPanel = getMainPanel ();
 		TileSelectMenu tileMenu = mainPanel.getTileMenu ();
 		ObjectSelectRegion objectMenu = mainPanel.getObjectMenu().objectSelect;
+		tileMenu.getTilesetSelect().deselect();
+		tileMenu.getTileSelect().deselect();
+		objectMenu.deselect();
+		
 		//Read the file
 		inData = new byte[(int) file.length ()];
 		FileInputStream stream = null;
@@ -530,7 +536,9 @@ public class MapInterface extends MovableSelectionRegion {
 			int y = getInteger (this.getByteCount(mapHeight));
 			int object = getInteger (this.getByteCount(numObjects));
 			GameObject currentObject = new GameObject ("resources/objects/" + objectList[object] + ".png",this);
-			this.edit(new ObjectEdit (x,y,objectsInTheMap,currentObject));
+			ArrayList <GameObject> wokeing = new ArrayList <GameObject> ();
+			wokeing.add(currentObject);
+			this.edit(new ObjectEdit (x,y,objectsInTheMap,wokeing));
 			String variantInfo = getString (';');
 			String [] variantInfos = new String [2];
 			boolean strangeInfo = false;
@@ -663,16 +671,18 @@ public class MapInterface extends MovableSelectionRegion {
 		for (int i = 0; i < map.getWidth(); i = i + 1) {
 			for (int j = 0; j < map.getHeight(); j = j + 1) {
 				if (objectsInTheMap[i][j] != null) {
-					BufferedImage oldIcon;
-					oldIcon = objectsInTheMap[i][j].getIcon();
-					Image scalledImage = objectsInTheMap[i][j].getIcon().getScaledInstance((int) (16 * this.getScale()), (int) (16 * this.getScale()), java.awt.Image.SCALE_DEFAULT);
-					BufferedImage image = new BufferedImage((int) (16 * this.getScale()), (int) (16 * this.getScale()), 3) ;
-					image.getGraphics().drawImage(scalledImage, 0,0, null);
-					objectsInTheMap[i][j].setIcon(image);
-					if ((((i* 16)* this.getScale()) + 160) - this.getViewX()>= 160) {
-					objectsInTheMap[i][j].render((int)((((16* i)* this.getScale()) + 160) - this.getViewX()), (int)(((j* 16) * this.getScale())- this.getViewY()));
+					for (int e = 0; e < objectsInTheMap[i][j].size(); e++) {
+						BufferedImage oldIcon;
+						oldIcon = objectsInTheMap[i][j].get(e).getIcon();
+						Image scalledImage = objectsInTheMap[i][j].get(e).getIcon().getScaledInstance((int) (16 * this.getScale()), (int) (16 * this.getScale()), java.awt.Image.SCALE_DEFAULT);
+						BufferedImage image = new BufferedImage((int) (16 * this.getScale()), (int) (16 * this.getScale()), 3) ;
+						image.getGraphics().drawImage(scalledImage, 0,0, null);
+						objectsInTheMap[i][j].get(e).setIcon(image);
+						if ((((i* 16)* this.getScale()) + 160) - this.getViewX()>= 160) {
+						objectsInTheMap[i][j].get(e).render((int)((((16* i)* this.getScale()) + 160) - this.getViewX()), (int)(((j* 16) * this.getScale())- this.getViewY()));
+						}
+						objectsInTheMap[i][j].get(e).setIcon(oldIcon);
 					}
-					objectsInTheMap[i][j].setIcon(oldIcon);
 				}
 			}
 		}
@@ -697,7 +707,7 @@ public class MapInterface extends MovableSelectionRegion {
 		if (toolbar.getSelectedItem () instanceof PlaceButton || toolbar.getSelectedItem () instanceof PasteButton) {
 			//May be hacky, check later
 			Tile[][] renderedTiles = usedTiles;
-			GameObject[][] usedObjects = this.usedObjects;
+			ArrayList <GameObject>[][] usedObjects = this.usedObjects;
 			if (usedTiles == null) {
 				return;
 			}
@@ -723,7 +733,9 @@ public class MapInterface extends MovableSelectionRegion {
 				for (int j = 0; j < usedObjects [0].length; j ++) {
 					if (j + region.getStartX () < map.getActiveLayer ().getWidth () && i + region.getStartY () < map.getActiveLayer ().getHeight () && region.objects != null) {
 						if (usedObjects[i][j] != null) {
-								usedObjects [i][j].render (region.getTiles() [i][j], g);
+							for (int k = 0; k < usedObjects[i][j].size(); k++) {
+								usedObjects [i][j].get(k).render (region.getTiles() [i][j], g);
+							}
 						}
 					}
 				}
@@ -741,8 +753,9 @@ public class MapInterface extends MovableSelectionRegion {
 		if (toolbar.getSelectedItem () instanceof PlaceButton || toolbar.getSelectedItem () instanceof PasteButton) {
 			//Get currently selected tiles
 			if (PlaceButton.tilesOrObjects && toolbar.getSelectedItem() instanceof PlaceButton) {
-				usedObjects = new GameObject[1][1];
-				usedObjects[0][0] = ObjectSelectMenu.objectSelect.getSelectedObject ();
+				usedObjects = new ArrayList[1][1];
+				//may be hacky be sure to check back here
+				usedObjects [0][0] = ObjectSelectMenu.objectSelect.getSelectedObject ();
 				usedTiles = new Tile[][] {{null}};
 			} else {
 				if (!tileMenu.getTilesetSelect ().isHidden ()) {
@@ -849,7 +862,7 @@ public class MapInterface extends MovableSelectionRegion {
 	public void setCopyTiles (Tile[][] tiles) {
 		copyTiles = tiles;
 	}
-	public void setCopyObjects (GameObject[][] objects) {
+	public void setCopyObjects (ArrayList <GameObject>[][] objects) {
 		copyObjects = objects;
 	}
 	public int getAnchorX () {
@@ -875,7 +888,7 @@ public class MapInterface extends MovableSelectionRegion {
 	public Tile[][] getCopyTiles () {
 		return copyTiles;
 	}
-	public GameObject [][] getCopyObjects(){
+	public ArrayList<GameObject>[][] getCopyObjects(){
 		return copyObjects;
 	}
 	

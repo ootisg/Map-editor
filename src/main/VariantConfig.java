@@ -27,9 +27,10 @@ public class VariantConfig {
 	public VariantConfig (String filepath) throws NoSuchFileException{
 		try {
 			configFile = new String (Files.readAllBytes (Paths.get (filepath)));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			throw new NoSuchFileException (filepath);
 		}
 		attributeNames = new ArrayList<String> ();
 		configScanner = new Scanner (configFile);

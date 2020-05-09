@@ -2,6 +2,7 @@ package toolbar;
 
 import java.awt.Rectangle;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import main.GameObject;
 import main.MainPanel;
@@ -22,7 +23,7 @@ public class CopyButton extends ToolbarItem {
 	@Override
 	public void use (int x, int y) {
 		Tile[][] tiles;
-		GameObject[][] objects;
+		ArrayList <GameObject>[][] objects;
 		MainPanel mainPanel = getMainPanel ();
 		if (mainPanel.getToolbar ().getSelectedItem () instanceof SelectButton) {
 			MapInterface mapInterface = mainPanel.getMapInterface ();

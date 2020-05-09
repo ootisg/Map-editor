@@ -107,7 +107,7 @@ public abstract class SelectionRegion extends GuiComponent {
 			}
 		} catch (Exception e) {
 			System.out.println ("Exception thrown while drawing tile region: \n" + e.toString ());
-			e.printStackTrace ();
+			//e.printStackTrace ();
 			//Continue
 		}
 	}
@@ -343,18 +343,18 @@ public abstract class SelectionRegion extends GuiComponent {
 		private int tileStartY = -1;
 		private int tileWidth;
 		private int tileHeight;
-		public GameObject [][] objects;
+		public ArrayList<GameObject>[][] objects;
 		private Rectangle bounds;
 		private Rectangle[][] tiles;
-		private GameObject selectedObject;
+		private ArrayList <GameObject> selectedObject;
 		private boolean hasTileData;
 		public TileRegion (int startX, int startY, int width, int height) {
 			setTiles (startX, startY, width, height);
 		}
-		public void setTileData (Rectangle[][] sourceTiles, GameObject[][]sourceObjects) {
+		public void setTileData (Rectangle[][] sourceTiles, ArrayList <GameObject>[][]sourceObjects) {
 			if (tileStartX != -1 && tileStartY != -1) {
 				tiles = new Rectangle[tileHeight][tileWidth];
-				objects = new GameObject [tileHeight][tileWidth];
+				objects = new ArrayList[tileHeight][tileWidth];
 				int vbound = -1;
 				int hbound = -1;
 				boolean firstObject = true;
@@ -395,7 +395,7 @@ public abstract class SelectionRegion extends GuiComponent {
 				hasTileData = true;
 			}
 		}
-		public GameObject getSelectedGameObject () {
+		public ArrayList <GameObject> getSelectedGameObjects () {
 			return selectedObject;
 		}
 		public int getStartX () {
