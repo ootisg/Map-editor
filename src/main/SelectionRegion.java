@@ -107,7 +107,7 @@ public abstract class SelectionRegion extends GuiComponent {
 			}
 		} catch (Exception e) {
 			System.out.println ("Exception thrown while drawing tile region: \n" + e.toString ());
-			//e.printStackTrace ();
+			e.printStackTrace ();
 			//Continue
 		}
 	}

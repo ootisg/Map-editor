@@ -37,9 +37,9 @@ public class PasteButton extends ToolbarItem {
 			for (int j = 0; j < mapInterface.getCopyObjects()[0].length; j = j + 1) {
 				if (mapInterface.getCopyObjects()[i][j] != null) {
 		mapInterface.edit(new ObjectEdit (selectedCell [0] + j, selectedCell [1] + i,MapInterface.objectsInTheMap,mapInterface.getCopyObjects()[i][j]));
+					}
 				}
 			}
-		}
 		}
 	}
 }

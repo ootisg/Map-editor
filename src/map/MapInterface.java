@@ -205,8 +205,8 @@ public class MapInterface extends MovableSelectionRegion {
 		ArrayList <GameObject> objects = new ArrayList <GameObject>();
 		for (int i = 0; i < map.getWidth(); i = i + 1) {
 			for (int j = 0; j < map.getHeight(); j = j + 1) {
-				for (int g = 0; i < objectsInTheMap[i][j].size(); i++) {
-					if 	(objectsInTheMap[i][j].get(g) != null) {
+				if 	(objectsInTheMap[i][j] != null) {
+				for (int g = 0; g < objectsInTheMap[i][j].size(); g++) {
 						objectsInTheMap[i][j].get(g).setCoords(i, j);
 						objects.add(objectsInTheMap[i][j].get(g));
 						objectCount = objectCount + 1; 
@@ -800,7 +800,21 @@ public class MapInterface extends MovableSelectionRegion {
 		if (toolbar.getSelectedItem () != null && (toolbar.getSelectedItem () instanceof PlaceButton || (toolbar.getSelectedItem ().dragable () && toolbar.getSelectedItem ().usesClickOnElement ()))) {
 			if (toolbar.getSelectedItem () instanceof PlaceButton && button == 1) {
 				if (x < (int) (this.getGridWidth() *(16*this.getScale())) && y < (int)(this.getGridHeight()* (16*this.getScale()))) {
-					toolbar.getSelectedItem ().use (x, y);
+					try {
+						boolean dontUse = false;
+					for (int i = 0; i < objectsInTheMap[x/16][y/16].size(); i++) {
+						if (objectsInTheMap[x/16][y/16].get(i).getObjectName().equals(ObjectSelectMenu.objectSelect.getSelectedObject().get(0).getObjectName())) {
+							dontUse = true;
+							break;
+						}
+					}
+					if (!dontUse) {
+					
+						toolbar.getSelectedItem().use(x, y);
+					}
+					} catch (NullPointerException e) {
+						toolbar.getSelectedItem ().use (x, y);
+					}
 				}
 			} else {
 				Rectangle[][] grid = makeGrid (new Rectangle ((int)-getViewX (), (int)-getViewY (), (int)(getElements () [0].length * getElementWidth () * getScale ()), (int)(getElements ().length * getElementHeight () * getScale ())), getElementWidth () * getScale (), getElementHeight () * getScale ());
@@ -816,6 +830,9 @@ public class MapInterface extends MovableSelectionRegion {
 		if (this.lastMouseButtonPressed () == MouseEvent.BUTTON1) {
 			if (toolbar.getSelectedItem () instanceof SelectButton || toolbar.getSelectedItem () instanceof EraseButton) {
 				toolbar.getSelectedItem ().use (x, y);
+			}
+			if (toolbar.getSelectedItem() instanceof PlaceButton) {
+				toolbar.getSelectedItem ().use ((int)Math.ceil(((x* 16* this.getScale() - this.getViewX()))),(int)Math.ceil((( y * 16 * this.getScale() - this.getViewY()))));
 			}
 		}
 	}
@@ -836,11 +853,13 @@ public class MapInterface extends MovableSelectionRegion {
 				if (toolbar.getSelectedItem () instanceof SelectButton) {
 					anchorX = -1;
 				} else {
-					if (toolbar.getSelectedItem () != null) {
-						if (x < this.getGridWidth() *(16*this.getScale()) && y < this.getGridHeight()* (16*this.getScale())) {
-							toolbar.getSelectedItem ().use (x, y);
+					if (!(toolbar.getSelectedItem() instanceof PlaceButton)) {
+						if (toolbar.getSelectedItem () != null) {
+							if (x < this.getGridWidth() *(16*this.getScale()) && y < this.getGridHeight()* (16*this.getScale())) {
+								toolbar.getSelectedItem ().use (x, y);
+							}
 						}
-					}
+					} 
 				}
 			}
 		}

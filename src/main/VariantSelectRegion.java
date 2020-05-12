@@ -49,12 +49,12 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 		String oldString = selectedGameObject.getPath();
 		GameObject oldObject;
 		try {
-		oldObject = (GameObject) currentObject.clone();
+		oldObject = (GameObject) currentObject;
 		} catch (NullPointerException e) {
 		oldObject =	selectedGameObject; 
 		}
 		currentObject =  selectedGameObject; 
-		if (!oldObject.getObjectName().equals((currentObject).getObjectName())) {
+		if (!oldObject.equals(currentObject)) {
 			names = new ArrayList <String>();
 			nameToAttributes = new HashMap<String,ArrayList<String>>();
 			this.getMainPanel().getAttributeSelectRegion().hide();
@@ -68,6 +68,7 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 		try {
 		c = new VariantConfig (oldString);
 		} catch (Exception e) {
+			variantNumber = variantNumber + 1;
 			return;
 		}
 		ArrayList <String> variantNames = c.getAttributeNames();
