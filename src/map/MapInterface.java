@@ -23,6 +23,7 @@ import java.util.Stack;
 
 import javax.swing.JFileChooser;
 
+import main.DisplayBox;
 import main.DisplayableElement;
 import main.EntryField;
 import main.ExtendButton;
@@ -93,6 +94,8 @@ public class MapInterface extends MovableSelectionRegion {
 	
 	BufferedImage testImg;
 	
+	DisplayBox workingBox;
+	
 	public MapInterface (Rectangle bounds, TileSelectMenu tileMenu, ObjectSelectMenu objectMenu, Toolbar toolbar, GuiComponent parent) {
 		super (bounds, parent);
 		this.setElements (new DisplayableElement[30][30]);
@@ -104,7 +107,9 @@ public class MapInterface extends MovableSelectionRegion {
 		map.setMapInterface (this);
 		edits = new Stack<MapEdit> ();
 		undos = new Stack<MapEdit> ();
-		
+		workingBox = getMainPanel ().addDisplayBox (new Rectangle (0, 0, 60, 16), "HIYA");
+		workingBox.setBgColor(new Color (0x77787d));
+		workingBox.hide ();
 		//Make extend buttons
 		rightExtend = new ExtendButton (new Rectangle (bounds.x, bounds.y, ExtendButton.VERTICAL_WIDTH, ExtendButton.VERTICAL_HEIGHT), ExtendButton.Layout.VERTICAL, this);
 		bottomExtend = new ExtendButton (new Rectangle (bounds.x, bounds.y, ExtendButton.HORIZONTAL_WIDTH, ExtendButton.HORIZONTAL_HEIGHT), ExtendButton.Layout.HORIZONTAL, this);
@@ -696,7 +701,44 @@ public class MapInterface extends MovableSelectionRegion {
 			this.save(newFile);
 			timer = 0;
 		}
+		
+		int elementX = (int) (((this.getWindow().getMouseX() -160)/(16* this.getScale())) + (this.getViewX()/(16*this.getScale())));
+		int elementY = (int) (((this.getWindow().getMouseY())/(16* this.getScale())) + (this.getViewY()/(16*this.getScale())));
+		if (elementX >= 0){
+			try {
+		ArrayList <GameObject> selectedList = objectsInTheMap[elementX][elementY];
+		if (selectedList != null) {
+			if (!selectedList.isEmpty()) {
+			String working = "";
+			for (int i = 0; i < selectedList.size(); i++) {
+				working = working + selectedList.get(i).getObjectName().toString();
+				if ( !selectedList.get(i).getVariantInfo().isEmpty()) {
+					working = working + selectedList.get(i).getVariantInfo().toString();
+					}
+				if (!selectedList.get(i).getStrangeVariantInfo().isEmpty()) {
+					working = working + selectedList.get(i).getStrangeVariantInfo().toString();
+					}
+				working = working + "/n";
+				}
+		//	workingBox.setBoundingRectangle(new Rectangle (this.getWindow().getMouseX(), this.getWindow().getMouseY(),80,16));
+			workingBox.setX(this.getWindow().getMouseX());
+			workingBox.setY(this.getWindow().getMouseY());
+			workingBox.show();
+			workingBox.setMessage(working);
+			} else {
+				workingBox.hide();
+			}
+		} else {
+			workingBox.hide();
+		}
+		} catch (IndexOutOfBoundsException e) {
+			workingBox.hide();
+		}
+	} else {
+		workingBox.hide();
 	}
+		
+}
 	@Override
 	public void drawTileRegion (TileRegion region) {
 		//Null check
@@ -734,6 +776,7 @@ public class MapInterface extends MovableSelectionRegion {
 					if (j + region.getStartX () < map.getActiveLayer ().getWidth () && i + region.getStartY () < map.getActiveLayer ().getHeight () && region.objects != null) {
 						if (usedObjects[i][j] != null) {
 							for (int k = 0; k < usedObjects[i][j].size(); k++) {
+								
 								usedObjects [i][j].get(k).render (region.getTiles() [i][j], g);
 							}
 						}
@@ -756,6 +799,7 @@ public class MapInterface extends MovableSelectionRegion {
 				usedObjects = new ArrayList[1][1];
 				//may be hacky be sure to check back here
 				usedObjects [0][0] = ObjectSelectMenu.objectSelect.getSelectedObject ();
+				
 				usedTiles = new Tile[][] {{null}};
 			} else {
 				if (!tileMenu.getTilesetSelect ().isHidden ()) {
@@ -832,6 +876,7 @@ public class MapInterface extends MovableSelectionRegion {
 				toolbar.getSelectedItem ().use (x, y);
 			}
 			if (toolbar.getSelectedItem() instanceof PlaceButton) {
+				
 				toolbar.getSelectedItem ().use ((int)Math.ceil(((x* 16* this.getScale() - this.getViewX()))),(int)Math.ceil((( y * 16 * this.getScale() - this.getViewY()))));
 			}
 		}

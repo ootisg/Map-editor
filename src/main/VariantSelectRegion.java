@@ -42,15 +42,25 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 		this.resetVars();
 	}
 	public void changeDisplayingVariants() {
-		if (variantNumber == MainPanel.getMapInterface().getSelectedRegion().getSelectedGameObjects().size()) {
+	
+		try {
+		if (variantNumber >= MainPanel.getMapInterface().getSelectedRegion().getSelectedGameObjects().size()) {
 			variantNumber = 0;
 		} 
-		GameObject selectedGameObject = MainPanel.getMapInterface().getSelectedRegion().getSelectedGameObjects().get(variantNumber);
+		} catch (NullPointerException e) {
+			return;
+		}
+		GameObject selectedGameObject;
+		try {
+		selectedGameObject = MainPanel.getMapInterface().getSelectedRegion().getSelectedGameObjects().get(variantNumber);
+		} catch (IndexOutOfBoundsException e) {
+			return;
+		}
 		String oldString = selectedGameObject.getPath();
 		GameObject oldObject;
-		try {
+		if (currentObject != null) {
 		oldObject = (GameObject) currentObject;
-		} catch (NullPointerException e) {
+		} else {
 		oldObject =	selectedGameObject; 
 		}
 		currentObject =  selectedGameObject; 
@@ -117,8 +127,8 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 			int index = 0;
 			DisplayableImageElement [][] icons = new DisplayableImageElement [1][20];
 			HashMap<String,String> temporaryInfo = ((GameObject) currentObject.clone()).getVariantInfo();
-			while (index < currentAttributes.size()) {
 			
+			while (index < currentAttributes.size()) {
 			temporaryInfo.put(names.get(elementIndex),currentAttributes.get(index) );
 			icons[0][index] = new DisplayableImageElement (c.getIcon(temporaryInfo),region);
 			index = index + 1;
@@ -130,7 +140,7 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 			region.setElements(icons);
 			region.show();
 			} catch (Exception e) {
-				
+			
 			}
 	}
 }

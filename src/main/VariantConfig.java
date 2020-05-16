@@ -83,7 +83,11 @@ public class VariantConfig {
 		varMap.put ("iconY", "NULL");
 		
 		//Parse out file/icon info
+		
 		configScanner = new Scanner (configFile);
+		
+
+		
 		int lineNum = 0;
 		while (configScanner.hasNextLine ()) {
 			String line = configScanner.nextLine ();
@@ -124,6 +128,7 @@ public class VariantConfig {
 		Sprite loadSrc = new Sprite ("resources/objects/variants/icons/" + filename);
 		BufferedImage loadImg = loadSrc.getImageArray ()[0];
 		//Find the region to parse out and return it
+		
 		if (!(iconX.equals ("NULL")) && !(iconY.equals ("NULL"))) {
 			int xGet = Integer.parseInt (iconX);
 			int yGet = Integer.parseInt (iconY);
@@ -136,6 +141,7 @@ public class VariantConfig {
 			int rowLength = loadImg.getWidth () / tileWidth;
 			int xGet = (Integer.parseInt (tileIndex) % rowLength) * tileWidth;
 			int yGet = (Integer.parseInt (tileIndex) / rowLength) * tileHeight;
+			
 			return loadImg.getSubimage (xGet, yGet, tileWidth, tileHeight);
 		} else {
 			return loadImg;

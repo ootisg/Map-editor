@@ -349,6 +349,7 @@ public abstract class SelectionRegion extends GuiComponent {
 		private ArrayList <GameObject> selectedObject;
 		private boolean hasTileData;
 		public TileRegion (int startX, int startY, int width, int height) {
+
 			setTiles (startX, startY, width, height);
 		}
 		public void setTileData (Rectangle[][] sourceTiles, ArrayList <GameObject>[][]sourceObjects) {

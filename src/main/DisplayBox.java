@@ -12,7 +12,6 @@ public class DisplayBox extends GuiComponent {
 	private Color bgcolor = new Color (0xA0A0A0);
 	private Color textColor = new Color (0x000000);
 	private Color outlineColor = new Color (0x000000);
-	
 	public static final int PADDING_TOP = 2;
 	public static final int PADDING_BOTTOM = 2;
 	public static final int PADDING_LEFT = 2;
@@ -38,20 +37,37 @@ public class DisplayBox extends GuiComponent {
 	public void setOutlineColor (Color color) {
 		this.outlineColor = color;
 	}
-	
+	public void setX (int newX) {
+		Rectangle bounds = getBoundingRectangle ();
+		setBoundingRectangle (new Rectangle (newX, bounds.y, bounds.width,bounds.height));
+	}
+	public void setY (int newY) {
+		Rectangle bounds = getBoundingRectangle ();
+		setBoundingRectangle (new Rectangle (bounds.x, newY, bounds.width,bounds.height));
+	}
 	@Override
 	public void draw () {
 		Rectangle bounds = getBoundingRectangle ();
 		Graphics2D g = (Graphics2D)getGraphics ();
 		FontMetrics f = g.getFontMetrics ();
 		Rectangle2D r = f.getStringBounds (message, g);
-		setBoundingRectangle (new Rectangle (bounds.x, bounds.y, (int)(r.getWidth ()) + PADDING_LEFT + PADDING_RIGHT, (int)(r.getHeight ()) + PADDING_TOP + PADDING_BOTTOM));
+		String [] lines = message.split("/n");
+		int boxWidth = 16;
+		for (int i = 0; i < lines.length; i++) {
+			int tempWidth = (int) f.getStringBounds (lines [i], g).getWidth ();
+			if (tempWidth > boxWidth) {
+				boxWidth = tempWidth;
+			}
+		}
+		setBoundingRectangle (new Rectangle (bounds.x, bounds.y, boxWidth + PADDING_LEFT + PADDING_RIGHT, (int)((r.getHeight () *lines.length) + PADDING_TOP + PADDING_BOTTOM) ));
 		g.setColor (bgcolor);
 		g.fillRect (0, 0, bounds.width, bounds.height);
 		g.setColor (outlineColor);
 		g.drawRect (0, 0, bounds.width - 1, bounds.height - 1);
 		g.setColor (textColor);
-		g.drawString (message, PADDING_LEFT, PADDING_TOP + f.getAscent ());
+		for (int i = 0; i < lines.length; i++) {
+		g.drawString (lines[i], PADDING_LEFT, PADDING_TOP + f.getAscent () + (i*(int)r.getHeight()));
+		}
 	}
 
 }
