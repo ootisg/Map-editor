@@ -846,8 +846,10 @@ public class MapInterface extends MovableSelectionRegion {
 				if (x < (int) (this.getGridWidth() *(16*this.getScale())) && y < (int)(this.getGridHeight()* (16*this.getScale()))) {
 					try {
 						boolean dontUse = false;
-					for (int i = 0; i < objectsInTheMap[x/16][y/16].size(); i++) {
-						if (objectsInTheMap[x/16][y/16].get(i).getObjectName().equals(ObjectSelectMenu.objectSelect.getSelectedObject().get(0).getObjectName())) {
+						int workX = x + (int)this.getViewX();
+						int workY = y + (int)this.getViewY();
+					for (int i = 0; i < objectsInTheMap[(int)(workX/(16*this.getScale()))][(int)(workY/(16*this.getScale()))].size(); i++) {
+						if (objectsInTheMap[(int)(workX/(16*this.getScale()))][(int)(workY/(16*this.getScale()))].get(i).getObjectName().equals(ObjectSelectMenu.objectSelect.getSelectedObject().get(0).getObjectName())) {
 							dontUse = true;
 							break;
 						}
@@ -876,7 +878,6 @@ public class MapInterface extends MovableSelectionRegion {
 				toolbar.getSelectedItem ().use (x, y);
 			}
 			if (toolbar.getSelectedItem() instanceof PlaceButton) {
-				
 				toolbar.getSelectedItem ().use ((int)Math.ceil(((x* 16* this.getScale() - this.getViewX()))),(int)Math.ceil((( y * 16 * this.getScale() - this.getViewY()))));
 			}
 		}
