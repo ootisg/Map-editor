@@ -132,11 +132,13 @@ public class TilesetSelectRegion extends ScrollableSelectionRegion {
 	
 	@Override 
 	public void drawTileRegion (TileRegion region) {
+		if (!PlaceButton.tilesOrObjects) {
 		Rectangle bounds = region.getBounds ();
 		Rectangle componentBounds = getBoundingRectangle ();
 		Graphics g = getGraphics ();
 		g.setColor (new Color (0x0000FF));
 		g.drawRect (bounds.x, bounds.y, bounds.width, bounds.height);
 		g.drawRect (bounds.x + 1, bounds.y + 1, bounds.width - 2, bounds.height - 2);
+	}
 	}
 }

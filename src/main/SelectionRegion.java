@@ -423,6 +423,7 @@ public abstract class SelectionRegion extends GuiComponent {
 			hasTileData = false;
 			bounds = null;
 			tiles = null;
+			objects = null;
 		}
 		
 		public boolean hasTilesData () {

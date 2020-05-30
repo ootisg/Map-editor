@@ -3,6 +3,7 @@ package toolbar;
 import java.awt.Rectangle;
 import java.io.IOException;
 
+import main.DisplayBox;
 import main.MainPanel;
 import main.ObjectSelectMenu;
 import main.SelectionRegion.TileRegion;
@@ -17,8 +18,11 @@ import resources.Sprite;
 
 public class PlaceButton extends ToolbarItem {
 	public static boolean tilesOrObjects = false; 
+	DisplayBox box;
 	public PlaceButton (Toolbar parent) {
 		super (parent);
+		box = new DisplayBox (new Rectangle (this.getBoundingRectangle().x + 16,this.getBoundingRectangle().y,8,10),"Place",this);
+		
 		this.setDragable(true);
 		setIcon (new Sprite ("resources/images/Place.png").getImageArray () [0]);
 	}
@@ -73,4 +77,12 @@ public class PlaceButton extends ToolbarItem {
 	public void onSelect () {
 		getMainPanel ().getMapInterface ().deselect ();
 	}
+	@Override
+	public void frameEvent () {
+		if (this.mouseInside()) {
+			box.show();
+		} else {
+			box.hide();
+		}
+}
 }

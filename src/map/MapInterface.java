@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -810,6 +811,7 @@ public class MapInterface extends MovableSelectionRegion {
 				} else {
 					usedTiles = tileMenu.getTileSelect ().getSelectedTiles (this);
 				}
+				usedObjects = new ArrayList[][] {{null}};
 			}
 			
 			int selectWidth = -1;

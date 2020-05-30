@@ -3,6 +3,7 @@ package toolbar;
 import java.awt.Rectangle;
 import java.io.IOException;
 
+import main.DisplayBox;
 import main.MainPanel;
 import main.Tile;
 import main.TileSelectMenu;
@@ -13,9 +14,10 @@ import map.TileEdit;
 import resources.Sprite;
 
 public class EraseButton extends ToolbarItem {
-	
+	DisplayBox box;
 	public EraseButton (Toolbar parent) {
 		super (parent);
+		box = new DisplayBox (new Rectangle (this.getBoundingRectangle().x + 16,this.getBoundingRectangle().y,8,10),"Erase",this);
 		setIcon (new Sprite ("resources/images/Eraser.png").getImageArray () [0]);
 		setDragable (true);
 		useClickOnElement (true);
@@ -40,4 +42,12 @@ public class EraseButton extends ToolbarItem {
 	public void useDrag (int x, int y) {
 		use (x, y);
 	}
+	@Override
+	public void frameEvent () {
+		if (this.mouseInside()) {
+			box.show();
+		} else {
+			box.hide();
+		}
+}
 }

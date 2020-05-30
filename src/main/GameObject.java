@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.image.BufferedImage;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,6 +24,13 @@ public class GameObject extends DisplayableImageElement {
 		super (img, parent);
 		
 	}
+	public void refreshIcon () {
+		try {
+		this.setIcon(this.getConfig().getIcon(getVariantInfo()));
+		} catch (NullPointerException e) {
+			
+		}
+	}
 	public GameObject (String path, GuiComponent parent) {
 		super (null, parent);
 		Sprite loadImg = null;
@@ -31,16 +39,20 @@ public class GameObject extends DisplayableImageElement {
 		BufferedImage loadBuffer = loadImg.getImageArray ()[0];
 		setIcon (loadBuffer);
 	}
-	@Override 
-	protected Object clone () {
+	@Override
+	public Object clone () {
 		GameObject working = new GameObject (this.getPath(),this.getParent());
 		Iterator<String> iter;
 		iter = this.getNameList().iterator();
 		while (iter.hasNext()) {
 			String worker = iter.next();
 			working.setVariantInfo(worker, this.getVariantInfo().get(worker));
-			working.setStrangeVariantInfo(worker, this.getVariantInfo().get(worker));
-			
+		}
+		Iterator<String> iter2;
+		iter2 = this.getStrangeNameList().iterator();
+		while(iter2.hasNext()) {
+			String worker = iter2.next();
+			working.setStrangeVariantInfo(worker, this.getStrangeVariantInfo().get(worker));
 		}
 		working.setCoords(x, y);
 		working.mapObj = this.isMapObject();
@@ -52,6 +64,13 @@ public class GameObject extends DisplayableImageElement {
 	public HashMap <String, String> getVariantInfo () {
 		return variantInfo;
 	}
+	public VariantConfig getConfig () {
+		try {
+		return new VariantConfig ("resources\\objects\\variants\\config\\" + this.getObjectName() + ".txt");
+		} catch (NoSuchFileException e) {
+			return null;
+		}
+		}
 	public void changeIcon (BufferedImage img) {
 		this.setIcon(img);
 	}
