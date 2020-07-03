@@ -1,0 +1,23 @@
+VF 1
+name=Name attributes={nv=nv} filename={NPC.png}
+name=Entry attributes={nv=nv}
+name=Sprite attributes={nv=nv}
+name=message1 attributes={nv=nv}
+name=message2 attributes={nv=nv}
+name=message3 attributes={nv=nv}
+name=message4 attributes={nv=nv}
+name=message5 attributes={nv=nv}
+name=itemNeeded attributes={nv=nv}
+name=amountToCheck attributes={nv=nv}
+name=action attributes={nv=nv}
+name=itemMessage1 attributes={nv=nv}
+name=itemMessage2 attributes={nv=nv}
+name=itemMessage3 attributes={nv=nv}
+name=itemMessage4 attributes={nv=nv}
+name=itemMessage5 attributes={nv=nv}
+name=itemToExchange attributes={nv=nv}
+name=amountToExchange attributes={nv=nv}
+name=x_offset attributes={nv=nv}
+name=y_offset attributes={nv=nv}
+name=width attributes={nv=nv}
+name=height attributes={nv=nv}

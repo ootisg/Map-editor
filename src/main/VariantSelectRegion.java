@@ -127,7 +127,6 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 			int index = 0;
 			DisplayableImageElement [][] icons = new DisplayableImageElement [1][20];
 			HashMap<String,String> temporaryInfo = ((GameObject) currentObject.clone()).getVariantInfo();
-			
 			while (index < currentAttributes.size()) {
 			temporaryInfo.put(names.get(elementIndex),currentAttributes.get(index) );
 			icons[0][index] = new DisplayableImageElement (c.getIcon(temporaryInfo),region);
@@ -140,7 +139,7 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 			region.setElements(icons);
 			region.show();
 			} catch (Exception e) {
-			
+				e.printStackTrace();
 			}
 	}
 }

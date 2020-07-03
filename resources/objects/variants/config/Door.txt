@@ -1,0 +1,7 @@
+VF 1
+name=keyName attributes={nv=nv} filename={Door.png}
+name=startSceen attributes={nv=nv}
+name=endSceen attributes={nv=nv}
+name=startPause attributes={yes=yes no=no}
+name=endPause attributes={yes=yes no=no}
+name=sprite attributes={nv=nv}

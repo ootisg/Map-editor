@@ -1,0 +1,5 @@
+VF 1
+name=wayPoint attributes={yellow=yellow green=green blue=blue orange=orange purple=purple red=red} filename={platform- value .png}
+name=spritePath attributes={nv=nv}
+name=speed attributes={nv=nv}
+name=active attributes={true=true false=false}

@@ -1,2 +1,3 @@
 VF 1
-name=flip attributes={true=0 false=1} filename={CarSpawner.png}
+name=flip attributes={true=true false=false} filename={CarSpawner.png}
+name=active attributes={true=true false=false}

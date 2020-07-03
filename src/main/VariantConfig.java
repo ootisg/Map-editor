@@ -74,7 +74,7 @@ public class VariantConfig {
 		varMap.put ("value", "NV");
 		varMap.put ("filename", "NULL");
 		varMap.put ("frame", "0");
-		varMap.put ("tileIndex", "0");
+		varMap.put ("tileIndex", "NULL");
 		varMap.put ("tileWidth", "16");
 		varMap.put ("tileHeight", "16");
 		varMap.put ("tileX", "NULL");

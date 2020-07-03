@@ -1,0 +1,2 @@
+VF 1
+name=startLeft attributes={yes=0 no=1} filename={RollingChairCavelry.png} tileIndex=value

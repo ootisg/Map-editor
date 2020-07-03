@@ -1,0 +1,4 @@
+VF 1
+name=Direction attributes={Up=U Down=D Left=L Right=R} filename={fan value .png}
+name=power attributes={nv=nv}
+name=active attributes={true=true false=false}
