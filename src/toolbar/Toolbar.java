@@ -38,6 +38,7 @@ public class Toolbar extends GuiComponent {
 		new SaveButton (this);
 		new LoadButton (this);
 		new VariantButton (this);
+		new GridLineButton(this);
 	}
 	
 	@Override

@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import javax.swing.plaf.synth.Region;
+
 import map.MapInterface;
 
 public abstract class SelectionRegion extends GuiComponent {
@@ -33,7 +35,8 @@ public abstract class SelectionRegion extends GuiComponent {
 	private LinkedList<TileRegion> scheduledRegions;
 	
 	public static final double MAX_SCALE = 8;
-	public static final double MIN_SCALE = .1;
+	public static final double MIN_SCALE = .25;
+
 	
 	protected SelectionRegion (Rectangle bounds, GuiComponent parent) {
 		super (bounds, parent);
@@ -255,6 +258,7 @@ public abstract class SelectionRegion extends GuiComponent {
 	}
 	
 	public Rectangle[][] makeGrid (Rectangle reigon, double cellWidth, double cellHeight) {
+		// TODO fix bounds pls (becasue their gay)
 		int workingX = reigon.x;
 		int workingY = reigon.y;
 		int newX = 0;

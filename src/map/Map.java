@@ -2,6 +2,7 @@ package map;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ public class Map {
 	
 	private int topDisplayLayer = 0;
 	private boolean onlyTopLayer;
+	
+	private Rectangle preiviosFrame;
 	
 	public static final int STARTING_WIDTH = 30;
 	public static final int STARTING_HEIGHT = 30;
@@ -60,11 +63,21 @@ public class Map {
 		int maxX = (int)Math.ceil (viewX + viewWidth);
 		int minY = (int)viewY;
 		int maxY = (int)Math.ceil (viewY + viewHeight);
+		if (preiviosFrame != null) {
+			for (int wy = preiviosFrame.y; wy < preiviosFrame.height + preiviosFrame.y && wy < renderedTiles.length; wy ++) {
+				for (int wx = preiviosFrame.x; wx < preiviosFrame.width + preiviosFrame.x && wx < renderedTiles [0].length; wx ++) {
+					if (wy < minY || wy > maxY || wx < minX || wx > maxX) {
+						renderedTiles[wy][wx] = null;
+					}
+				}
+			}	
+		} 
 		for (int wy = minY; wy < maxY && wy < renderedTiles.length; wy ++) {
 			for (int wx = minX; wx < maxX && wx < renderedTiles [0].length; wx ++) {
 				renderCell (wx, wy, viewX, viewY);
 			}
 		}
+		preiviosFrame = new Rectangle (minX,minY,maxX-minX,maxY-minY);
 	}
 	
 	public void renderCell (int x, int y, double viewX, double viewY) {
