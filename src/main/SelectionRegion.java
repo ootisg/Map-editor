@@ -381,9 +381,6 @@ public abstract class SelectionRegion extends GuiComponent {
 							if (sourceObjects [(wx + tileStartX)][(wy + tileStartY)] != null && firstObject) {
 								firstObject = false;
 								selectedObject = sourceObjects [(wx + tileStartX)][(wy + tileStartY)];
-								if ( getMainPanel().getMapInterface().getSelectedRegion()!= null) {
-								VariantSelectMenu.variantSelect.changeDisplayingVariants();
-								}
 							}
 						}
 					}

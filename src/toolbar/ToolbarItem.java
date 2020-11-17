@@ -78,11 +78,14 @@ public abstract class ToolbarItem extends GuiComponent {
 	
 	@Override
 	public void mouseReleased (int x, int y, int button) {
-		if (selectable ()) {
-			((Toolbar)getParent ()).selectItem (this);
-			onSelect ();
-		} else {
-			use (x, y);
+		//if we add more dragabble menus we will have to work with this a bit more
+		if (!MainPanel.getVariantMenu().isBeingDragged()) {
+			if (selectable ()) {
+				((Toolbar)getParent ()).selectItem (this);
+				onSelect ();
+			} else {
+				use (x, y);
+			}
 		}
 	}
 	
@@ -97,9 +100,18 @@ public abstract class ToolbarItem extends GuiComponent {
 	public void use (int x, int y) {
 		
 	}
-	
 	public void useDrag (int x, int y) {
 		
+	}
+	public void useIntermideite (int x, int y) {
+		if (!MainPanel.getVariantMenu().isBeingDragged()) {
+			use(x,y);
+		}
+	}
+	public void useDragIntermideite (int x, int y) {
+		if (!MainPanel.getVariantMenu().isBeingDragged()) {
+			useDrag(x,y);
+		}
 	}
 	
 	public void doClickOnElement (int x, int y) {

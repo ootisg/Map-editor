@@ -15,6 +15,9 @@ public class Gui {
 	private boolean mouseDown;
 	private int lastButtonPressed;
 	
+	private boolean [] keysDown = new boolean [256];
+	private boolean [] keysPressedThisFrame = new boolean [256];
+	
 	public Gui (GameWindow wind) {
 		displayWindow = wind;
 		panel = new MainPanel (new Rectangle (0, 0, 640, 480), this);
@@ -50,6 +53,25 @@ public class Gui {
 	
 	public boolean mouseDown () {
 		return mouseDown;
+	}
+	public boolean keyDown (int key) {
+		return keysDown[key];
+	}
+	public boolean keyPressed (int key) {
+		return keysPressedThisFrame[key];
+	}
+	public void pushKey (int key) {
+		if (!keysDown[key]) {
+			keysPressedThisFrame[key] = true;
+		}
+		keysDown[key] = true;
+	}
+	public void keyUsed (int key) {
+		keysPressedThisFrame[key] = false;
+	}
+	public void releaseKey (int key) {
+		keysDown[key] = false;
+		keysPressedThisFrame[key] = false;
 	}
 	
 	public int lastMouseButtonPressed () {

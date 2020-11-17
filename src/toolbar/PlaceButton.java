@@ -22,7 +22,6 @@ public class PlaceButton extends ToolbarItem {
 	public PlaceButton (Toolbar parent) {
 		super (parent);
 		box = new DisplayBox (new Rectangle (this.getBoundingRectangle().x + 16,this.getBoundingRectangle().y,8,10),"Place",this);
-		
 		this.setDragable(true);
 		setIcon (new Sprite ("resources/images/Place.png").getImageArray () [0]);
 	}
@@ -56,23 +55,28 @@ public class PlaceButton extends ToolbarItem {
 		Rectangle[][] grid = mapInterface.makeGrid (new Rectangle ((int)-mapInterface.getViewX (), (int)-mapInterface.getViewY (), (int)(mapInterface.getElements () [0].length * mapInterface.getElementWidth () * mapInterface.getScale ()), (int)(mapInterface.getElements ().length * mapInterface.getElementHeight () * mapInterface.getScale ())), mapInterface.getElementWidth () * mapInterface.getScale (), mapInterface.getElementHeight () * mapInterface.getScale ());
 		int[] selectedCell = mainPanel.getMapInterface ().getCell (x, y);
 		if (!nullTile) {
-			mainPanel.getMapInterface ().edit (new TileEdit (selectedCell [0], selectedCell [1], usedTiles [0].length, usedTiles.length, mapInterface.getMap (), usedTiles));
+			MainPanel.getMapInterface ().edit (new TileEdit (selectedCell [0], selectedCell [1], usedTiles [0].length, usedTiles.length, mapInterface.getMap (), usedTiles));
 		} else {
-			mainPanel.getMapInterface ().edit (new TileEdit (selectedCell [0], selectedCell [1], 1, 1, mapInterface.getMap (), new Tile[][] {{null}}));
+			MainPanel.getMapInterface ().edit (new TileEdit (selectedCell [0], selectedCell [1], 1, 1, mapInterface.getMap (), new Tile[][] {{null}}));
 		}
 		} catch (NullPointerException e) {
 			tilesOrObjects = true;
 		}
 		} else {
 			try {
-	mainPanel.getMapInterface().edit (new ObjectEdit ((int) ((x/(16 * mapInterface.getScale())) + (mapInterface.getViewX()/(16 * mapInterface.getScale()))), (int) ((y/(16 * mapInterface.getScale())) + (mapInterface.getViewY()/(16 * mapInterface.getScale()))), MapInterface.objectsInTheMap,ObjectSelectMenu.objectSelect.getSelectedObject()));	
+				if (ObjectSelectMenu.objectSelect.getSelectedObject()!= null) {
+					MainPanel.getMapInterface().edit (new ObjectEdit ((int) ((x/(16 * mapInterface.getScale())) + (mapInterface.getViewX()/(16 * mapInterface.getScale()))), (int) ((y/(16 * mapInterface.getScale())) + (mapInterface.getViewY()/(16 * mapInterface.getScale()))), MapInterface.objectsInTheMap,ObjectSelectMenu.objectSelect.getSelectedObject()));	
+				}
 			} catch (IndexOutOfBoundsException e) {
 				
 			}
 			}
 		}
 	}
-	
+	@Override
+	public void useDrag(int x, int y) {
+		this.use(x,y);
+	}
 	@Override
 	public void onSelect () {
 		getMainPanel ().getMapInterface ().deselect ();

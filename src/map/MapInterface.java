@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -124,7 +125,15 @@ public class MapInterface extends MovableSelectionRegion {
 		) {
 			//Do the edit
 			undos = new Stack<MapEdit> ();
-			boolean editResult = edit.doEdit ();
+			boolean editResult;
+			try {
+				if (!edit.isDiffrent(edits.peek())) {
+					return false;
+				}
+				editResult = edit.doEdit ();
+			} catch (EmptyStackException e) {
+				editResult = edit.doEdit ();
+			}
 			edits.push (edit);
 			return editResult;
 		}
@@ -186,7 +195,11 @@ public class MapInterface extends MovableSelectionRegion {
 	}
 	
 	public void save (File file) {
-		
+		if (file.getName().length() > 3) {
+			mapName = file.getName().substring(0,file.getName().length()-4);
+		} else {
+			mapName = file.getName();
+		}
 		//Get map editor components
 		MainPanel mainPanel = getMainPanel ();
 		TileSelectMenu tileMenu = mainPanel.getTileMenu ();
@@ -579,7 +592,11 @@ public class MapInterface extends MovableSelectionRegion {
 		}
 	}
 		//...
-		mapName = file.getName();
+		if (file.getName().length() > 3) {
+			mapName = file.getName().substring(0,file.getName().length()-4);
+		} else {
+			mapName = file.getName();
+		}
 		mapNumber = 0;
 		mapNumber = mapNumber + 1;
 		File newFile = new File ("resources/maps/backups/" + mapName + "_" + mapNumber + ".rmf");
@@ -702,7 +719,22 @@ public class MapInterface extends MovableSelectionRegion {
 			this.save(newFile);
 			timer = 0;
 		}
-		
+		if (keyDown(KeyEvent.VK_CONTROL) && keyHit('Z')) {
+			this.undo();
+		}
+		if (keyDown(KeyEvent.VK_CONTROL) && keyHit('Y')) {
+			this.redo();
+		}
+		if (keyDown(KeyEvent.VK_CONTROL) && keyHit('G')) {
+			this.showGrid(!this.isGridShown());
+		}
+		if (keyDown(KeyEvent.VK_CONTROL) && keyHit('S')) {
+			if (mapName.equals("new map")) {
+				this.save();
+			} else {
+				this.save(new File ("resources/maps/" + mapName + ".rmf"));
+			}
+		}
 		int elementX = (int) (((this.getWindow().getMouseX() -160)/(16* this.getScale())) + (this.getViewX()/(16*this.getScale())));
 		int elementY = (int) (((this.getWindow().getMouseY())/(16* this.getScale())) + (this.getViewY()/(16*this.getScale())));
 		if (elementX >= 0){
@@ -857,11 +889,14 @@ public class MapInterface extends MovableSelectionRegion {
 						}
 					}
 					if (!dontUse) {
-					
-						toolbar.getSelectedItem().use(x, y);
+						if (toolbar.getSelectedItem().dragable()) {
+							toolbar.getSelectedItem().useDragIntermideite(x, y);
+						}
 					}
 					} catch (NullPointerException e) {
-						toolbar.getSelectedItem ().use (x, y);
+						if (toolbar.getSelectedItem().dragable()) {
+							toolbar.getSelectedItem().useDragIntermideite(x, y);
+						}
 					}
 				}
 			} else {
@@ -877,10 +912,10 @@ public class MapInterface extends MovableSelectionRegion {
 	public void doClickOnElement (int x, int y) {
 		if (this.lastMouseButtonPressed () == MouseEvent.BUTTON1) {
 			if (toolbar.getSelectedItem () instanceof SelectButton || toolbar.getSelectedItem () instanceof EraseButton) {
-				toolbar.getSelectedItem ().use (x, y);
+				toolbar.getSelectedItem ().useIntermideite (x, y);
 			}
 			if (toolbar.getSelectedItem() instanceof PlaceButton) {
-				toolbar.getSelectedItem ().use ((int)Math.ceil(((x* 16* this.getScale() - this.getViewX()))),(int)Math.ceil((( y * 16 * this.getScale() - this.getViewY()))));
+				toolbar.getSelectedItem ().useIntermideite ((int)Math.ceil(((x* 16* this.getScale() - this.getViewX()))),(int)Math.ceil((( y * 16 * this.getScale() - this.getViewY()))));
 			}
 		}
 	}

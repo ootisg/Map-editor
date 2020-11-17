@@ -22,6 +22,7 @@ public abstract class GuiComponent {
 	
 	private boolean hidden;
 	
+	
 	protected GuiComponent (Rectangle bounds, GuiComponent parent) {
 		children = new LinkedList<GuiComponent> ();
 		if (bounds != null) {
@@ -121,14 +122,28 @@ public abstract class GuiComponent {
 					break;
 				case KeyEvent.KEY_PRESSED:
 					keyPressed (event.getKeyCode ());
+					if (this.getClass().getSimpleName().equals("MainPanel")) {
+						getGui().pushKey(event.getKeyCode());
+					}
 					break;
 				case KeyEvent.KEY_RELEASED:
 					keyReleased (event.getKeyCode ());
+					if (this.getClass().getSimpleName().equals("MainPanel")) {
+						getGui().releaseKey(event.getKeyCode());
+					}
 					break;
 			}
 		}
 	}
+	public boolean keyDown (int key) {
+		return getGui().keyDown(key);
+	}
+	public boolean keyHit (int key) {
+		boolean working = getGui().keyPressed(key);
+		getGui().keyUsed(key);
+		return working;
 	
+	}
 	public void mouseClicked (int x, int y, int button) {
 		
 	}

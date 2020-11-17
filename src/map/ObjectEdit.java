@@ -24,8 +24,9 @@ public class ObjectEdit implements MapEdit {
 	public boolean doEdit() {
 		erasedObject = Objects[startX][startY];
 		if (objectToAdd == null) {
-			Objects[startX][startY].clear();
-			return true;
+			
+				Objects[startX][startY].clear();
+				return true;
 		}
 		if (Objects[startX][startY] == null) {
 		Objects[startX][startY] = new ArrayList <GameObject>();
@@ -45,6 +46,9 @@ public class ObjectEdit implements MapEdit {
 	public boolean affectsMap() {
 		return true;
 	}
-	
+	@Override 
+	public boolean isDiffrent(MapEdit prev) {
+		return true;
+	}
 
 }

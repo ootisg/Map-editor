@@ -23,6 +23,7 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 	GuiComponent realParent;
 	ArrayList <String> names = new ArrayList();
 	GameObject currentObject;
+	ArrayList <GameObject> selectedObjects;
 	 HashMap<String, ArrayList <String>> nameToAttributes  = new HashMap<String, ArrayList<String>>();
 	 int variantNumber = 0;
 	public VariantSelectRegion (Rectangle bounds, GuiComponent parent) {
@@ -41,18 +42,25 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 		this.setGridDimensions(1, 10);
 		this.resetVars();
 	}
-	public void changeDisplayingVariants() {
-	
+	@Override
+	public void frameEvent() {
 		try {
-		if (variantNumber >= MainPanel.getMapInterface().getSelectedRegion().getSelectedGameObjects().size()) {
-			variantNumber = 0;
-		} 
+			if (selectedObjects != MainPanel.getMapInterface().getSelectedRegion().getSelectedGameObjects() && !MainPanel.getMapInterface().getSelectedRegion().getSelectedGameObjects().isEmpty()) {
+				selectedObjects = MainPanel.getMapInterface().getSelectedRegion().getSelectedGameObjects();
+			}
+		
 		} catch (NullPointerException e) {
+			
+		}
+		if (selectedObjects == null) {
 			return;
 		}
+		if (variantNumber >= selectedObjects.size()) {
+			variantNumber = 0;
+		} 
 		GameObject selectedGameObject;
 		try {
-		selectedGameObject = MainPanel.getMapInterface().getSelectedRegion().getSelectedGameObjects().get(variantNumber);
+		selectedGameObject = selectedObjects.get(variantNumber);
 		} catch (IndexOutOfBoundsException e) {
 			return;
 		}
@@ -119,9 +127,10 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 			int elementIndex = getElementIndex (horizontalIndex, verticalIndex);
 			if (elementIndex == names.size()) {
 				variantNumber = variantNumber + 1;
-				this.changeDisplayingVariants();
+				this.frameEvent();
 			}
 			ArrayList <String> currentAttributes = nameToAttributes.get(((DisplayableTextElement) this.getElements()[elementIndex][0]).getMessage());
+			if (currentAttributes != null) {
 			AttributeSelectRegion region = this.getMainPanel().getAttributeSelectRegion();
 			region.setBoundingRectangle(new Rectangle (((VariantSelectMenu) realParent).getMenuX() + 16 + this.getElementWidth(), ((VariantSelectMenu) realParent).getMenuY() + 32+ (elementIndex * 16),((currentAttributes.size()) * 16) + 16, 16));
 			int index = 0;
@@ -138,8 +147,11 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 			region.setObject(currentObject);
 			region.setElements(icons);
 			region.show();
+			} else {
+				this.frameEvent();
+			}
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 	}
 }

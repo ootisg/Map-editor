@@ -57,5 +57,8 @@ public class BackgroundEdit implements MapEdit {
 	public boolean affectsMap () {
 		return true;
 	}
-
+	@Override
+	public boolean isDiffrent(MapEdit prev) {
+		return true;
+	}
 }

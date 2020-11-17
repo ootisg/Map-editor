@@ -51,6 +51,7 @@ public class TileEdit implements MapEdit {
 		if (oldTiles == null) {
 			return false;
 		}
+		
 		fillTiles (oldTiles, null);
 		return true;
 	}
@@ -59,5 +60,27 @@ public class TileEdit implements MapEdit {
 	public boolean affectsMap () {
 		return true;
 	}
-
+	@Override
+	public boolean isDiffrent(MapEdit prev) {
+		TileEdit prev2;
+		if (!prev.getClass().getSimpleName().equals("TileEdit")) {
+			return true;
+		} else {
+			prev2 = (TileEdit) prev;
+		}
+		if (prev2.startX != this.startX) {
+			return true;
+		}
+		if (prev2.startY != this.startY) {
+			return true;
+		}
+		for (int i = 0; i <prev2.oldTiles.length; i++) {
+			for (int j = 0; j <prev2.oldTiles[0].length; j++) {
+				if (!prev2.newTiles[i][j].getIcon().equals(this.newTiles[i][j].getIcon())) {
+					return true;
+				}
+			}	
+		}
+		return false;
+	}
 }

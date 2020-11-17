@@ -19,4 +19,5 @@ public interface MapEdit {
 	 * @return true if the map is affected; false otherwise
 	 */
 	public boolean affectsMap ();
+	public boolean isDiffrent (MapEdit mapEdit);
 }
