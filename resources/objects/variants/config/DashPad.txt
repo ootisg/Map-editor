@@ -1,3 +1,3 @@
 VF 1
-name=Direction attributes={Right=0 Left=1}name=Direction attributes={Right=0 Left=1} filename={DashPad.png} tileIndex=value
+name=Direction attributes={Right=0 Left=1} filename={DashPad.png} tileIndex=value
 name=active attributes={true=true false=false}

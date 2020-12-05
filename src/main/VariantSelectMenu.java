@@ -51,7 +51,7 @@ public class VariantSelectMenu extends SelectionMenu {
 						this.setBoundingRectangle(new Rectangle ( menuX ,  menuY, this.getBoundingRectangle().width,this.getBoundingRectangle().height));
 						variantSelect.setBoundingRectangle(new Rectangle ( menuX ,  menuY , variantSelect.getBoundingRectangle().width,variantSelect.getBoundingRectangle().height));
 						AttributeSelectRegion region = this.getMainPanel().getAttributeSelectRegion();
-						region.setBoundingRectangle(new Rectangle ( menuX,  menuY , region.getBoundingRectangle().width,region.getBoundingRectangle().height));
+						region.setBoundingRectangle(new Rectangle ( region.getBoundingRectangle().x + menuX - oldX, region.getBoundingRectangle().y + menuY - oldY, region.getBoundingRectangle().width,region.getBoundingRectangle().height));
 						this.getMainPanel().getVariantCloseButton().setBoundingRectangle(new Rectangle (this.getMainPanel().getVariantCloseButton().getBoundingRectangle().x + menuX - oldX, this.getMainPanel().getVariantCloseButton().getBoundingRectangle().y + menuY - oldY,16,16));
 						mouseStartPosX = this.getWindow().getMouseX();
 						mouseStartPosY = this.getWindow().getMouseY();

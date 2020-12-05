@@ -1,0 +1,2 @@
+VF 1
+name=flip attributes={right=0 left=1} filename={MissleadingOneWay.png} tileIndex=value

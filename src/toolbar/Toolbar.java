@@ -21,13 +21,16 @@ public class Toolbar extends GuiComponent {
 	private ToolbarItem lastConfigured = null;
 	private ToolbarItem selected;
 	
+	private CopyButton copyButton;
+	private PasteButton pasteButton;
+	
 	public Toolbar (Rectangle bounds, GuiComponent parent) {
 		super (bounds, parent);
 		new SelectButton (this);
 		new PlaceButton (this);
 		new EraseButton (this);
-		new CopyButton (this);
-		new PasteButton (this);
+		copyButton = new CopyButton (this);
+		pasteButton = new PasteButton (this);
 		new UndoButton (this);
 		new RedoButton (this);
 		new ResizeButton (this);
@@ -41,6 +44,12 @@ public class Toolbar extends GuiComponent {
 		new GridLineButton(this);
 	}
 	
+	public CopyButton getCopyButton () {
+		return copyButton;
+	}
+	public PasteButton getPasteButton () {
+		return pasteButton;
+	}
 	@Override
 	public void draw () {
 		super.draw ();

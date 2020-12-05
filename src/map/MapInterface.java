@@ -483,7 +483,6 @@ public class MapInterface extends MovableSelectionRegion {
 		int mapHeight = getInteger (4);
 		int numLayers = getInteger (4);
 		int numObjects = getInteger (4);
-		
 		//Reset map and tilesets
 		resizeObjects(mapWidth,mapHeight);
 		map.resetMap (mapWidth, mapHeight);
@@ -553,7 +552,7 @@ public class MapInterface extends MovableSelectionRegion {
 		for (int i = 0; i < numObjects; i++) {
 			int x = getInteger (this.getByteCount(mapWidth));
 			int y = getInteger (this.getByteCount(mapHeight));
-			int object = getInteger (this.getByteCount(numObjects));
+			int object = getInteger (this.getByteCount(objectList.length));
 			GameObject currentObject = new GameObject ("resources/objects/" + objectList[object] + ".png",this);
 			ArrayList <GameObject> wokeing = new ArrayList <GameObject> ();
 			wokeing.add(currentObject);
@@ -727,6 +726,12 @@ public class MapInterface extends MovableSelectionRegion {
 		}
 		if (keyDown(KeyEvent.VK_CONTROL) && keyHit('G')) {
 			this.showGrid(!this.isGridShown());
+		}
+		if (keyDown(KeyEvent.VK_CONTROL) && keyHit('C')) {
+			MainPanel.getToolbar().getCopyButton().use();
+		}
+		if (keyDown(KeyEvent.VK_CONTROL) && keyHit('V')) {
+			MainPanel.getToolbar().selectItem(MainPanel.getToolbar().getPasteButton());
 		}
 		if (keyDown(KeyEvent.VK_CONTROL) && keyHit('S')) {
 			if (mapName.equals("new map")) {

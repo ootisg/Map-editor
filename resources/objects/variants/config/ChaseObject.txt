@@ -1,0 +1,4 @@
+VF 1
+name=direction attributes={left=left right=right} filename={ChaseObject.png}
+name=speed attributes={nv=nv}
+name=sprite attributes={nv=nv}

@@ -1,0 +1,5 @@
+VF 1
+name=name attributes={nv=nv} filename={LevelEntrence.png}
+name=path attributes={nv=nv}
+name=dificulty attributes={nv=nv}
+name=sprite attributes={nv=nv}
