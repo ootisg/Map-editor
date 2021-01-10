@@ -17,6 +17,7 @@ public class MainPanel extends GuiComponent {
 	private static VariantCloseButton closeButton;
 	private static LinkedList<DisplayBox> boxes;
 	private static ResizeWindow resizeWindow;
+	private static LayerMenu layerMenu;
 	private static BackgroundWindow backgroundWindow;
 	private static AttributeSelectRegion attributeRegion;
 	private static Map map;
@@ -37,6 +38,8 @@ public class MainPanel extends GuiComponent {
 		variantMenu.hide();
 		closeButton.hide();
 		boxes = new LinkedList<DisplayBox> ();
+		setLayerMenu(new LayerMenu (LayerMenu.LAYER_MENU_BOUNDS, this));
+		getLayerMenu().hide();
 		backgroundWindow = new BackgroundWindow (new Rectangle (24, 104, BackgroundWindow.WINDOW_WIDTH, BackgroundWindow.WINDOW_HEIGHT), this);
 		resizeWindow = new ResizeWindow (new Rectangle (24, 104, ResizeWindow.WINDOW_WIDTH, ResizeWindow.WINDOW_HEIGHT), this);
 		attributeRegion.hide();
@@ -91,5 +94,13 @@ public class MainPanel extends GuiComponent {
 	@Override
 	public void render () {
 		super.render ();
+	}
+
+	public static LayerMenu getLayerMenu() {
+		return layerMenu;
+	}
+
+	public static void setLayerMenu(LayerMenu layerMenu) {
+		MainPanel.layerMenu = layerMenu;
 	}
 }

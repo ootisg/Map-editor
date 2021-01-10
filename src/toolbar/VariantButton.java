@@ -9,19 +9,18 @@ import main.VariantSelectMenu;
 import resources.Sprite;
 
 public class VariantButton extends ToolbarItem{
-	DisplayBox box;
 	protected VariantButton(Toolbar parent) {
 		super(parent);
 		this.setSelectable(false);
 		this.useClickOnElement(true);
-		box = new DisplayBox (new Rectangle (this.getBoundingRectangle().x + 16,this.getBoundingRectangle().y,8,10),"Variant",this);
+		this.setBoxText("Variant");
 		setIcon (new Sprite ("resources/images/Variants.png").getImageArray () [0]);
 	}
 	@Override 
 	public void use (int x, int y) {
 		if (MainPanel.getVariantMenu().isHidden()) {
-		MainPanel.getVariantMenu().show();
-		MainPanel.getVariantCloseButton().show();
+			MainPanel.getVariantMenu().show();
+			MainPanel.getVariantCloseButton().show();
 		} else {
 			MainPanel.getVariantMenu().setBoundingRectangle(new Rectangle (160, 0, 96, 160));
 			VariantSelectMenu.getVariantSelectRegion().setBoundingRectangle(new Rectangle (160, SelectionMenu.BAR_SIZE, 96, 160 - SelectionMenu.BAR_SIZE));
@@ -31,12 +30,4 @@ public class VariantButton extends ToolbarItem{
 			MainPanel.getVariantCloseButton().setBoundingRectangle(new Rectangle (240,0,16,16));
 		}
 	}
-	@Override
-	public void frameEvent () {
-		if (this.mouseInside()) {
-			box.show();
-		} else {
-			box.hide();
-		}
-}
 }

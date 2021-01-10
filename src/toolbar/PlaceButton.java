@@ -18,10 +18,9 @@ import resources.Sprite;
 
 public class PlaceButton extends ToolbarItem {
 	public static boolean tilesOrObjects = false; 
-	DisplayBox box;
 	public PlaceButton (Toolbar parent) {
 		super (parent);
-		box = new DisplayBox (new Rectangle (this.getBoundingRectangle().x + 16,this.getBoundingRectangle().y,8,10),"Place",this);
+		this.setBoxText("Place");
 		this.setDragable(true);
 		setIcon (new Sprite ("resources/images/Place.png").getImageArray () [0]);
 	}
@@ -79,14 +78,6 @@ public class PlaceButton extends ToolbarItem {
 	}
 	@Override
 	public void onSelect () {
-		getMainPanel ().getMapInterface ().deselect ();
+		MainPanel.getMapInterface ().deselect ();
 	}
-	@Override
-	public void frameEvent () {
-		if (this.mouseInside()) {
-			box.show();
-		} else {
-			box.hide();
-		}
-}
 }

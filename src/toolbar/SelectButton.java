@@ -10,10 +10,9 @@ import map.MapInterface;
 import resources.Sprite;
 
 public class SelectButton extends ToolbarItem {
-	DisplayBox box;
 	public SelectButton (Toolbar parent) {
 		super (parent);
-		box = new DisplayBox (new Rectangle (this.getBoundingRectangle().x + 16,this.getBoundingRectangle().y,8,10),"Select",this);
+		this.setBoxText("Select Button");
 		setIcon (new Sprite ("resources/images/Select.png").getImageArray () [0]);
 		setDragable (true);
 		useClickOnElement (true);
@@ -48,12 +47,4 @@ public class SelectButton extends ToolbarItem {
 	public void onSelect () {
 		getMainPanel ().getMapInterface ().deselect ();
 	}
-	@Override
-	public void frameEvent () {
-		if (this.mouseInside()) {
-			box.show();
-		} else {
-			box.hide();
-		}
-}
 }
