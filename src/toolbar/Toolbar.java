@@ -42,6 +42,7 @@ public class Toolbar extends GuiComponent {
 		new LoadButton (this);
 		new VariantButton (this);
 		new GridLineButton(this);
+		new LocateButton(this);
 	}
 	
 	public CopyButton getCopyButton () {
@@ -62,6 +63,7 @@ public class Toolbar extends GuiComponent {
 	public void selectItem (ToolbarItem toSelect) {
 		if (selected != null) {
 			selected.setSelected (false);
+			selected.onDeselect();
 		}
 		toSelect.setSelected (true);
 		selected = toSelect;

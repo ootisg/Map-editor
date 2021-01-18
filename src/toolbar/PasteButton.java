@@ -16,10 +16,9 @@ import map.TileEdit;
 import resources.Sprite;
 
 public class PasteButton extends ToolbarItem {
-	DisplayBox box;
 	public PasteButton (Toolbar parent) {
 		super (parent);
-		box = new DisplayBox (new Rectangle (this.getBoundingRectangle().x + 16,this.getBoundingRectangle().y,8,10),"Paste",this);
+		this.setBoxText("Paste");
 		setIcon (new Sprite ("resources/images/Paste.png").getImageArray () [0]);
 	}
 
@@ -50,14 +49,6 @@ public class PasteButton extends ToolbarItem {
 					}
 				}
 			}
-		}
-	}
-	@Override
-	public void frameEvent () {
-		if (this.mouseInside()) {
-			box.show();
-		} else {
-			box.hide();
 		}
 	}
 }

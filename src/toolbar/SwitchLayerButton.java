@@ -28,9 +28,7 @@ public class SwitchLayerButton extends ToolbarItem {
 
 	@Override
 	public void use (int x, int y) {
-		//Change the layer
-		getMainPanel ().getMap ().changeLayer ();
-		
+		MainPanel.getLayerMenu().show();
 		//Validate the background window
 		GuiComponent bgWindow = getMainPanel ().getBackgroundWindow ();
 		if (!bgWindow.isHidden ()) {

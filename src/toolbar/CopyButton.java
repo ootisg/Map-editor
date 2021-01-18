@@ -1,10 +1,7 @@
 package toolbar;
 
-import java.awt.Rectangle;
-import java.io.IOException;
 import java.util.ArrayList;
 
-import main.DisplayBox;
 import main.GameObject;
 import main.MainPanel;
 import main.SelectionRegion.TileRegion;
@@ -14,11 +11,9 @@ import map.MapInterface;
 import resources.Sprite;
 
 public class CopyButton extends ToolbarItem {
-	DisplayBox box;
 	public CopyButton (Toolbar parent) {
 		super (parent);
-		box = new DisplayBox (new Rectangle (this.getBoundingRectangle().x + 16,this.getBoundingRectangle().y,8,10),"Copy",this);
-		box.hide();
+		this.setBoxText("Copy");
 		setIcon (new Sprite ("resources/images/Copy.png").getImageArray () [0]);
 		setSelectable (false);
 	}
@@ -48,14 +43,6 @@ public class CopyButton extends ToolbarItem {
 				mapInterface.setCopyTiles (tiles);
 				mapInterface.setCopyObjects(objects);
 			}
-		}
-	}
-	@Override
-	public void frameEvent () {
-		if (this.mouseInside()) {
-			box.show();
-		} else {
-			box.hide();
 		}
 	}
 }

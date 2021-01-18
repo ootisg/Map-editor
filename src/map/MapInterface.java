@@ -750,11 +750,20 @@ public class MapInterface extends MovableSelectionRegion {
 			String working = "";
 			for (int i = 0; i < selectedList.size(); i++) {
 				working = working + selectedList.get(i).getObjectName().toString();
+				working = working + "/n";
 				if ( !selectedList.get(i).getVariantInfo().isEmpty()) {
-					working = working + selectedList.get(i).getVariantInfo().toString();
+					String [] varants = selectedList.get(i).getVariantInfo().toString().split(",");
+					for (int j = 0; j < varants.length; j++) {
+						working = working + varants[j];
+						working = working + "     /n";
+						}
 					}
 				if (!selectedList.get(i).getStrangeVariantInfo().isEmpty()) {
-					working = working + selectedList.get(i).getStrangeVariantInfo().toString();
+					String [] varants = selectedList.get(i).getStrangeVariantInfo().toString().split(",");
+					for (int j = 0; j < varants.length; j++) {
+						working = working + varants[j];
+						working = working + "     /n";
+						}
 					}
 				working = working + "/n";
 				}

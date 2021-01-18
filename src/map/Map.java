@@ -263,6 +263,9 @@ public class Map {
 	public void toggleLayerMode () {
 		onlyTopLayer = !onlyTopLayer;
 	}
+	public boolean inLayerMode () {
+		return onlyTopLayer;
+	}
 	
 	public void changeLayer () {
 		int beeeeeees = topDisplayLayer + 1;
@@ -271,6 +274,14 @@ public class Map {
 		}
 		topDisplayLayer = beeeeeees;
 		activeLayer = mapData.get (topDisplayLayer);
+		this.renderElements();
+	}
+	public void setLayer(int newLayer) throws IndexOutOfBoundsException{
+		topDisplayLayer = newLayer;
+		if (topDisplayLayer >= mapData.size()) {
+			throw new IndexOutOfBoundsException ();
+		}
+		activeLayer = mapData.get(topDisplayLayer);
 		this.renderElements();
 	}
 	

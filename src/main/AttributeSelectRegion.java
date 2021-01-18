@@ -51,7 +51,7 @@ public class AttributeSelectRegion extends SelectionRegion {
 	public void frameEvent () {
 		try {
 		if (this.mouseInside() && !this.isHidden()) {
-			tbox.setMessage(currentAttributes.get((this.getWindow().getMouseX() - this.getBoundingRectangle().x)/16));
+			tbox.setMessage(currentAttributes.get((this.getWindow().getMouseX() - this.getBoundingRectangle().x)/this.getElementWidth()));
 			tbox.setBoundingRectangle(new Rectangle (this.getBoundingRectangle().x + (this.getWindow().getMouseX() - this.getBoundingRectangle().x), this.getBoundingRectangle().y + 16, 60, 16));
 			tbox.show();			
 		} else {

@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import main.DisplayBox;
 import main.DisplayableImageElement;
 import main.GuiComponent;
 import main.MainPanel;
@@ -12,7 +13,7 @@ import main.MainPanel;
 public abstract class ToolbarItem extends GuiComponent {
 	
 	private DisplayableImageElement icon;
-	
+	DisplayBox box;
 	private boolean selectable;
 	private boolean selected;
 	private boolean dragable;
@@ -113,8 +114,23 @@ public abstract class ToolbarItem extends GuiComponent {
 			useDrag(x,y);
 		}
 	}
-	
+	@Override
+	public void frameEvent () {
+		if (box != null) {
+			if (this.mouseInside()) {
+				box.show();
+			} else {
+				box.hide();
+			}
+		}
+	}
+	public void setBoxText (String boxText) {
+		box = new DisplayBox (new Rectangle (this.getBoundingRectangle().x + 16,this.getBoundingRectangle().y,8,10),boxText,this);
+	}
 	public void doClickOnElement (int x, int y) {
+		
+	}
+	public void onDeselect () {
 		
 	}
 }

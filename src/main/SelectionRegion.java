@@ -67,10 +67,9 @@ public abstract class SelectionRegion extends GuiComponent {
 			for (int j = 0; j <= elements [0].length && j < cells [0].length; j ++) {
 				if (elements [i][j] != null && cells [i][j] != null) {
 					try {
-					
 						((DisplayableImageElement)(elements [i][j])).render (cells [i][j], g);
 					} catch (ClassCastException e) {
-						((DisplayableTextElement)elements [i][j]).render(VariantSelectMenu.getVariantSelectRegion(), cells[i][j]);
+						((DisplayableTextElement)elements [i][j]).render(elements[i][j].getParent(), cells[i][j]);
 					}
 				}
 			}

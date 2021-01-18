@@ -7,10 +7,9 @@ import main.DisplayBox;
 import resources.Sprite;
 
 public class NewLayerButton extends ToolbarItem {
-	DisplayBox box;
 	public NewLayerButton (Toolbar parent) {
 		super (parent);
-		box = new DisplayBox (new Rectangle (this.getBoundingRectangle().x + 16,this.getBoundingRectangle().y,8,10),"New Layer",this);
+		this.setBoxText("New Layer");
 		setIcon (new Sprite ("resources/images/New Layer.png").getImageArray () [0]);
 		setSelectable (false);
 	}
@@ -19,12 +18,4 @@ public class NewLayerButton extends ToolbarItem {
 	public void use (int x, int y) {
 		getMainPanel ().getMap ().addLayer ();
 	}
-	@Override
-	public void frameEvent () {
-		if (this.mouseInside()) {
-			box.show();
-		} else {
-			box.hide();
-		}
-}
 }
