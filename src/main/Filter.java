@@ -25,7 +25,8 @@ public class Filter extends DisplayableImageElement {
 		box.setMessage(name);
 	}
 	public void showName (int x, int y) {
-		box.setX(x);
+		int boxWidth = (int)box.getBoundingRectangle ().getWidth ();
+		box.setX(x - boxWidth - 4);
 		box.setY(y);
 		box.show();
 	}
