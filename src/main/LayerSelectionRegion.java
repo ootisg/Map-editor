@@ -1,5 +1,6 @@
 package main;
 
+import java.awt.Color;
 import java.awt.Rectangle;
 
 public class LayerSelectionRegion extends ScrollableSelectionRegion {
@@ -70,8 +71,31 @@ public class LayerSelectionRegion extends ScrollableSelectionRegion {
 	}
 	@Override
 	public void doClickOnElement (int horizontalIndex, int verticalIndex) {
-		selectedLayerNum = verticalIndex;
-		
+		selectLayer (verticalIndex, true);
+	}
+	public void unselectLayer () {
+		if (selectedLayerNum != -1) {
+			DisplayableTextElement elem = (DisplayableTextElement)getElementList ().get (selectedLayerNum);
+			elem.setBackgroundColor (new Color (0xA0A0A0));
+			selectedLayerNum = -1;
+		}
+	}
+	public void selectLayer (int index, boolean updateArrows) {
+		unselectLayer ();
+		selectedLayerNum = index;
+		if (updateArrows) {parent.updateArrows (selectedLayerNum);}
+		DisplayableTextElement elem = (DisplayableTextElement)getElementList ().get (selectedLayerNum);
+		elem.setBackgroundColor (new Color (0x808080));
+	}
+	public void swapLayers (int index1, int index2) {
+		if (index1 >= 0 && index2 >= 0 && index1 < getElements ().length && index2 < getElements ().length) {
+			DisplayableElement temp = getElements ()[index1][0];
+			getElements ()[index1][0] = getElements ()[index2][0];
+			getElements ()[index2][0] = temp;
+			unselectLayer ();
+			selectLayer (index2, false);
+			MainPanel.getMap ().swapLayers (index1, index2);
+		}
 	}
 	public int getSelectedLayer () {
 		return selectedLayerNum;

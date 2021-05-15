@@ -15,7 +15,8 @@ public class LayerMenu extends GuiComponent {
 	public static final Rectangle LAYER_MODE_BUTTON_BOUNDS = new Rectangle (132, 224, 16, 16);
 	public static final Rectangle ADD_BUTTON_BOUNDS = new Rectangle (74, 180, 16, 16);
 	public static final Rectangle DELEATE_BUTTON_BOUNDS = new Rectangle (104, 180, 16, 16);
-	
+	public static final Rectangle UP_BUTTON_BOUNDS = new Rectangle (132, 186, 16, 16);
+	public static final Rectangle DOWN_BUTTON_BOUNDS = new Rectangle (132, 206, 16, 16);
 	
 	public static final int BAR_PADDING = 0;
 	public static final int BAR_HEIGHT = 16;
@@ -37,6 +38,8 @@ public class LayerMenu extends GuiComponent {
 	private IconButton layerModeButton;
 	private IconButton addButton;
 	private IconButton deleteButton;
+	private IconButton upButton;
+	private IconButton downButton;
 	
 	private boolean layerMode = true;
 	
@@ -47,6 +50,8 @@ public class LayerMenu extends GuiComponent {
 	public static final BufferedImage BOX_CHECKED_ICON = Sprite.getImage ("resources/images/box_checked.png");
 	public static final BufferedImage ADD_BUTTON = Sprite.getImage("resources/images/add_icon.png");
 	public static final BufferedImage DELETE_BUTTON = Sprite.getImage("resources/images/remove_icon.png");
+	public static final BufferedImage UP_BUTTON = Sprite.getImage ("resources/images/up_arrow_icon.png");
+	public static final BufferedImage DOWN_BUTTON = Sprite.getImage ("resources/images/down_arrow_icon.png");
 	
 	
 	protected LayerMenu(Rectangle bounds, GuiComponent parent) {
@@ -55,13 +60,19 @@ public class LayerMenu extends GuiComponent {
 		layerModeButton = new IconButton (LAYER_MODE_BUTTON_BOUNDS, BOX_CHECKED_ICON, this);
 		addButton = new IconButton (ADD_BUTTON_BOUNDS, ADD_BUTTON, this);
 		deleteButton = new IconButton (DELEATE_BUTTON_BOUNDS, DELETE_BUTTON, this);
+		upButton = new IconButton (UP_BUTTON_BOUNDS, UP_BUTTON, this);
+		downButton = new IconButton (DOWN_BUTTON_BOUNDS, DOWN_BUTTON, this);
+		upButton.hide ();
+		downButton.hide ();
 		this.show ();
 	}
+	
 	@Override
 	public void setBoundingRectangle (Rectangle r) {
 		super.setBoundingRectangle(r);
 		layerModeButton.setBoundingRectangle(new Rectangle (layerModeButton.getBoundingRectangle().x,LAYER_MODE_BUTTON_BOUNDS.y + this.getBoundingRectangle().height - LAYER_MENU_BOUNDS.height,layerModeButton.getBoundingRectangle().width,layerModeButton.getBoundingRectangle().height));
 	}
+	
 	@Override
 	public void draw () {
 		Rectangle bounds = getBoundingRectangle ();
@@ -105,6 +116,24 @@ public class LayerMenu extends GuiComponent {
 			deleteButton.reset();
 		}
 		
+		//Check up/down buttons
+		if (upButton.pressed ()) {
+			int idx = region.getSelectedLayer ();
+			region.swapLayers (idx, idx - 1);
+			upButton.reset ();
+		}
+		if (downButton.pressed ()) {
+			int idx = region.getSelectedLayer ();
+			region.swapLayers (idx, idx + 1);
+			downButton.reset ();
+		}
+		
+		//Hide the up/down arrows if no reigon is selected or they are non-applicable
+		if (region.getSelectedLayer () == -1 || region.getElements ().length <= 1) {
+			upButton.hide ();
+			downButton.hide ();
+		}
+		
 		//Do other stuff
 	}
 	
@@ -122,6 +151,19 @@ public class LayerMenu extends GuiComponent {
 		}
 		if (MainPanel.getMap ().inLayerMode () != layerMode) {
 			MainPanel.getMap ().toggleLayerMode();
+		}
+	}
+	
+	public void updateArrows (int index) {
+		if (index == -1) {
+			upButton.hide ();
+			downButton.hide ();
+		} else {
+			int centerY = LAYER_SELECT_BOUNDS.y + 16 * index + 9;
+			upButton.getBoundingRectangle ().y = centerY - 18;
+			downButton.getBoundingRectangle ().y = centerY + 1;
+			upButton.show ();
+			downButton.show ();
 		}
 	}
 	

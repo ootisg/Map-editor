@@ -251,6 +251,15 @@ public class Map {
 		return layer;
 	}
 	
+	public void swapLayers (int index1, int index2) {
+		//Index1 MUST be the selected layer
+		TileLayer temp = mapData.get (index1);
+		mapData.set (index1, mapData.get (index2));
+		mapData.set (index2, temp);
+		topDisplayLayer = index2;
+		activeLayer = mapData.get (index2);
+	}
+	
 	public TileLayer addLayer () {
 		TileLayer layer = new TileLayer (mapData.get (0).getWidth (), mapData.get (0).getHeight ());
 		mapData.add (layer);

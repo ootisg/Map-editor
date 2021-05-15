@@ -1,6 +1,7 @@
 package main;
 
 
+import java.awt.Color;
 import java.awt.Rectangle;
 import java.io.FileNotFoundException;
 import java.nio.file.NoSuchFileException;
@@ -101,6 +102,7 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 		while(iter.hasNext()) {
 			String currentName = iter.next();
 			working[crap][0] = new DisplayableTextElement (this,currentName);
+			working[crap][0].setBackgroundColor (new Color (0xC0C0C0));
 			if (currentName.length() > longestLength) {
 				 longestLength = currentName.length();
 			}
@@ -112,6 +114,7 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 			crap = crap + 1;
 		}
 		working [crap][0]  = new DisplayableTextElement (this,"Switch");
+		working [crap][0].setBackgroundColor (new Color (0xC0C0C0));
 		if (5 > longestLength) {
 			longestLength = 5;
 		}
