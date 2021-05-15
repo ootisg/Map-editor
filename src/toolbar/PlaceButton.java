@@ -32,7 +32,7 @@ public class PlaceButton extends ToolbarItem {
 		TileSelectMenu tileMenu = mainPanel.getTileMenu ();
 		MapInterface mapInterface = mainPanel.getMapInterface ();
 		Toolbar toolbar = (Toolbar)getParent ();
-		if (!(mainPanel.getVariantMenu().getBoundingRectangle().contains(x + 160, y) && !mainPanel.getVariantMenu().isHidden())) {
+		if (!(mainPanel.getVariantMenu().getBoundingRectangle().contains(x + 160, y) && !mainPanel.getVariantMenu().isHidden()) && !(mainPanel.getAttributeSelectRegion().getBoundingRectangle().contains(x + 160, y) && !mainPanel.getAttributeSelectRegion().isHidden())) {
 		if (!tilesOrObjects) {
 		Tile[][] usedTiles = null;
 		

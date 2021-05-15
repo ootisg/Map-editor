@@ -20,6 +20,7 @@ public class MainPanel extends GuiComponent {
 	private static LayerMenu layerMenu;
 	private static BackgroundWindow backgroundWindow;
 	private static AttributeSelectRegion attributeRegion;
+	private static FilterSelectMenu filtersEtc;
 	private static Map map;
 	
 	public MainPanel (Rectangle bounds, Gui gui) {
@@ -31,9 +32,11 @@ public class MainPanel extends GuiComponent {
 		objectMenu = new ObjectSelectMenu (new Rectangle (16, 240, 144, 240), this);
 		toolbar = new Toolbar (new Rectangle (0, 0, 16, 480), this);
 		canvas = new MapInterface (new Rectangle (160, 0, 480, 480), tileMenu, objectMenu, toolbar, this);
-		variantMenu = new VariantSelectMenu (new Rectangle (160, 0, 96, 160), this);
+		variantMenu = new VariantSelectMenu (new Rectangle (160, 0, 80, 160), this);
 		closeButton = new VariantCloseButton (new Rectangle (240,0,16,16),this);
 		attributeRegion = new AttributeSelectRegion (new Rectangle (160,0,96,160), this);
+		filtersEtc = new FilterSelectMenu (new Rectangle (624,0,16,160),this);
+		//filtersEtc.hide();
 		attributeRegion.hide();
 		variantMenu.hide();
 		closeButton.hide();
@@ -45,7 +48,15 @@ public class MainPanel extends GuiComponent {
 		attributeRegion.hide();
 		
 	}
-	
+
+	public static FilterSelectMenu getFiltersEtc() {
+		return filtersEtc;
+	}
+
+	public static void setFiltersEtc(FilterSelectMenu filtersEtc) {
+		MainPanel.filtersEtc = filtersEtc;
+	}
+
 	public static MapInterface getMapInterface () {
 		return canvas;
 	}

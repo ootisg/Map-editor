@@ -11,7 +11,7 @@ import resources.Sprite;
 public class LayerMenu extends GuiComponent {
 
 	public static final Rectangle LAYER_MENU_BOUNDS = new Rectangle (32, 160, 128, 84);
-	public static final Rectangle LAYER_SELECT_BOUNDS = new Rectangle (48, 200, 80, 130);
+	public static final Rectangle LAYER_SELECT_BOUNDS = new Rectangle (48, 200, 80, 16);
 	public static final Rectangle LAYER_MODE_BUTTON_BOUNDS = new Rectangle (132, 224, 16, 16);
 	public static final Rectangle ADD_BUTTON_BOUNDS = new Rectangle (74, 180, 16, 16);
 	public static final Rectangle DELEATE_BUTTON_BOUNDS = new Rectangle (104, 180, 16, 16);
@@ -137,6 +137,8 @@ public class LayerMenu extends GuiComponent {
 		if (MainPanel.getMap ().inLayerMode () != layerMode) {
 			MainPanel.getMap ().toggleLayerMode();
 		}
-		MainPanel.getMap().setLayer(region.getSelectedLayer());
+		if (region.getSelectedLayer() != -1) {
+			MainPanel.getMap().setLayer(region.getSelectedLayer());
+		}
 	}
 }

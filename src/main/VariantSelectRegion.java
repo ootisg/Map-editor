@@ -13,6 +13,7 @@ import javax.swing.JFileChooser;
 
 import main.SelectionRegion.TileRegion;
 import toolbar.PlaceButton;
+import toolbar.SelectButton;
 
 
 
@@ -45,8 +46,10 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 	@Override
 	public void frameEvent() {
 		try {
-			if (selectedObjects != MainPanel.getMapInterface().getSelectedRegion().getSelectedGameObjects() && !MainPanel.getMapInterface().getSelectedRegion().getSelectedGameObjects().isEmpty()) {
-				selectedObjects = MainPanel.getMapInterface().getSelectedRegion().getSelectedGameObjects();
+			if (MainPanel.getToolbar().getSelectedItem() instanceof SelectButton) {
+				if (selectedObjects != MainPanel.getMapInterface().getSelectedRegion().getSelectedGameObjects() && !MainPanel.getMapInterface().getSelectedRegion().getSelectedGameObjects().isEmpty()) {
+					selectedObjects = MainPanel.getMapInterface().getSelectedRegion().getSelectedGameObjects();
+				}
 			}
 		
 		} catch (NullPointerException e) {
@@ -60,6 +63,7 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 		} 
 		GameObject selectedGameObject;
 		try {
+		
 		selectedGameObject = selectedObjects.get(variantNumber);
 		} catch (IndexOutOfBoundsException e) {
 			return;
@@ -113,12 +117,12 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 		}
 		crap = crap + 1;
 		if (crap != 0) {
-		this.getMainPanel().getVariantCloseButton().setBoundingRectangle(new Rectangle(((VariantSelectMenu) realParent).getMenuX() + (longestLength * 6), ((VariantSelectMenu) realParent).getMenuY() + 16,16,16));
-		this.setBoundingRectangle(new Rectangle (((VariantSelectMenu) realParent).getMenuX(), ((VariantSelectMenu) realParent).getMenuY() + 32, (longestLength * 6) + 16, (crap* 16) + 16));
+		this.getMainPanel().getVariantCloseButton().setBoundingRectangle(new Rectangle(((VariantSelectMenu) realParent).getMenuX() + (longestLength * 10), ((VariantSelectMenu) realParent).getMenuY() + 16,16,16));
+		this.setBoundingRectangle(new Rectangle (((VariantSelectMenu) realParent).getMenuX(), ((VariantSelectMenu) realParent).getMenuY() + 32, (longestLength * 10) + 16, (crap* 16) + 16));
 		this.setGridDimensions(1, crap);
-		this.setElementWidth(longestLength * 6);
+		this.setElementWidth(longestLength * 10);
 		this.setElements(working);	
-		realParent.setBoundingRectangle(new Rectangle (((VariantSelectMenu) realParent).getMenuX(), ((VariantSelectMenu) realParent).getMenuY() + 16, (longestLength * 6) + 16, (crap* 16) + 16));
+		realParent.setBoundingRectangle(new Rectangle (((VariantSelectMenu) realParent).getMenuX(), ((VariantSelectMenu) realParent).getMenuY() + 16, (longestLength * 10) , (crap* 16) + 16));
 		}
 	}
 	@Override
@@ -132,7 +136,7 @@ public class VariantSelectRegion extends ScrollableSelectionRegion  {
 			ArrayList <String> currentAttributes = nameToAttributes.get(((DisplayableTextElement) this.getElements()[elementIndex][0]).getMessage());
 			if (currentAttributes != null) {
 			AttributeSelectRegion region = this.getMainPanel().getAttributeSelectRegion();
-			region.setBoundingRectangle(new Rectangle (((VariantSelectMenu) realParent).getMenuX() + 16 + this.getElementWidth(), ((VariantSelectMenu) realParent).getMenuY() + 32+ (elementIndex * 16),((currentAttributes.size()) * 16) + 16, 16));
+			region.setBoundingRectangle(new Rectangle (((VariantSelectMenu) realParent).getMenuX() + this.getElementWidth(), ((VariantSelectMenu) realParent).getMenuY() + 32+ (elementIndex * 16),((currentAttributes.size()) * 16) + 16, 16));
 			int index = 0;
 			DisplayableImageElement [][] icons = new DisplayableImageElement [1][20];
 			HashMap<String,String> temporaryInfo = ((GameObject) currentObject.clone()).getVariantInfo();

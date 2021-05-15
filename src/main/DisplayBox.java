@@ -21,11 +21,20 @@ public class DisplayBox extends GuiComponent {
 		super (bounds, parent);
 		this.message = message;
 	}
+	public DisplayBox (Rectangle bounds, GuiComponent parent) {
+		super (bounds, parent);
+		this.message = "";
+	}
 	
 	public void setMessage (String message) {
 		this.message = message;
 	}
-	
+	public void getMessage() {
+		
+	}
+	public String getMessageReal () {
+		return message;
+	}
 	public void setBgColor (Color color) {
 		this.bgcolor = color;
 	}

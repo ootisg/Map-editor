@@ -20,7 +20,10 @@ public class TileSelectRegion extends MovableSelectionRegion {
 	public TileSelectRegion (Rectangle bounds, GuiComponent parent) {
 		super (bounds, parent);
 	}
-	
+	@Override
+	public void frameEvent () {
+		//Why do we need this?
+	}
 	public void setTileset (Tileset tileset) {
 		currentSet = tileset;
 		setElements (tileset.getParsedTiles (this));

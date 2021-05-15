@@ -27,6 +27,9 @@ public abstract class SelectionRegion extends GuiComponent {
 	private double viewX = 0;
 	private double viewY = 0;
 	
+	private int hoverIndexX = -1;
+	private int hoverIndexY = -1;
+	
 	private boolean showGrid = true;
 	
 	private DisplayableElement[][] elements;
@@ -95,7 +98,7 @@ public abstract class SelectionRegion extends GuiComponent {
 			for (int i = 0; i < cells[0].length; i ++) {
 				g.drawLine (cells [0][i].x, (int)startY, cells [0][i].x, (int)endY);
 				if (i == cells[0].length - 1) {
-					g.drawLine (cells [0][i].x + cells [0][i].width, (int)startY, cells [0][i].x + cells [0][i].height, (int)endY);
+					g.drawLine (cells [0][i].x + cells [0][i].width - 1, (int)startY, cells [0][i].x + cells [0][i].width - 1, (int)endY);
 				}
 			}
 		}
@@ -144,7 +147,48 @@ public abstract class SelectionRegion extends GuiComponent {
 	public void doClickOnElement (int horizontalIndex, int verticalIndex) {
 		
 	}
-	
+	@Override 
+	public void frameEvent () {
+		int x = getMainPanel().getWindow().getMouseX() - (int)this.getBoundingRectangle ().getX ();
+		int y = getMainPanel().getWindow().getMouseY() - (int)this.getBoundingRectangle ().getY ();
+		if (this.mouseInside()) {
+			int [] cell = getCell(x,y);
+			boolean left = false;
+			if (hoverIndexX != cell [0] || hoverIndexY != cell [1]) {
+				if (hoverIndexX != -1 && hoverIndexY != -1) {
+					doMouseExit(hoverIndexX,hoverIndexY);	
+				}
+			}
+			this.doMouseHover(cell[0], cell[1]);
+			if (cell[0] != hoverIndexX) {
+				doMouseEnter (cell[0], cell[1]);
+				left = true;
+				hoverIndexX = cell[0];
+			}
+			if (cell[1] != hoverIndexY) {
+				if (!left) {
+					doMouseEnter (cell[0], cell[1]);
+					left = true;
+				}
+				hoverIndexY = cell[1];
+			}
+		} else {
+			if (hoverIndexX != -1 && hoverIndexY != -1) {
+				doMouseExit(hoverIndexX,hoverIndexY);
+			}
+			hoverIndexX = -1;
+			hoverIndexY = -1;
+		}
+	}
+	public void doMouseHover (int horizontalIndex, int verticalIndex) {
+		
+	}
+	public void doMouseEnter (int horizontalIndex, int verticalIndex) {
+		
+	}
+	public void doMouseExit (int horizontalIndex, int verticalIndex) {
+		
+	}
 	public boolean isInBounds (int cellX, int cellY) {
 		if (cellX >= 0 && cellY >= 0 && cellX < elements[0].length && cellY < elements.length) {
 			return true;
@@ -339,7 +383,6 @@ public abstract class SelectionRegion extends GuiComponent {
 	public TileRegion getSelectedRegion () {
 		return selectedRegion;
 	}
-	
 	public class TileRegion implements Comparable {
 		
 		private int tileStartX = -1;

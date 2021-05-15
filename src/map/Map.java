@@ -98,7 +98,6 @@ public class Map {
 			//Only render top mode
 			if (onlyTopLayer) {
 				l = topDisplayLayer;
-
 				if (mapData.get (l).isBackgroundLayer ()) {
 					int subWidth = mapInterface.getElementWidth ();
 					int subHeight = mapInterface.getElementHeight ();
@@ -258,6 +257,10 @@ public class Map {
 		activeLayer = mapData.get (mapData.size () - 1);
 		topDisplayLayer = mapData.size () - 1;
 		return layer;
+	}
+	public void removeLayer (int layer) {
+		mapData.remove(layer);
+		topDisplayLayer = mapData.size() -1;
 	}
 	
 	public void toggleLayerMode () {
