@@ -26,6 +26,7 @@ public class Filter extends DisplayableImageElement {
 	}
 	public void showName (int x, int y) {
 		int boxWidth = (int)box.getBoundingRectangle ().getWidth ();
+		int boxHeight = (int) box.getBoundingRectangle().getHeight();
 		box.setX(x - boxWidth - 4);
 		box.setY(y);
 		box.show();
