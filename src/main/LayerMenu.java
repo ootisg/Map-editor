@@ -113,7 +113,9 @@ public class LayerMenu extends GuiComponent {
 			addButton.reset();
 		}
 		if (deleteButton.pressed()) {
-			MainPanel.getMapInterface ().edit (new LayerEdit (LayerEdit.LAYER_EDIT_TYPE_REMOVE, new int[] {region.getSelectedLayer ()}));
+			if (region.getSelectedLayer () != -1) {
+				MainPanel.getMapInterface ().edit (new LayerEdit (LayerEdit.LAYER_EDIT_TYPE_REMOVE, new int[] {region.getSelectedLayer ()}));
+			}
 			deleteButton.reset();
 		}
 		

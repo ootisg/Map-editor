@@ -21,7 +21,11 @@ public class Filter extends DisplayableImageElement {
 		TileSelection check2 = new TileSelection (new Rectangle (200, 200, 140, 80), menu);
 		check2.setRequest("select a region");
 		menu.addContent (check);
+<<<<<<< HEAD
 		menu.addContent(check2);
+=======
+		
+>>>>>>> 6e3b133421fdc9e83a4d05ffecff5a85e79c8e6d
 	}
 	
 	public void runFilterCode () {

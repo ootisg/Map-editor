@@ -261,7 +261,7 @@ public class Map {
 	}
 	
 	public TileLayer addLayer () {
-		TileLayer layer = new TileLayer (mapData.get (0).getWidth (), mapData.get (0).getHeight ());
+		TileLayer layer = new TileLayer (MainPanel.getMapInterface ().getMapWidth (), MainPanel.getMapInterface ().getMapHeight ());
 		mapData.add (layer);
 		activeLayer = mapData.get (mapData.size () - 1);
 		topDisplayLayer = mapData.size () - 1;
