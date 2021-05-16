@@ -29,7 +29,7 @@ public class FilterSelectMenu extends SelectionRegion{
 	}
 	@Override
 	public void doMouseEnter (int horizontalIndex, int verticalIndex) {
-		filters[verticalIndex].showName(this.getBoundingRectangle().x + (horizontalIndex * 16), this.getBoundingRectangle().y + (verticalIndex * 16));
+		filters[verticalIndex].showName(this.getBoundingRectangle().x, this.getBoundingRectangle().y + (verticalIndex * 16));
 	}
 	@Override
 	public void doMouseExit (int horizontalIndex, int verticalIndex) {
