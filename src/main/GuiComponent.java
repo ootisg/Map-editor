@@ -190,7 +190,10 @@ public abstract class GuiComponent {
 		if (!hidden) {
 			Iterator<GuiComponent> iter = children.iterator ();
 			while (iter.hasNext ()) {
-				iter.next ().frameEvent ();
+				GuiComponent next = iter.next();
+				if (!next.isHidden()) {
+					next.frameEvent ();
+				}
 			}
 		}
 	}

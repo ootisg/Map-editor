@@ -78,5 +78,23 @@ public class DisplayBox extends GuiComponent {
 		g.drawString (lines[i], PADDING_LEFT, PADDING_TOP + f.getAscent () + (i*(int)r.getHeight()));
 		}
 	}
+	
+	@Override
+	public Rectangle getBoundingRectangle  () {
+		Rectangle bounds = super.getBoundingRectangle ();
+		Graphics2D g = (Graphics2D)getGraphics ();
+		FontMetrics f = g.getFontMetrics ();
+		Rectangle2D r = f.getStringBounds (message, g);
+		String [] lines = message.split("/n");
+		int boxWidth = 16;
+		for (int i = 0; i < lines.length; i++) {
+			int tempWidth = (int) f.getStringBounds (lines [i], g).getWidth ();
+			if (tempWidth > boxWidth) {
+				boxWidth = tempWidth;
+			}
+		}
+		setBoundingRectangle (new Rectangle (bounds.x, bounds.y, boxWidth + PADDING_LEFT + PADDING_RIGHT, (int)((r.getHeight () *lines.length) + PADDING_TOP + PADDING_BOTTOM) ));
+		return super.getBoundingRectangle();
+	}
 
 }

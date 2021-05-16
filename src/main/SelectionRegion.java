@@ -149,6 +149,7 @@ public abstract class SelectionRegion extends GuiComponent {
 	}
 	@Override 
 	public void frameEvent () {
+		super.frameEvent();
 		int x = getMainPanel().getWindow().getMouseX() - (int)this.getBoundingRectangle ().getX ();
 		int y = getMainPanel().getWindow().getMouseY() - (int)this.getBoundingRectangle ().getY ();
 		if (this.mouseInside()) {
