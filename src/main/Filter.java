@@ -16,9 +16,12 @@ public class Filter extends DisplayableImageElement {
 		box.hide ();
 		menu.hide();
 		String [] options = new String [] {"option 1", "lol meme", "ha dumb idiot", "option 7"};
-		Checkboxes check = new Checkboxes (new Rectangle (200, 120, 140, 20), menu);
-		check.setOptions(options);
+		TileSelection check = new TileSelection (new Rectangle (200, 120, 140, 80), menu);
+		check.setRequest("select a region");
+		TileSelection check2 = new TileSelection (new Rectangle (200, 200, 140, 80), menu);
+		check2.setRequest("select a region");
 		menu.addContent (check);
+		menu.addContent(check2);
 	}
 	
 	public void runFilterCode () {

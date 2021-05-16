@@ -44,5 +44,19 @@ public class OptionsMenu extends SelectionMenu {
 		this.setBoundingRectangle(new Rectangle (this.getBoundingRectangle().x,this.getBoundingRectangle().y,this.getBoundingRectangle().width,height));
 		acceptButton.setBoundingRectangle(new Rectangle (this.getBoundingRectangle().x + this.getBoundingRectangle().width/3, this.getBoundingRectangle().y + height - 20, 37, 9));
 	}
-	
+	public HashMap <String, Object> getAllData (){
+		HashMap <String, Object> selectedOptions = new HashMap <String, Object> ();
+		
+		for (int i = 0; i < content.size(); i++) {
+			if (content.get(i) instanceof Checkboxes) {
+				Checkboxes cbox = (Checkboxes) content.get(i);
+				selectedOptions.putAll(cbox.getSelectedOptions());
+			}
+			if (content.get(i) instanceof TileSelection) {
+				TileSelection ts = (TileSelection) content.get(i);
+				selectedOptions.putAll(ts.getSelectedArea());
+			}
+		}
+		return selectedOptions;
+	}
 }
