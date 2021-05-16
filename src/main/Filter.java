@@ -19,6 +19,7 @@ public class Filter extends DisplayableImageElement {
 		Checkboxes check = new Checkboxes (new Rectangle (200, 120, 140, 20), menu);
 		check.setOptions(options);
 		menu.addContent (check);
+		
 	}
 	
 	public void runFilterCode () {

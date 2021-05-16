@@ -134,6 +134,18 @@ public class LayerSelectionRegion extends ScrollableSelectionRegion {
 			selectedLayerNum = -1;
 		}
 	}
+	public void resetMenu () {
+		this.setElements (new DisplayableElement[0][1]);
+		Rectangle bounds = LayerMenu.LAYER_MENU_BOUNDS;
+		this.getParent ().setBoundingRectangle (new Rectangle (bounds.x, bounds.y, bounds.width, bounds.height - this.getElementHeight ()));
+		numLayers = 0;
+		nextLayerNum = 0;
+		selectedLayerNum = -1;
+	}
+	public void adjustBounds () {
+		Rectangle bounds = this.getBoundingRectangle ();
+		this.setBoundingRectangle (new Rectangle (bounds.x, bounds.y, bounds.width, this.getElementHeight () * this.getGridHeight ()));
+	}
 	
 	public void insertLayer (TileLayer layer, int index) {
 		

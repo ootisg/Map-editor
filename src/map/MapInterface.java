@@ -78,6 +78,9 @@ public class MapInterface extends MovableSelectionRegion {
 	public static ArrayList<GameObject>[][] objectsInTheMap;
 	private Map map;
 	
+	private int mapWidth;
+	private int mapHeight;
+	
 	private Stack<MapEdit> edits;
 	private Stack<MapEdit> undos;
 	
@@ -172,6 +175,8 @@ public class MapInterface extends MovableSelectionRegion {
 	}
 	
 	public void resize (int width, int height) {
+		mapWidth = width;
+		mapHeight = height;
 		map.resize (width, height);
 		resizeObjects (width, height);
 	}
@@ -508,13 +513,22 @@ public class MapInterface extends MovableSelectionRegion {
 			}
 		}
 		
+		//Add the correct number of layers
+		this.mapWidth = mapWidth;
+		this.mapHeight = mapHeight;
+		MainPanel.getLayerMenu ().getRegion ().resetMenu ();
+		for (int i = 0; i < numLayers; i++) {
+			MainPanel.getLayerMenu ().getRegion ().addLayer ();
+		}
+		MainPanel.getLayerMenu ().getRegion ().adjustBounds ();
+		
 		//Read and import backgrounds
 		ArrayList<Map.TileLayer> tiledLayers = new ArrayList<Map.TileLayer> ();
 		String backgrounds = getString (';');
 		String[] backgroundList = backgrounds.split (",");
 		int bi = 0;
 		for (int l = 0; l < numLayers; l ++) {
-			Map.TileLayer newLayer = map.addLayer (mapWidth, mapHeight);
+			Map.TileLayer newLayer = map.getTileData ().get (l);
 			if (backgroundList [bi].equals ("_NULL")) {
 				//Layer is a tile layer
 				tiledLayers.add (newLayer);
@@ -1011,6 +1025,14 @@ public class MapInterface extends MovableSelectionRegion {
 	
 	public Map getMap () { 
 		return map;
+	}
+	
+	public int getMapWidth () {
+		return mapWidth;
+	}
+	
+	public int getMapHeight () {
+		return mapHeight;
 	}
 	
 	@Override
