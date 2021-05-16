@@ -2,6 +2,10 @@ package main;
 
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import map.Map.TileLayer;
 
 public class LayerSelectionRegion extends ScrollableSelectionRegion {
 	int selectedLayerNum = -1;
@@ -83,9 +87,11 @@ public class LayerSelectionRegion extends ScrollableSelectionRegion {
 	public void selectLayer (int index, boolean updateArrows) {
 		unselectLayer ();
 		selectedLayerNum = index;
-		if (updateArrows) {parent.updateArrows (selectedLayerNum);}
-		DisplayableTextElement elem = (DisplayableTextElement)getElementList ().get (selectedLayerNum);
-		elem.setBackgroundColor (new Color (0x808080));
+		if (index != -1) {
+			if (updateArrows) {parent.updateArrows (selectedLayerNum);}
+			DisplayableTextElement elem = (DisplayableTextElement)getElementList ().get (selectedLayerNum);
+			elem.setBackgroundColor (new Color (0x808080));
+		}
 	}
 	public void swapLayers (int index1, int index2) {
 		if (index1 >= 0 && index2 >= 0 && index1 < getElements ().length && index2 < getElements ().length) {
@@ -127,5 +133,18 @@ public class LayerSelectionRegion extends ScrollableSelectionRegion {
 			MainPanel.getMap().removeLayer(selectedLayerNum);
 			selectedLayerNum = -1;
 		}
+	}
+	
+	public void insertLayer (TileLayer layer, int index) {
+		
+		addLayer ();
+		ArrayList<TileLayer> layers = getMainPanel ().getMap ().getTileData ();
+		layers.set (layers.size () - 1, layer);
+		int curr = layers.size () - 1;
+		while (curr != index) {
+			selectLayer (curr, false);
+			swapLayers (curr, --curr);
+		}
+		
 	}
 }

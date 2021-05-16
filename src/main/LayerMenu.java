@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import map.LayerEdit;
 import resources.Sprite;
 
 public class LayerMenu extends GuiComponent {
@@ -108,23 +109,27 @@ public class LayerMenu extends GuiComponent {
 			updateLayerModeButton ();	
 		}
 		if (addButton.pressed()) {
-			region.addLayer();
+			MainPanel.getMapInterface ().edit (new LayerEdit (LayerEdit.LAYER_EDIT_TYPE_ADD, new int[] {}));
 			addButton.reset();
 		}
 		if (deleteButton.pressed()) {
-			region.deleteLayer();
+			MainPanel.getMapInterface ().edit (new LayerEdit (LayerEdit.LAYER_EDIT_TYPE_REMOVE, new int[] {region.getSelectedLayer ()}));
 			deleteButton.reset();
 		}
 		
 		//Check up/down buttons
 		if (upButton.pressed ()) {
-			int idx = region.getSelectedLayer ();
-			region.swapLayers (idx, idx - 1);
+			if (region.getSelectedLayer () > 0) {
+				int idx = region.getSelectedLayer ();
+				MainPanel.getMapInterface ().edit (new LayerEdit (LayerEdit.LAYER_EDIT_TYPE_SWAP, new int[] {region.getSelectedLayer (), region.getSelectedLayer () - 1}));
+			}
 			upButton.reset ();
 		}
 		if (downButton.pressed ()) {
-			int idx = region.getSelectedLayer ();
-			region.swapLayers (idx, idx + 1);
+			if (region.getSelectedLayer () < region.numLayers - 1) {
+				int idx = region.getSelectedLayer ();
+				MainPanel.getMapInterface ().edit (new LayerEdit (LayerEdit.LAYER_EDIT_TYPE_SWAP, new int[] {region.getSelectedLayer (), region.getSelectedLayer () + 1}));
+			}
 			downButton.reset ();
 		}
 		

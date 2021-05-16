@@ -121,6 +121,7 @@ public class MapInterface extends MovableSelectionRegion {
 		if (edit instanceof BackgroundEdit || 
 			edit instanceof ResizeEdit ||
 			edit instanceof ObjectEdit ||
+			edit instanceof LayerEdit ||
 			map.canEdit () //If map is editable and edit is not one of the above exceptions
 		) {
 			//Do the edit
