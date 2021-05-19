@@ -20,7 +20,7 @@ public class FilterSelectMenu extends SelectionRegion{
 
 		for (int i = 0; i < 8; i++) {filters [i] = new Filter (this);}
 		for (int i = 0; i < 8; i++) {filters [i].setName ("filter" + i);}
-		
+		filters[7] = new ReplaceFilter(this);
 		filters[8] = new FillFillter(this);
 		filters[9] = new DeleateFilter(this);
 		DisplayableImageElement[][] toUse = new DisplayableImageElement[getGridHeight ()][getGridWidth ()];

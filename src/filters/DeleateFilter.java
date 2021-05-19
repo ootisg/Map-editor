@@ -38,6 +38,7 @@ public class DeleateFilter extends Filter {
 	}
 	@Override
 	public void runFilter() {
+
 		EditCluster clust = new EditCluster ();
 		
 		for (int i = 0; i < MainPanel.getMapInterface().getSelectedRegion().getTileWidth(); i++) {

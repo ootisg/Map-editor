@@ -50,9 +50,5 @@ public class Filter extends DisplayableImageElement {
 	protected DisplayBox getDisplayBox () {
 		return box;
 	}
-<<<<<<< HEAD
-	
-=======
->>>>>>> eae5036c6ae4d3b9fdd38d807fa5840423cdfe8d
 	
 }
