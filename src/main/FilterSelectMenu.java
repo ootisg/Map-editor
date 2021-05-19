@@ -14,9 +14,10 @@ public class FilterSelectMenu extends SelectionRegion{
 		this.setElementWidth(16);
 		this.setElementHeight(16);
 		//TODO add filters
-		for (int i = 0; i < 10; i++) {filters [i] = new Filter (this);}
-		for (int i = 0; i < 10; i++) {filters [i].setName ("filter" + i);}
+		for (int i = 0; i < 9; i++) {filters [i] = new Filter (this);}
+		for (int i = 0; i < 9; i++) {filters [i].setName ("filter" + i);}
 		
+		filters[9] = new DeleateFilter(this);
 		DisplayableImageElement[][] toUse = new DisplayableImageElement[getGridHeight ()][getGridWidth ()];
 		for (int i = 0; i < filters.length; i++) {
 			toUse [i][0] = new DisplayableImageElement (filters[i].getTexture(),this);
@@ -37,9 +38,9 @@ public class FilterSelectMenu extends SelectionRegion{
 	}
 	@Override
 	public void draw () {
-		Graphics g = this.getGraphics ();
-		g.setColor (new Color (0x202020));
-		g.fillRect(0, 0, (int)getBoundingRectangle ().getWidth (), (int)getBoundingRectangle ().getHeight ());
+//		Graphics g = this.getGraphics ();
+//		g.setColor (new Color (0x202020));
+//		g.fillRect(0, 0, (int)getBoundingRectangle ().getWidth (), (int)getBoundingRectangle ().getHeight ());
 		super.draw ();
 	}
 
