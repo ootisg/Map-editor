@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
+import filters.ReplaceFilter;
 import resources.Sprite;
 
 public class FilterSelectMenu extends SelectionRegion{
@@ -14,8 +15,9 @@ public class FilterSelectMenu extends SelectionRegion{
 		this.setElementWidth(16);
 		this.setElementHeight(16);
 		//TODO add filters
-		for (int i = 0; i < 10; i++) {filters [i] = new Filter (this);}
-		for (int i = 0; i < 10; i++) {filters [i].setName ("filter" + i);}
+		filters [0] = new ReplaceFilter (this);
+		for (int i = 1; i < 10; i++) {filters [i] = new Filter (this);}
+		for (int i = 1; i < 10; i++) {filters [i].setName ("filter" + i);}
 		
 		DisplayableImageElement[][] toUse = new DisplayableImageElement[getGridHeight ()][getGridWidth ()];
 		for (int i = 0; i < filters.length; i++) {

@@ -8,6 +8,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Stack;
 
 public abstract class GuiComponent {
 	
@@ -41,7 +42,7 @@ public abstract class GuiComponent {
 		this.gui = gui;
 	}
 	
-	private void mouseEvent (int x, int y, MouseEvent event) {
+	private boolean mouseEvent (int x, int y, MouseEvent event) {
 		if (!hidden) {
 			int xOffset = getBoundingRectangle ().x - parent.getBoundingRectangle ().x;
 			int yOffset = getBoundingRectangle ().y - parent.getBoundingRectangle ().y;
@@ -49,15 +50,25 @@ public abstract class GuiComponent {
 			int localY = y - yOffset;
 			if (getBoundingRectangle ().contains (getBoundingRectangle ().x + localX, getBoundingRectangle ().y + localY)) {
 				doMouseEvent (localX, localY, event);
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	public void doMouseEvent (int x, int y, MouseEvent event) {
 		if (!hidden) {
+			boolean mouseHit = false;
 			Iterator<GuiComponent> iter = children.iterator ();
+			Stack<GuiComponent> revChildren = new Stack<GuiComponent> ();
 			while (iter.hasNext ()) {
-				iter.next ().mouseEvent (x, y, event);
+				revChildren.push(iter.next ());
+			}
+			//Janky solution brought to you by already existing jank
+			while (!revChildren.isEmpty ()) {
+				if (revChildren.pop ().mouseEvent (x, y, event)) {
+					return;
+				}
 			}
 			dispatchMouseEvent (x, y, event);
 		}
