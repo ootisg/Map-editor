@@ -31,17 +31,21 @@ public class TileEdit implements MapEdit {
 		//Set layer
 		for (int wy = 0; wy < height && startY + wy < mapHeight; wy ++) {
 			for (int wx = 0; wx < width && startX + wx < mapWidth; wx ++) {
+				
 				if (getTiles != null) {
 					getTiles [wy][wx] = layer.get (startX + wx, startY + wy);
 				}
+				
 				layer.set (startX + wx, startY + wy, putTiles [wy][wx]);
+			
 			}
+			
 		}
 	}
 	
 	@Override
 	public boolean doEdit () {
-		oldTiles = new Tile[newTiles.length][newTiles[0].length];
+		oldTiles = new Tile[height][width];
 		fillTiles (newTiles, oldTiles);
 		return true;
 	}
@@ -76,8 +80,18 @@ public class TileEdit implements MapEdit {
 		}
 		for (int i = 0; i <prev2.oldTiles.length; i++) {
 			for (int j = 0; j <prev2.oldTiles[0].length; j++) {
-				if (!prev2.newTiles[i][j].getIcon().equals(this.newTiles[i][j].getIcon())) {
-					return true;
+				if (!(prev2.newTiles[i][j] == null && this.newTiles[i][j] == null)) {
+					
+					if (!prev2.newTiles[i][j].getIcon().equals(this.newTiles[i][j].getIcon())) {
+						return true;
+					}
+					
+				} else {
+					
+					if (prev2.newTiles[i][j] == null || this.newTiles[i][j] == null) {
+						return true;
+					}
+					
 				}
 			}	
 		}

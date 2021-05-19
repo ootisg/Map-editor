@@ -33,23 +33,15 @@ public class BackgroundEdit implements MapEdit {
 	
 	@Override
 	public boolean doEdit () {
-		try {
-			usedLayer.setBackground (backgroundPath);
-			usedLayer.setBackgroundScroll (scrollX, scrollY);
-		} catch (IllegalStateException e) {
-			return false;
-		}
+		usedLayer.setBackground (backgroundPath);
+		usedLayer.setBackgroundScroll (scrollX, scrollY);
 		return true;
 	}
 
 	@Override
 	public boolean undo () {
-		try {
-			usedLayer.setBackground (oldBackgroundPath);
-			usedLayer.setBackgroundScroll (oldScrollX, oldScrollY);
-		} catch (IllegalStateException e) {
-			return false;
-		}
+		usedLayer.setBackground (oldBackgroundPath);
+		usedLayer.setBackgroundScroll (oldScrollX, oldScrollY);
 		return true;
 	}
 

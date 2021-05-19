@@ -20,10 +20,12 @@ public class DisplayBox extends GuiComponent {
 	public DisplayBox (Rectangle bounds, String message, GuiComponent parent) {
 		super (bounds, parent);
 		this.message = message;
+		this.setSolid(false);
 	}
 	public DisplayBox (Rectangle bounds, GuiComponent parent) {
 		super (bounds, parent);
 		this.message = "";
+		this.setSolid(false);
 	}
 	
 	public void setMessage (String message) {

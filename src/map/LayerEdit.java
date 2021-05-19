@@ -45,7 +45,7 @@ public class LayerEdit implements MapEdit {
 				MainPanel.getLayerMenu ().getRegion ().swapLayers (layer1, layer2);
 				break;
 			default:
-				return false;
+				return true;
 		}
 		
 		return true;

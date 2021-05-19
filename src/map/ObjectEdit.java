@@ -18,16 +18,27 @@ public class ObjectEdit implements MapEdit {
 		startY = y;
 		Objects = objects;
 		objectToAdd = newObject;
-		erasedObject = Objects[startX][startY];
+		erasedObject = new ArrayList <GameObject>();
 	}
 	@Override
 	public boolean doEdit() {
-		erasedObject = Objects[startX][startY];
+		if ((Objects[startX][startY] == null || Objects[startX][startY].isEmpty()) && objectToAdd == null) {
+			return false;
+		}
+		
+		if (Objects[startX][startY] != null) {
+			for (int i = 0; i < Objects[startX][startY].size(); i++) {
+				
+				erasedObject.add((GameObject) Objects[startX][startY].get(i).clone());
+				
+			}
+		}
+		
 		if (objectToAdd == null) {
-			
 				Objects[startX][startY].clear();
 				return true;
 		}
+		
 		if (Objects[startX][startY] == null) {
 		Objects[startX][startY] = new ArrayList <GameObject>();
 		}
@@ -37,7 +48,10 @@ public class ObjectEdit implements MapEdit {
 	}
 	@Override
 	public boolean undo() {
-		Objects[startX][startY] = erasedObject;
+		
+		Objects[startX][startY].clear();
+		Objects[startX][startY].addAll(erasedObject);
+		erasedObject.clear();
 		MapInterface.objectsInTheMap = Objects;
 		return true;
 	}

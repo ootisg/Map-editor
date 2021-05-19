@@ -138,7 +138,9 @@ public class MapInterface extends MovableSelectionRegion {
 			} catch (EmptyStackException e) {
 				editResult = edit.doEdit ();
 			}
-			edits.push (edit);
+			if (editResult) {
+				edits.push (edit);
+			}
 			return editResult;
 		}
 		//Don't do the edit and maybe display a toast or something idfk
@@ -709,16 +711,20 @@ public class MapInterface extends MovableSelectionRegion {
 			for (int j = 0; j < map.getHeight(); j = j + 1) {
 				if (objectsInTheMap[i][j] != null) {
 					for (int e = 0; e < objectsInTheMap[i][j].size(); e++) {
-						BufferedImage oldIcon;
-						oldIcon = objectsInTheMap[i][j].get(e).getIcon();
-						Image scalledImage = objectsInTheMap[i][j].get(e).getIcon().getScaledInstance((int) (16 * this.getScale()), (int) (16 * this.getScale()), java.awt.Image.SCALE_DEFAULT);
-						BufferedImage image = new BufferedImage((int) (16 * this.getScale()), (int) (16 * this.getScale()), 3) ;
-						image.getGraphics().drawImage(scalledImage, 0,0, null);
-						objectsInTheMap[i][j].get(e).setIcon(image);
-						if ((((i* 16)* this.getScale()) + 160) - this.getViewX()>= 160) {
-						objectsInTheMap[i][j].get(e).render((int)((((16* i)* this.getScale()) + 160) - this.getViewX()), (int)(((j* 16) * this.getScale())- this.getViewY()));
+						try {
+							BufferedImage oldIcon;
+							oldIcon = objectsInTheMap[i][j].get(e).getIcon();
+							Image scalledImage = objectsInTheMap[i][j].get(e).getIcon().getScaledInstance((int) (16 * this.getScale()), (int) (16 * this.getScale()), java.awt.Image.SCALE_DEFAULT);
+							BufferedImage image = new BufferedImage((int) (16 * this.getScale()), (int) (16 * this.getScale()), 3) ;
+							image.getGraphics().drawImage(scalledImage, 0,0, null);
+							objectsInTheMap[i][j].get(e).setIcon(image);
+							if ((((i* 16)* this.getScale()) + 160) - this.getViewX()>= 160) {
+							objectsInTheMap[i][j].get(e).render((int)((((16* i)* this.getScale()) + 160) - this.getViewX()), (int)(((j* 16) * this.getScale())- this.getViewY()));
+							}
+							objectsInTheMap[i][j].get(e).setIcon(oldIcon);
+						} catch (IndexOutOfBoundsException noooooooooooooo) {
+							
 						}
-						objectsInTheMap[i][j].get(e).setIcon(oldIcon);
 					}
 				}
 			}

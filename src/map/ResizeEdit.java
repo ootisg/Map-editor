@@ -86,7 +86,7 @@ public class ResizeEdit implements MapEdit {
 		
 		//Resize stuff
 		mi.resize (newWidth, newHeight);
-		return false;
+		return true;
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class ResizeEdit implements MapEdit {
 		for (int i = 0; i < objectEdits.size (); i ++) {
 			mi.undo ();
 		}
-		return false;
+		return true;
 	}
 
 	@Override

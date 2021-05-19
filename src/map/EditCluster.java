@@ -10,9 +10,7 @@ public class EditCluster implements MapEdit {
 	public boolean doEdit() {
 		
 		for (int i = 0; i < editsManaged.size(); i++) {
-			if (!editsManaged.get(i).doEdit()) {
-				return false;
-			}
+			editsManaged.get(i).doEdit();
 		}
 		
 		return true;
@@ -22,9 +20,7 @@ public class EditCluster implements MapEdit {
 	public boolean undo() {
 		
 		for (int i = 0; i < editsManaged.size(); i++) {
-			if (!editsManaged.get(i).undo()) {
-				return false;
-			}
+			editsManaged.get(i).undo();
 		}
 		
 		return true;

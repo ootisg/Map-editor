@@ -5,14 +5,17 @@ import java.awt.image.BufferedImage;
 
 public class Filter extends DisplayableImageElement {
 	
-	BufferedImage texture;
-	DisplayBox box = new DisplayBox (new Rectangle (0,0,1,1), getParent ());
+
+	private BufferedImage texture;
+	private DisplayBox box = new DisplayBox (new Rectangle (0,0,1,1), getParent ());
 	
 	public Filter(GuiComponent parent) {
 		super(parent);
 		box.hide ();
 	}
 	
+	
+	//"we don't need to know what the differnce is -Nathan 2k21"
 	public void runFilterCode () {
 		
 	}
@@ -44,5 +47,9 @@ public class Filter extends DisplayableImageElement {
 	public void dontShowName () {
 		box.hide();
 	}
+	protected DisplayBox getDisplayBox () {
+		return box;
+	}
+	
 	
 }
