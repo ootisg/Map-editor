@@ -37,6 +37,13 @@ public class OptionsMenu extends SelectionMenu {
 			acceptButton.reset();
 		}
 	}
+	
+	@Override
+	public void keyPressed (int key) {
+		if (key == (int)'A') {
+			managing.runFilter ();
+		}
+	}
 
 	public void addContent (GuiComponent newContent) {
 		content.add(newContent);
@@ -54,7 +61,7 @@ public class OptionsMenu extends SelectionMenu {
 			}
 			if (content.get(i) instanceof TileSelection) {
 				TileSelection ts = (TileSelection) content.get(i);
-				selectedOptions.putAll(ts.getSelectedArea());
+				selectedOptions.put (ts.getRequest (), ts);
 			}
 		}
 		return selectedOptions;

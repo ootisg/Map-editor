@@ -27,6 +27,10 @@ public class TileSelection extends GuiComponent {
 		this.request = request;
 	}
 	
+	public TileRegion getSelected () {
+		return selected;
+	}
+	
 	@Override
 	public void frameEvent () {
 		super.frameEvent();
@@ -103,7 +107,7 @@ public class TileSelection extends GuiComponent {
 			
 		}
 	}
-	public HashMap<String, Tile[][]> getSelectedArea (){
+	public Tile[][] getSelectedArea (){
 		Tile[][] renderedTiles = new Tile[selected.getTiles().length][selected.getTiles()[0].length];
 		
 		for (int i = 0; i < renderedTiles.length; i++) {
@@ -111,8 +115,9 @@ public class TileSelection extends GuiComponent {
 				renderedTiles[i][j] = MainPanel.getMap().getTile(MainPanel.getMap().getTopDisplayLayer(), selected.getTiles()[i][j].x/16, selected.getTiles()[i][j].y/16);
 			}
 		}
-		HashMap <String, Tile[][]> map = new HashMap<String, Tile[][]>();
-		map.put(request, renderedTiles);
-		return map;
+		return renderedTiles;
+	}
+	public String getRequest () {
+		return request;
 	}
 }
